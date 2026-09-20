@@ -34,6 +34,8 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
 .btn-secondary{background:#eef3f9;border:1.5px solid #cdddee;color:#1f3a4e;padding:0.6rem 1.2rem;font-size:0.85rem;}
 .btn-settings{background:#f3e5f5;border:1.5px solid #ce93d8;color:#6a1b9a;padding:0.6rem 1.2rem;font-size:0.85rem;font-weight:700;}
 .btn-exercise{background:#e3f2fd;border:1.5px solid #64b5f6;color:#0d47a1;padding:0.6rem 1.2rem;font-size:0.85rem;font-weight:700;}
+.btn-approvals{background:#fff3e0;border:1.5px solid #ffb74d;color:#e65100;padding:0.6rem 1.2rem;font-size:0.85rem;font-weight:700;position:relative;}
+.btn-approvals .badge-count{background:#c62828;color:#fff;font-size:0.65rem;padding:0.1rem 0.5rem;border-radius:20px;margin-left:0.3rem;font-weight:700;}
 .btn-danger{background:#e53935;color:#fff;border:1.5px solid #e53935;font-weight:700;}
 .btn-reopen{background:#2e7d32;color:#fff;border:1.5px solid #2e7d32;font-weight:700;}
 .btn-whatsapp{background:#25D366;color:#fff;border:1.5px solid #25D366;padding:0.85rem 1.6rem;font-weight:700;}
@@ -46,10 +48,14 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
 .btn-small{padding:0.4rem 0.8rem;font-size:0.75rem;border-radius:0.6rem;}
 .btn-danger-small{background:#ffebee;border:1.5px solid #ef9a9a;color:#c62828;}
 .btn-green-small{background:#e2f0e9;border:1.5px solid #a5d6a7;color:#1f4e3d;}
+.btn-orange-small{background:#fff3e0;border:1.5px solid #ffb74d;color:#e65100;}
+.btn-approve{background:#2e7d32;color:#fff;border:1.5px solid #2e7d32;font-weight:700;padding:0.5rem 1rem;font-size:0.8rem;}
+.btn-reject{background:#c62828;color:#fff;border:1.5px solid #c62828;font-weight:700;padding:0.5rem 1rem;font-size:0.8rem;}
 .status-msg{margin-top:0.9rem;font-size:0.88rem;padding:0.75rem 1rem;border-radius:1rem;display:none;font-weight:500;}
 .status-success{background:#e2f0e9;color:#1b4b37;border-left:4px solid #1f4e3d;display:block;}
 .status-error{background:#ffe9e9;color:#a12b2b;border-left:4px solid #c0392b;display:block;}
 .status-info{background:#e4eef9;color:#1a4b6e;border-left:4px solid #2b6e9e;display:block;}
+.status-warning{background:#fff3e0;color:#7a4400;border-left:4px solid #ff9800;display:block;}
 .hidden{display:none !important;}
 .admin-section-title{font-size:0.9rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#1f4e3d;margin:1.5rem 0 0.8rem;}
 .flex-row{display:flex;gap:1rem;flex-wrap:wrap;}
@@ -69,14 +75,16 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
 .client-item.active-client{background:#e2f0e9;border:2px solid #1f4e3d;}
 .client-item.closed-client{background:#f0f0f0;opacity:0.7;}
 .client-item.closed-client .client-name{color:#777;text-decoration:line-through;}
+.client-item.has-pending{background:#fff8e1;border:2px solid #ffb74d;}
 .client-info{display:flex;flex-direction:column;gap:0.15rem;flex:1 1 140px;}
 .client-name{font-weight:700;color:#12344d;font-size:0.95rem;}
 .client-email{font-size:0.73rem;color:#4c6d84;}
-.client-login-badge,.client-time-badge,.client-phone-badge,.client-pass-badge{font-size:0.72rem;font-weight:600;padding:0.25rem 0.7rem;border-radius:30px;font-family:monospace;}
+.client-login-badge,.client-time-badge,.client-phone-badge,.client-pass-badge,.client-pending-badge{font-size:0.72rem;font-weight:600;padding:0.25rem 0.7rem;border-radius:30px;font-family:monospace;}
 .client-login-badge{background:#fce4ec;color:#880e4f;border:1px solid #f48fb1;}
 .client-time-badge{background:#fff3e0;color:#e65100;border:1px solid #ffb74d;}
 .client-phone-badge{background:#e3f2fd;color:#1565c0;border:1px solid #90caf9;}
 .client-pass-badge{background:#eef6ef;color:#1f4e3d;border:1px solid #bdd9cb;}
+.client-pending-badge{background:#fff3e0;color:#e65100;border:1px solid #ffb74d;font-family:inherit;}
 .client-status-badge-closed{background:#ffebee;color:#c62828;font-size:0.7rem;font-weight:700;padding:0.25rem 0.7rem;border-radius:30px;border:1px solid #ef9a9a;text-transform:uppercase;}
 .client-badges{display:flex;gap:0.3rem;flex-wrap:wrap;justify-content:flex-end;align-items:center;}
 .empty-message{padding:1.5rem 1rem;text-align:center;color:#7893a8;font-style:italic;font-size:0.88rem;}
@@ -110,6 +118,8 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
 .client-upcoming-item:last-child{border-bottom:none;}
 .client-upcoming-icon{font-size:1rem;}
 .client-upcoming-time{font-weight:700;color:#1f4e3d;}
+.client-upcoming-time.custom{color:#c62828;}
+.client-upcoming-time-custom-badge{font-size:0.65rem;background:#ffebee;color:#c62828;padding:0.1rem 0.5rem;border-radius:20px;font-weight:700;margin-left:0.4rem;}
 .client-upcoming-note{font-size:0.78rem;color:#4d6b5a;font-style:italic;margin-top:0.4rem;padding:0.4rem 0.7rem;background:#ffffffaa;border-radius:0.6rem;}
 .client-times-summary{background:#f4f9fd;border-radius:1rem;padding:1rem 1.2rem;border:1px solid #d3e3f0;margin-top:0.8rem;font-size:0.85rem;}
 .client-times-summary-title{font-weight:700;color:#1f4e3d;margin-bottom:0.5rem;font-size:0.85rem;}
@@ -124,13 +134,15 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
 .month-selector label{margin-bottom:0;font-size:0.75rem;}
 .month-selector select{width:auto;padding:0.5rem 1.2rem;font-size:0.85rem;}
 .sessions-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:0.7rem;margin-top:0.8rem;}
-.session-card{background:#fff;border-radius:1rem;padding:0.7rem 0.7rem 0.6rem;border:1.5px solid #e2edf7;cursor:pointer;}
+.session-card{background:#fff;border-radius:1rem;padding:0.7rem 0.7rem 0.6rem;border:1.5px solid #e2edf7;cursor:pointer;position:relative;}
 .session-card:hover{border-color:#90caf9;}
 .session-card.done{background:#e2f0e9;border-color:#1f4e3d;}
 .session-card.selected-day{border:2.5px solid #2b6e9e;box-shadow:0 4px 10px rgba(43,110,158,0.15);}
+.session-card.has-custom-time{border-left:4px solid #ff9800;}
 .session-card label{display:flex;align-items:center;gap:0.5rem;cursor:pointer;font-size:0.85rem;font-weight:600;color:#1f3a4e;text-transform:none;letter-spacing:0;margin-bottom:0.3rem;}
 .session-card input[type="checkbox"]{width:18px;height:18px;accent-color:#1f4e3d;cursor:pointer;}
 .session-date{font-size:0.7rem;color:#4c6d84;margin-left:1.7rem;}
+.session-time-custom{font-size:0.7rem;color:#e65100;font-weight:700;margin-left:1.7rem;margin-top:0.15rem;}
 .session-checked-time{font-size:0.68rem;color:#1f4e3d;font-weight:700;margin-left:1.7rem;margin-top:0.15rem;}
 .session-amount{font-size:0.75rem;font-weight:700;color:#1f4e3d;margin-top:0.2rem;margin-left:1.7rem;}
 .summary-box{margin-top:1.5rem;background:#f3f9f6;padding:1rem 1.4rem;border-radius:1.2rem;border-left:5px solid #1f4e3d;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.6rem;}
@@ -166,7 +178,6 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
 .assign-custom-fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:0.5rem;margin-top:0.7rem;}
 .assign-custom-fields .field label{font-size:0.62rem;}
 .assign-custom-fields input{padding:0.45rem 0.65rem;font-size:0.82rem;border-radius:0.5rem;}
-/* Progress entries */
 .progress-list{display:flex;flex-direction:column;gap:0.6rem;max-height:400px;overflow-y:auto;padding:0.3rem;}
 .progress-entry{background:#fff;border-radius:1rem;padding:0.8rem 1rem;border:1.5px solid #e2edf7;}
 .progress-entry-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.5rem;}
@@ -177,12 +188,40 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
 .progress-entry-grid .item .label{font-size:0.62rem;color:#7a8f9e;text-transform:uppercase;font-weight:700;letter-spacing:0.3px;}
 .progress-entry-grid .item .value{font-weight:700;color:#0b1e2b;}
 .progress-entry-note{margin-top:0.5rem;font-size:0.8rem;color:#4c6d84;font-style:italic;padding:0.4rem 0.6rem;background:#f8f9fa;border-radius:0.6rem;}
-/* Profile */
 .profile-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;}
 .profile-field{background:#fff;padding:0.9rem 1rem;border-radius:1rem;border:1px solid #e2edf7;}
 .profile-field .label{font-size:0.68rem;color:#7a8f9e;text-transform:uppercase;font-weight:700;letter-spacing:0.3px;margin-bottom:0.2rem;}
 .profile-field .value{font-weight:700;color:#0b1e2b;font-size:1rem;}
-/* Modal */
+.daily-times-panel{background:linear-gradient(135deg,#fff3e0,#ffe0b2);border:2px solid #ffb74d;border-radius:1.4rem;padding:1.4rem 1.5rem;margin-bottom:1.5rem;}
+.daily-times-panel h4{font-size:1.05rem;font-weight:700;color:#e65100;margin-bottom:0.8rem;}
+.daily-times-panel .subtitle{font-size:0.82rem;color:#8d6e00;margin-bottom:1rem;}
+.daily-times-list{display:flex;flex-direction:column;gap:0.5rem;max-height:280px;overflow-y:auto;padding:0.3rem;}
+.daily-time-row{display:flex;justify-content:space-between;align-items:center;background:#fff;padding:0.6rem 1rem;border-radius:0.9rem;border:1px solid #ffe082;gap:0.6rem;flex-wrap:wrap;}
+.daily-time-row .info{flex:1;font-size:0.85rem;}
+.daily-time-row .date-label{font-weight:700;color:#e65100;}
+.daily-time-row .time-label{font-family:monospace;color:#0b1e2b;font-weight:700;font-size:0.9rem;}
+.daily-time-row .note-label{font-size:0.72rem;color:#6a1b9a;font-style:italic;}
+.daily-time-row .actions{display:flex;gap:0.3rem;}
+
+/* APPROVAL CARDS */
+.approval-card{background:#fff;border-radius:1rem;padding:1rem 1.2rem;border:2px solid #ffb74d;margin-bottom:0.8rem;}
+.approval-card.completed{border-color:#a5d6a7;background:#f8fdf9;}
+.approval-card.rejected{border-color:#ef9a9a;background:#fef5f5;}
+.approval-card-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.6rem;margin-bottom:0.7rem;padding-bottom:0.5rem;border-bottom:1px dashed #e0e0e0;}
+.approval-card-title{font-weight:700;color:#e65100;font-size:0.95rem;}
+.approval-card-title.completed{color:#1f4e3d;}
+.approval-card-title.rejected{color:#b71c1c;}
+.approval-card-date{font-size:0.72rem;color:#4c6d84;}
+.approval-diff-table{width:100%;border-collapse:collapse;font-size:0.82rem;margin-bottom:0.7rem;}
+.approval-diff-table th,.approval-diff-table td{padding:0.4rem 0.6rem;text-align:left;border-bottom:1px solid #f0f0f0;}
+.approval-diff-table th{background:#f9f9f9;font-size:0.7rem;text-transform:uppercase;color:#7a8f9e;font-weight:700;}
+.approval-diff-table td.field{font-weight:700;color:#12344d;width:30%;}
+.approval-diff-table td.old{color:#c62828;text-decoration:line-through;font-size:0.78rem;}
+.approval-diff-table td.new{color:#2e7d32;font-weight:700;}
+.approval-diff-table td.arrow{width:20px;text-align:center;color:#7a8f9e;}
+.approval-actions{display:flex;gap:0.6rem;flex-wrap:wrap;}
+.approval-note-input{flex:1 1 200px;padding:0.5rem 0.8rem;font-size:0.82rem;border-radius:0.6rem;border:1.5px solid #cdddee;}
+
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:9999;padding:1rem;backdrop-filter:blur(4px);}
 .modal-overlay.hidden{display:none !important;}
 .modal-box{background:#fff;border-radius:1.8rem;max-width:720px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 30px 60px -12px rgba(0,0,0,0.4);}
@@ -192,6 +231,7 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
 .modal-header.purple{background:linear-gradient(135deg,#6a1b9a,#8e24aa);}
 .modal-header.red{background:linear-gradient(135deg,#c62828,#b71c1c);}
 .modal-header.green{background:linear-gradient(135deg,#2e7d32,#1b5e20);}
+.modal-header.orange{background:linear-gradient(135deg,#e65100,#ef6c00);}
 .modal-body{padding:1.8rem 2rem;}
 .modal-warning{background:#fff3e0;border-left:5px solid #ff9800;padding:1rem 1.2rem;border-radius:0.8rem;margin-bottom:1.4rem;color:#7a4400;font-size:0.9rem;line-height:1.5;}
 .modal-data-list{background:#f5f9fc;border-radius:1rem;padding:1rem 1.3rem;margin-bottom:1.4rem;font-size:0.88rem;border:1px solid #d3e3f0;max-height:200px;overflow-y:auto;}
@@ -200,13 +240,17 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
 .modal-data-row .label{color:#4c6d84;}
 .modal-data-row .value{font-weight:700;color:#12344d;}
 .modal-actions{display:flex;gap:0.8rem;flex-wrap:wrap;margin-top:1.2rem;}
-.modal-actions button{flex:1 1 200px;}
 .modal-email-preview{background:#fafafa;border-radius:1rem;padding:1rem 1.3rem;margin-top:1rem;font-family:'SF Mono',monospace;font-size:0.75rem;color:#444;max-height:220px;overflow-y:auto;border:1px solid #e0e0e0;white-space:pre-wrap;line-height:1.5;}
 .credentials-box{background:linear-gradient(135deg,#e8f5e9,#e0f2f1);border:2px solid #a5d6a7;border-radius:1rem;padding:1rem 1.2rem;margin:1rem 0;}
 .credentials-box .label{font-size:0.72rem;color:#1f4e3d;text-transform:uppercase;font-weight:700;letter-spacing:0.3px;margin-bottom:0.3rem;}
 .credentials-box .value{font-family:monospace;font-size:1.1rem;font-weight:800;color:#0b1e2b;user-select:all;padding:0.3rem 0;}
 .credentials-box .row{display:flex;justify-content:space-between;align-items:center;gap:0.5rem;padding:0.4rem 0;border-bottom:1px dashed #a5d6a7;}
 .credentials-box .row:last-child{border-bottom:none;}
+
+/* client pending banner */
+.client-pending-banner{background:#fff3e0;border:2px solid #ffb74d;border-radius:1rem;padding:0.9rem 1.1rem;margin-bottom:1rem;font-size:0.85rem;color:#7a4400;}
+.client-pending-banner strong{color:#e65100;}
+
 @media (max-width:700px){.card{padding:1.5rem;}.sessions-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));}}
 </style>
 </head>
@@ -263,7 +307,7 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
   <div class="modal-box">
     <div class="modal-header red"><h3>⚠️ Clear ALL Data From Cloud</h3><p>Permanently delete everything.</p></div>
     <div class="modal-body">
-      <div class="modal-warning" style="background:#ffebee;border-left-color:#c62828;color:#7f1d1d;"><strong>🚨 Cannot be undone.</strong><br>Type <strong>DELETE</strong> to confirm.</div>
+      <div class="modal-warning" style="background:#ffebee;border-left-color:#c62828;color:#7f1d1d;"><strong>🚨 Cannot be undone.</strong><br>Type <strong>DELETE</strong>.</div>
       <div class="input-group"><label for="clearConfirmInput">Type DELETE</label><input type="text" id="clearConfirmInput" autocomplete="off"></div>
       <div class="modal-actions"><button class="btn-danger" id="confirmClearAllBtn" disabled>🗑️ Yes, Clear All</button><button class="btn-secondary" id="cancelClearAllBtn">Cancel</button></div>
       <div id="clearAllStatus" class="status-msg"></div>
@@ -274,16 +318,11 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
 <!-- DELETE CLIENT MODAL -->
 <div id="deleteClientModal" class="modal-overlay hidden">
   <div class="modal-box">
-    <div class="modal-header red"><h3>🗑️ Delete Client Permanently</h3><p>This will delete the client and ALL their data.</p></div>
+    <div class="modal-header red"><h3>🗑️ Delete Client Permanently</h3></div>
     <div class="modal-body">
-      <div class="modal-warning" style="background:#ffebee;border-left-color:#c62828;color:#7f1d1d;">
-        <strong>🚨 Permanent deletion:</strong><br>Client, sessions, exercises, progress, logs — all gone forever.
-      </div>
-      <div class="input-group"><label for="deleteConfirmInput">Type DELETE to confirm</label><input type="text" id="deleteConfirmInput" placeholder="DELETE"></div>
-      <div class="modal-actions">
-        <button class="btn-danger" id="confirmDeleteClientBtn" disabled>🗑️ Delete Permanently</button>
-        <button class="btn-secondary" id="cancelDeleteClientBtn">Cancel</button>
-      </div>
+      <div class="modal-warning" style="background:#ffebee;border-left-color:#c62828;color:#7f1d1d;"><strong>🚨 Permanent:</strong> Client + all data gone forever.</div>
+      <div class="input-group"><label for="deleteConfirmInput">Type DELETE</label><input type="text" id="deleteConfirmInput"></div>
+      <div class="modal-actions"><button class="btn-danger" id="confirmDeleteClientBtn" disabled>🗑️ Delete</button><button class="btn-secondary" id="cancelDeleteClientBtn">Cancel</button></div>
       <div id="deleteClientStatus" class="status-msg"></div>
     </div>
   </div>
@@ -297,25 +336,65 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
       <input type="hidden" id="editProgressId">
       <div class="flex-row">
         <div class="input-group"><label for="pgDate">Date</label><input type="date" id="pgDate"></div>
-        <div class="input-group"><label for="pgWeight">Weight (kg)</label><input type="number" id="pgWeight" step="0.1" placeholder="72.5"></div>
-        <div class="input-group"><label for="pgBodyFat">Body fat %</label><input type="number" id="pgBodyFat" step="0.1" placeholder="18"></div>
+        <div class="input-group"><label for="pgWeight">Weight (kg)</label><input type="number" id="pgWeight" step="0.1"></div>
+        <div class="input-group"><label for="pgBodyFat">Body fat %</label><input type="number" id="pgBodyFat" step="0.1"></div>
       </div>
       <div class="flex-row">
-        <div class="input-group"><label for="pgChest">Chest (cm)</label><input type="number" id="pgChest" step="0.1"></div>
-        <div class="input-group"><label for="pgWaist">Waist (cm)</label><input type="number" id="pgWaist" step="0.1"></div>
-        <div class="input-group"><label for="pgHips">Hips (cm)</label><input type="number" id="pgHips" step="0.1"></div>
+        <div class="input-group"><label for="pgChest">Chest</label><input type="number" id="pgChest" step="0.1"></div>
+        <div class="input-group"><label for="pgWaist">Waist</label><input type="number" id="pgWaist" step="0.1"></div>
+        <div class="input-group"><label for="pgHips">Hips</label><input type="number" id="pgHips" step="0.1"></div>
       </div>
       <div class="flex-row">
-        <div class="input-group"><label for="pgArms">Arms (cm)</label><input type="number" id="pgArms" step="0.1"></div>
-        <div class="input-group"><label for="pgThighs">Thighs (cm)</label><input type="number" id="pgThighs" step="0.1"></div>
-        <div class="input-group"><label for="pgPhoto">Photo URL (optional)</label><input type="text" id="pgPhoto" placeholder="https://..."></div>
+        <div class="input-group"><label for="pgArms">Arms</label><input type="number" id="pgArms" step="0.1"></div>
+        <div class="input-group"><label for="pgThighs">Thighs</label><input type="number" id="pgThighs" step="0.1"></div>
+        <div class="input-group"><label for="pgPhoto">Photo URL</label><input type="text" id="pgPhoto"></div>
       </div>
-      <div class="input-group"><label for="pgNotes">Notes</label><input type="text" id="pgNotes" placeholder="How do you feel?"></div>
-      <div class="modal-actions">
-        <button class="btn-admin" id="saveProgressBtn">💾 Save Entry</button>
-        <button class="btn-secondary" id="cancelProgressBtn">Cancel</button>
-      </div>
+      <div class="input-group"><label for="pgNotes">Notes</label><input type="text" id="pgNotes"></div>
+      <div class="modal-actions"><button class="btn-admin" id="saveProgressBtn">💾 Save</button><button class="btn-secondary" id="cancelProgressBtn">Cancel</button></div>
       <div id="progressModalStatus" class="status-msg"></div>
+    </div>
+  </div>
+</div>
+
+<!-- CLIENT PROFILE EDIT MODAL -->
+<div id="profileEditModal" class="modal-overlay hidden">
+  <div class="modal-box">
+    <div class="modal-header green"><h3>✏️ Edit My Profile</h3><p style="font-size:0.85rem;">Changes require admin approval before going live</p></div>
+    <div class="modal-body">
+      <div class="modal-warning" style="background:#e4eef9;border-left-color:#2b6e9e;color:#1a4b6e;">
+        📩 Your changes will be reviewed by your trainer before they're applied.
+      </div>
+      <div class="flex-row">
+        <div class="input-group"><label for="peHeight">Height (cm)</label><input type="number" id="peHeight" step="0.1"></div>
+        <div class="input-group"><label for="peGender">Gender</label><input type="text" id="peGender"></div>
+        <div class="input-group"><label for="peBirth">Birth date</label><input type="date" id="peBirth"></div>
+      </div>
+      <div class="input-group"><label for="peGoal">Goal</label><input type="text" id="peGoal" placeholder="Lose 5kg, gain muscle, etc."></div>
+      <div class="input-group"><label for="peMedical">Medical notes</label><input type="text" id="peMedical" placeholder="Any injuries or conditions"></div>
+      <div class="input-group"><label for="peEmergency">Emergency contact</label><input type="text" id="peEmergency" placeholder="Name + phone"></div>
+      <div class="modal-actions">
+        <button class="btn-admin" id="submitProfileBtn">📩 Submit for Approval</button>
+        <button class="btn-secondary" id="cancelProfileEditBtn">Cancel</button>
+      </div>
+      <div id="profileEditStatus" class="status-msg"></div>
+    </div>
+  </div>
+</div>
+
+<!-- DAILY TIME MODAL -->
+<div id="dailyTimeModal" class="modal-overlay hidden">
+  <div class="modal-box">
+    <div class="modal-header orange"><h3>⏰ Set Time for a Specific Day</h3></div>
+    <div class="modal-body">
+      <input type="hidden" id="dtDayDate">
+      <div class="input-group"><label for="dtDateLabel">Date</label><input type="text" id="dtDateLabel" readonly></div>
+      <div class="input-group"><label for="dtTime">Class time *</label><input type="time" id="dtTime" value="07:00"></div>
+      <div class="input-group"><label for="dtNote">Note (optional)</label><input type="text" id="dtNote" placeholder="e.g., Earlier session today"></div>
+      <div class="modal-actions">
+        <button class="btn-admin" id="saveDailyTimeBtn">💾 Save Time</button>
+        <button class="btn-secondary" id="cancelDailyTimeBtn">Cancel</button>
+      </div>
+      <div id="dailyTimeStatus" class="status-msg"></div>
     </div>
   </div>
 </div>
@@ -327,18 +406,15 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
     <h2>Personal training</h2>
     <div class="subhead">Log in to view your plan, sessions & progress</div>
     <div id="cloudStatusClient" class="cloud-status"><div class="dot"></div><span id="cloudStatusClientText">Checking cloud...</span></div>
-    <div class="input-group">
-      <label for="clientLoginId">Login ID</label>
-      <input type="text" id="clientLoginId" placeholder="Your login ID" autocomplete="off">
-    </div>
-    <div class="input-group">
-      <label for="clientPassword">Password</label>
-      <input type="password" id="clientPassword" placeholder="Password" autocomplete="off">
-    </div>
+    <div class="input-group"><label for="clientLoginId">Login ID</label><input type="text" id="clientLoginId" placeholder="Your login ID" autocomplete="off"></div>
+    <div class="input-group"><label for="clientPassword">Password</label><input type="password" id="clientPassword" placeholder="Password" autocomplete="off"></div>
     <button class="btn-primary" id="clientLoginBtn">Log in</button>
     <div id="clientStatus" class="status-msg"></div>
 
     <div id="clientDashboard" class="hidden">
+      <div id="clientPendingBanner" class="hidden client-pending-banner">
+        <strong>⏳ Pending approval:</strong> Your profile changes are waiting for your trainer's approval.
+      </div>
       <div class="client-dash-card">
         <div style="font-weight:700;color:#1f4e3d;font-size:1.1rem;">💪 Welcome, <span id="welcomeClientName">Client</span>!</div>
         <div style="margin-top:0.7rem;color:#1e3b5c;">
@@ -353,7 +429,6 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
         </div>
       </div>
 
-      <!-- Client tabs -->
       <div class="tabs-bar" style="margin-top:1.2rem;">
         <button class="tab-btn active" data-ctab="plan">🏋️ My Plan</button>
         <button class="tab-btn" data-ctab="progress">📈 Progress</button>
@@ -392,14 +467,8 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
     <div id="cloudStatusAdmin" class="cloud-status"><div class="dot"></div><span id="cloudStatusAdminText">Checking cloud...</span></div>
 
     <div id="adminLoginBlock">
-      <div class="input-group">
-        <label for="adminLoginId">Admin Login ID</label>
-        <input type="text" id="adminLoginId" placeholder="Login ID" autocomplete="off">
-      </div>
-      <div class="input-group">
-        <label for="adminMasterPassword">Admin Password</label>
-        <input type="password" id="adminMasterPassword" placeholder="Password" autocomplete="off">
-      </div>
+      <div class="input-group"><label for="adminLoginId">Admin Login ID</label><input type="text" id="adminLoginId" autocomplete="off"></div>
+      <div class="input-group"><label for="adminMasterPassword">Admin Password</label><input type="password" id="adminMasterPassword" autocomplete="off"></div>
       <button class="btn-admin" id="adminLoginBtn" style="width:100%;">Unlock</button>
       <div id="adminAuthStatus" class="status-msg"></div>
     </div>
@@ -408,10 +477,22 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.8rem;flex-wrap:wrap;gap:0.5rem;">
         <span style="font-weight:600;color:#1f4e3d;">✔️ Admin (<span id="adminDisplayId">—</span>)</span>
         <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+          <button class="btn-approvals" id="approvalsBtn">✅ Approvals <span id="approvalsCountBadge" class="badge-count hidden">0</span></button>
           <button class="btn-exercise" id="exerciseLibraryBtn">🏋️ Library</button>
           <button class="btn-settings" id="openSettingsBtn">⚙️ Settings</button>
           <button class="btn-secondary" id="adminLockBtn">Lock</button>
         </div>
+      </div>
+
+      <!-- APPROVALS PANEL -->
+      <div id="approvalsPanel" class="settings-panel hidden" style="background:linear-gradient(135deg,#fff3e0,#ffe0b2);border-color:#ffb74d;">
+        <h4 style="color:#e65100;">📋 Profile Change Approvals</h4>
+        <div style="display:flex;gap:0.5rem;margin-bottom:1rem;flex-wrap:wrap;">
+          <button class="btn-orange-small btn-small tab-approval active" data-atab="pending">⏳ Pending</button>
+          <button class="btn-secondary btn-small tab-approval" data-atab="completed">✅ Completed Log</button>
+        </div>
+        <div id="approvalsList"></div>
+        <div id="approvalsStatus" class="status-msg"></div>
       </div>
 
       <div id="settingsPanel" class="settings-panel hidden">
@@ -451,13 +532,13 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
       </div>
 
       <div class="global-settings">
-        <div class="global-settings-title">📢 Send "schedule updated" broadcast (includes login ID + password)</div>
-        <button class="btn-send-all" id="sendAllBtn">Send Broadcast to All Active Clients</button>
+        <div class="global-settings-title">📢 Send broadcast (includes login ID + password)</div>
+        <button class="btn-send-all" id="sendAllBtn">Send to All Active Clients</button>
       </div>
       <div id="sendAllStatus" class="status-msg"></div>
 
       <div class="client-times-summary">
-        <div class="client-times-summary-title">🕐 Reminder times per client</div>
+        <div class="client-times-summary-title">🕐 Default times per client</div>
         <div id="clientTimesList">—</div>
       </div>
 
@@ -467,8 +548,8 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
         <div class="input-group" style="flex:2;"><label for="newClientPhone">WhatsApp (country code, no +)</label><input type="text" id="newClientPhone" placeholder="919876543210"></div>
       </div>
       <div class="flex-row">
-        <div class="input-group" style="flex:2;"><label for="newClientEmail">Email (optional)</label><input type="email" id="newClientEmail" placeholder="alex@fit.com"></div>
-        <div class="input-group" style="flex:2;"><label for="newClientTime">Class time</label><input type="time" id="newClientTime" value="07:00"></div>
+        <div class="input-group" style="flex:2;"><label for="newClientEmail">Email (optional)</label><input type="email" id="newClientEmail"></div>
+        <div class="input-group" style="flex:2;"><label for="newClientTime">Default class time</label><input type="time" id="newClientTime" value="07:00"></div>
         <div class="input-group" style="flex:2;"><label for="newClientRate">Rate (AED)</label><input type="number" id="newClientRate" value="200" min="1"></div>
         <div class="input-group" style="flex:1;display:flex;align-items:flex-end;margin-bottom:1.2rem;">
           <button class="btn-admin" id="createClientBtn" style="width:100%;">Create</button>
@@ -476,7 +557,7 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
       </div>
       <div id="createClientStatus" class="status-msg"></div>
       <div id="newClientCredsBox" class="credentials-box hidden">
-        <div style="font-weight:700;color:#1f4e3d;font-size:0.9rem;margin-bottom:0.5rem;">✅ Client Created — Share These Credentials</div>
+        <div style="font-weight:700;color:#1f4e3d;font-size:0.9rem;margin-bottom:0.5rem;">✅ Client Created — Share Credentials</div>
         <div class="row"><span class="label">Login ID</span><span class="value" id="newClientCredsLogin">—</span></div>
         <div class="row"><span class="label">Password</span><span class="value" id="newClientCredsPass">—</span></div>
       </div>
@@ -508,8 +589,8 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
         </div>
 
         <div id="closeClientBar" style="margin-bottom:1.4rem;display:flex;justify-content:flex-end;gap:0.5rem;flex-wrap:wrap;">
-          <button class="btn-secondary" id="deleteClientBtn">🗑️ Delete Permanently</button>
-          <button class="btn-danger" id="closeClientBtn">🔒 Close Client</button>
+          <button class="btn-secondary" id="deleteClientBtn">🗑️ Delete</button>
+          <button class="btn-danger" id="closeClientBtn">🔒 Close</button>
         </div>
 
         <div class="tabs-bar">
@@ -517,22 +598,23 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
           <button class="tab-btn" data-tab="tracker">📊 Sessions</button>
           <button class="tab-btn" data-tab="plan">🏋️ Exercises</button>
           <button class="tab-btn" data-tab="progress">📈 Progress</button>
+          <button class="tab-btn" data-tab="daily">⏰ Daily Times</button>
         </div>
 
         <div class="tab-content" id="tab-reminder">
           <div class="reminder-section">
             <h4>📨 Personal message to <span id="reminderClientNameInline">—</span></h4>
             <div style="font-size:0.78rem;color:#1f4e3d;margin-bottom:0.6rem;background:#ffffffaa;padding:0.4rem 0.8rem;border-radius:0.7rem;display:inline-block;">
-              📱 Sending to: <span id="reminderPhoneDisplay" style="font-family:monospace;font-weight:700;">—</span>
+              📱 To: <span id="reminderPhoneDisplay" style="font-family:monospace;font-weight:700;">—</span>
             </div>
-            <div class="input-group"><label for="reminderNote">Personal note (optional)</label><input type="text" id="reminderNote" placeholder="Optional personal note" value=""></div>
+            <div class="input-group"><label for="reminderNote">Personal note (optional)</label><input type="text" id="reminderNote" placeholder="Optional" value=""></div>
             <div class="reminder-preview" id="reminderPreview"><strong>Preview:</strong> <span id="reminderPreviewText">—</span></div>
             <div class="action-buttons">
-              <button class="btn-whatsapp" id="sendWhatsappBtn">📱 Send WhatsApp</button>
-              <button class="btn-email" id="sendEmailBtn">✉️ Send Email</button>
+              <button class="btn-whatsapp" id="sendWhatsappBtn">📱 WhatsApp</button>
+              <button class="btn-email" id="sendEmailBtn">✉️ Email</button>
             </div>
             <div id="reminderStatus" class="status-msg"></div>
-            <div class="small-note">💡 Message includes this client's login ID & password. Not saved to cloud.</div>
+            <div class="small-note">💡 Includes this client's login ID & password. Not saved to cloud.</div>
           </div>
         </div>
 
@@ -555,12 +637,11 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
             </div>
             <div>
               <div class="summary-amount">AED <span id="summaryTotalAmount">0</span></div>
-              <div class="note-admin">Only checked sessions count</div>
+              <div class="note-admin">Checked only</div>
             </div>
           </div>
           <div id="dailyWorkoutPanel" class="daily-workout-panel hidden">
             <h4>📝 Workout Log — <span id="dailyWorkoutDate">—</span></h4>
-            <div class="subtitle">Select an exercise from the plan, then fill fields.</div>
             <div class="input-group"><label for="dailyExerciseSelect">🏋️ Add exercise</label>
               <select id="dailyExerciseSelect"><option value="">— Select —</option></select>
             </div>
@@ -581,6 +662,21 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
             <h4 style="color:#6a1b9a;">📈 Client Progress</h4>
             <button class="btn-green-small btn-small" id="adminAddProgressBtn" style="margin-bottom:0.8rem;">➕ Add Entry (as Admin)</button>
             <div id="adminProgressList" class="progress-list"></div>
+          </div>
+        </div>
+
+        <!-- DAILY TIMES TAB -->
+        <div class="tab-content hidden" id="tab-daily">
+          <div class="daily-times-panel">
+            <h4>⏰ Daily time overrides</h4>
+            <div class="subtitle">Override this client's default class time for specific days. Custom times show on their dashboard.</div>
+            <div class="input-group">
+              <label for="dtNewDate">Pick a date</label>
+              <input type="date" id="dtNewDate">
+            </div>
+            <button class="btn-orange-small btn-small" id="addDailyTimeBtn" style="margin-bottom:1rem;">➕ Add / Update Time for This Day</button>
+            <div id="dailyTimesList" class="daily-times-list"></div>
+            <div id="dailyTimesStatus" class="status-msg"></div>
           </div>
         </div>
       </div>
@@ -606,17 +702,21 @@ let supabaseClient = null;
 let clients = [];
 let clientSettings = {};
 let clientProfiles = {};
-let progressEntries = {};   // clientId -> [entries]
+let progressEntries = {};
 let sessionCache = {};
 let exercises = [];
 let clientExercisesCache = {};
 let workoutLogsCache = {};
+let dailyTimesCache = {};   // clientId -> [{day_date, class_time, note}]
+let profileApprovals = [];  // all approvals
 let selectedClientId = null;
 let selectedClientForProgress = null;
 let selectedMonth = new Date().getMonth();
 let selectedDay = null;
 let archiveDataPending = null;
 let pendingDeleteClientId = null;
+let currentApprovalTab = 'pending';
+let loggedInClient = null;
 
 const $ = (id) => document.getElementById(id);
 const escapeHtml = (t) => { const d = document.createElement('div'); d.textContent = t ?? ''; return d.innerHTML; };
@@ -628,6 +728,7 @@ function showStatus(el, msg, type = 'error') {
   if (type === 'success') el.classList.add('status-success');
   else if (type === 'error') el.classList.add('status-error');
   else if (type === 'info') el.classList.add('status-info');
+  else if (type === 'warning') el.classList.add('status-warning');
   if (type !== 'info') setTimeout(() => { if (el.textContent === msg) { el.textContent=''; el.className='status-msg'; } }, 5000);
 }
 const clearStatus = (el) => { if (el) { el.textContent=''; el.className='status-msg'; } };
@@ -655,7 +756,14 @@ const getClientTime = (id) => clientSettings[id]?.class_time || '07:00';
 const getSessions = (cid,y,m) => sessionCache[getSessionCacheKey(cid,y,m)] || [];
 const getExercise = (id) => exercises.find(e => e.id === id);
 
-// ==== AUTO-GENERATE LOGIN ID & PASSWORD ====
+// Get daily-time override if any; else default
+function getClientTimeForDate(clientId, year, month, day) {
+  const dateStr = formatDateISO(year, month, day);
+  const override = (dailyTimesCache[clientId] || []).find(d => d.day_date === dateStr);
+  if (override) return { time: override.class_time, isCustom: true, note: override.note };
+  return { time: getClientTime(clientId), isCustom: false, note: null };
+}
+
 function generateLoginId(name, phone) {
   const first = (name || 'user').split(' ')[0].toUpperCase().replace(/[^A-Z]/g, '').slice(0, 8) || 'USER';
   const digits = (phone || '').replace(/\D/g, '');
@@ -663,9 +771,7 @@ function generateLoginId(name, phone) {
   let base = `${first}-${last4}`;
   let candidate = base;
   let n = 1;
-  while (clients.some(c => c.login_id === candidate)) {
-    candidate = `${base}-${n++}`;
-  }
+  while (clients.some(c => c.login_id === candidate)) candidate = `${base}-${n++}`;
   return candidate;
 }
 
@@ -673,7 +779,7 @@ function generatePassword(name) {
   const first = (name || 'X').trim()[0].toUpperCase();
   const last = (name || 'X').trim().split(' ').pop()[0].toUpperCase() || 'Z';
   const num = Math.floor(1000 + Math.random() * 9000);
-  const symbols = ['@', '#', '$', '!'];
+  const symbols = ['@','#','$','!'];
   const sym = symbols[Math.floor(Math.random() * symbols.length)];
   return `${first}${last}${sym}${num}`;
 }
@@ -735,8 +841,18 @@ async function loadAllData() {
     if (!workoutLogsCache[k]) workoutLogsCache[k] = [];
     workoutLogsCache[k].push(w);
   });
+  const { data: dt } = await supabaseClient.from('daily_times').select('*');
+  dailyTimesCache = {};
+  (dt||[]).forEach(d => {
+    if (!dailyTimesCache[d.client_id]) dailyTimesCache[d.client_id] = [];
+    dailyTimesCache[d.client_id].push(d);
+  });
+  const { data: pa } = await supabaseClient.from('profile_approvals').select('*').order('submitted_at',{ascending:false});
+  profileApprovals = pa || [];
+
   renderClientList();
   renderClientTimesSummary();
+  updateApprovalsBadge();
 }
 
 // ============ CLIENT LIST ============
@@ -747,12 +863,14 @@ function renderClientList() {
     const time = getClientTime(c.id);
     const rate = getRate(c.id);
     const isClosed = !c.active;
-    html += `<div class="client-item ${selectedClientId === c.id ? 'active-client' : ''} ${isClosed ? 'closed-client' : ''}" data-client-id="${c.id}">
+    const hasPending = profileApprovals.some(a => a.client_id === c.id && a.status === 'pending');
+    html += `<div class="client-item ${selectedClientId === c.id ? 'active-client' : ''} ${isClosed ? 'closed-client' : ''} ${hasPending ? 'has-pending' : ''}" data-client-id="${c.id}">
       <div class="client-info">
         <span class="client-name">${escapeHtml(c.name)}</span>
         <span class="client-email">${escapeHtml(c.email || '—')} · ${CURRENCY} ${rate}/session</span>
       </div>
       <div class="client-badges">
+        ${hasPending ? `<span class="client-pending-badge">⏳ Pending</span>` : ''}
         ${isClosed ? `<span class="client-status-badge-closed">Closed</span>` :
           `<span class="client-login-badge">🆔 ${escapeHtml(c.login_id)}</span>
            <span class="client-time-badge">⏰ ${formatClassTime12(time)}</span>
@@ -800,11 +918,12 @@ function selectClient(clientId) {
   updateClientStatusUI(c);
   const rs = clientSettings[clientId] || {};
   $('reminderNote').value = rs.note || '';
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === 'reminder'));
-  document.querySelectorAll('.tab-content').forEach(t => t.classList.toggle('hidden', t.id !== 'tab-reminder'));
+  document.querySelectorAll('.tab-btn[data-tab]').forEach(b => b.classList.toggle('active', b.dataset.tab === 'reminder'));
+  document.querySelectorAll('.tab-content[id^="tab-"]').forEach(t => t.classList.toggle('hidden', t.id !== 'tab-reminder'));
   renderSessions();
   renderAssignList();
   renderAdminProgress();
+  renderDailyTimes();
   updateReminderPreview();
 }
 
@@ -830,6 +949,17 @@ document.querySelectorAll('.tab-btn[data-ctab]').forEach(btn => {
     document.querySelectorAll('.tab-content[id^="ctab-"]').forEach(t => t.classList.toggle('hidden', t.id !== `ctab-${tab}`));
   });
 });
+document.querySelectorAll('.tab-approval').forEach(btn => {
+  btn.addEventListener('click', () => {
+    currentApprovalTab = btn.dataset.atab;
+    document.querySelectorAll('.tab-approval').forEach(b => {
+      b.classList.toggle('active', b === btn);
+      b.classList.toggle('btn-orange-small', b === btn);
+      b.classList.toggle('btn-secondary', b !== btn);
+    });
+    renderApprovals();
+  });
+});
 
 // ============ SESSIONS ============
 function renderSessions() {
@@ -850,9 +980,12 @@ function renderSessions() {
     const amount = isDone ? rate : 0;
     const td = checkedTimes[day] ? formatTime12(checkedTimes[day]) : '';
     const isSel = selectedDay === day;
-    html += `<div class="session-card ${isDone ? 'done' : ''} ${isSel ? 'selected-day' : ''}" data-day="${day}">
+    const dayTime = getClientTimeForDate(selectedClientId, y, m, day);
+    const customTimeHtml = dayTime.isCustom ? `<div class="session-time-custom">⏰ ${formatClassTime12(dayTime.time)} (custom)</div>` : '';
+    html += `<div class="session-card ${isDone ? 'done' : ''} ${isSel ? 'selected-day' : ''} ${dayTime.isCustom ? 'has-custom-time' : ''}" data-day="${day}">
       <label><input type="checkbox" class="session-checkbox" data-day="${day}" ${isDone ? 'checked' : ''}> Day ${day}</label>
       <div class="session-date">${dow}, ${getMonthName(m).slice(0,3)} ${day}</div>
+      ${customTimeHtml}
       ${isDone && td ? `<div class="session-checked-time">🕐 Checked at ${td}</div>` : ''}
       <div class="session-amount">${isDone ? CURRENCY + ' ' + amount : '—'}</div>
     </div>`;
@@ -928,15 +1061,15 @@ function renderDailyEntries(dateStr, assigned) {
       <div class="exercise-entry-header">
         <div>
           <div class="exercise-entry-name">${escapeHtml(ex.name)}</div>
-          <div class="exercise-entry-meta">Plan: ${a.custom_sets||ex.default_sets||'-'} × ${a.custom_reps||ex.default_reps||'-'}${(a.custom_weight||ex.default_weight)?' · '+(a.custom_weight||ex.default_weight):''}</div>
+          <div class="exercise-entry-meta">Plan: ${a.custom_sets||ex.default_sets||'-'} × ${a.custom_reps||ex.default_reps||'-'}</div>
         </div>
         <button class="btn-danger-small btn-small remove-log-btn" data-exercise-id="${ex.id}">✖</button>
       </div>
       <div class="exercise-entry-fields">
-        <div class="field"><label>Sets</label><input type="number" class="log-field" data-field="sets_done" value="${log.sets_done||''}" placeholder="${a.custom_sets||ex.default_sets||''}"></div>
-        <div class="field"><label>Reps</label><input type="text" class="log-field" data-field="reps_done" value="${escapeHtml(log.reps_done||'')}" placeholder="${escapeHtml(a.custom_reps||ex.default_reps||'')}"></div>
-        <div class="field"><label>Weight</label><input type="text" class="log-field" data-field="weight_done" value="${escapeHtml(log.weight_done||'')}" placeholder="${escapeHtml(a.custom_weight||ex.default_weight||'')}"></div>
-        <div class="field"><label>Rest</label><input type="text" class="log-field" data-field="rest_done" value="${escapeHtml(log.rest_done||'')}" placeholder="${escapeHtml(a.custom_rest||ex.default_rest||'')}"></div>
+        <div class="field"><label>Sets</label><input type="number" class="log-field" data-field="sets_done" value="${log.sets_done||''}"></div>
+        <div class="field"><label>Reps</label><input type="text" class="log-field" data-field="reps_done" value="${escapeHtml(log.reps_done||'')}"></div>
+        <div class="field"><label>Weight</label><input type="text" class="log-field" data-field="weight_done" value="${escapeHtml(log.weight_done||'')}"></div>
+        <div class="field"><label>Rest</label><input type="text" class="log-field" data-field="rest_done" value="${escapeHtml(log.rest_done||'')}"></div>
       </div>
       <div class="exercise-notes-row"><input type="text" class="log-field" data-field="notes" value="${escapeHtml(log.notes||'')}" placeholder="Notes"></div>
     </div>`;
@@ -1027,7 +1160,7 @@ function renderAssignList() {
         <div class="field"><label>Weight</label><input type="text" class="assign-field" data-ex-id="${ex.id}" data-field="custom_weight" value="${escapeHtml(a.custom_weight||'')}"></div>
         <div class="field"><label>Rest</label><input type="text" class="assign-field" data-ex-id="${ex.id}" data-field="custom_rest" value="${escapeHtml(a.custom_rest||'')}"></div>
       </div>
-      <div class="exercise-notes-row" style="margin-top:0.5rem;"><input type="text" class="assign-field" data-ex-id="${ex.id}" data-field="custom_notes" value="${escapeHtml(a.custom_notes||'')}" placeholder="Custom notes" style="padding:0.5rem 0.8rem;font-size:0.82rem;border-radius:0.6rem;"></div>` : ''}
+      <div class="exercise-notes-row" style="margin-top:0.5rem;"><input type="text" class="assign-field" data-ex-id="${ex.id}" data-field="custom_notes" value="${escapeHtml(a.custom_notes||'')}" placeholder="Notes" style="padding:0.5rem 0.8rem;font-size:0.82rem;border-radius:0.6rem;"></div>` : ''}
     </div>`;
   });
   $('assignList').innerHTML = html;
@@ -1073,15 +1206,12 @@ async function updateAssignmentField(exId, field, val) {
   } catch (err) { console.error(err); }
 }
 
-// ============ PROGRESS RENDERING ============
+// ============ PROGRESS ============
 function renderProgressEntries(containerId, clientId, adminMode) {
   const entries = progressEntries[clientId] || [];
   const container = $(containerId);
   if (!container) return;
-  if (entries.length === 0) {
-    container.innerHTML = `<div class="empty-message">No progress entries yet.</div>`;
-    return;
-  }
+  if (entries.length === 0) { container.innerHTML = `<div class="empty-message">No progress entries yet.</div>`; return; }
   let html = '';
   entries.forEach(e => {
     const byLabel = e.added_by === 'admin' ? '👨‍🏫 Admin' : '🙋 Client';
@@ -1108,7 +1238,7 @@ function renderProgressEntries(containerId, clientId, adminMode) {
   if (adminMode) {
     container.querySelectorAll('.delete-progress-btn').forEach(b => {
       b.addEventListener('click', async () => {
-        if (!confirm('Delete this entry?')) return;
+        if (!confirm('Delete?')) return;
         await supabaseClient.from('progress_entries').delete().eq('id', b.dataset.id);
         progressEntries[b.dataset.client] = (progressEntries[b.dataset.client]||[]).filter(x => String(x.id) !== String(b.dataset.id));
         renderProgressEntries(containerId, b.dataset.client, true);
@@ -1127,7 +1257,7 @@ function openProgressModal(entry, clientId, addedBy) {
   selectedClientForProgress = { clientId, addedBy };
   if (entry) {
     $('editProgressId').value = entry.id;
-    $('progressModalTitle').textContent = '✏️ Edit Progress Entry';
+    $('progressModalTitle').textContent = '✏️ Edit';
     $('pgDate').value = entry.entry_date || '';
     $('pgWeight').value = entry.weight_kg || '';
     $('pgBodyFat').value = entry.body_fat_pct || '';
@@ -1149,7 +1279,6 @@ function openProgressModal(entry, clientId, addedBy) {
 }
 
 $('cancelProgressBtn').addEventListener('click', () => $('progressModal').classList.add('hidden'));
-
 $('saveProgressBtn').addEventListener('click', async () => {
   if (!selectedClientForProgress) return;
   const { clientId, addedBy } = selectedClientForProgress;
@@ -1173,6 +1302,9 @@ $('saveProgressBtn').addEventListener('click', async () => {
     if (editId) {
       const { error } = await supabaseClient.from('progress_entries').update(payload).eq('id', editId);
       if (error) throw error;
+      const arr = progressEntries[clientId] || [];
+      const idx = arr.findIndex(x => String(x.id) === String(editId));
+      if (idx >= 0) arr[idx] = { ...arr[idx], ...payload };
     } else {
       const { data, error } = await supabaseClient.from('progress_entries').insert(payload).select().single();
       if (error) throw error;
@@ -1183,12 +1315,216 @@ $('saveProgressBtn').addEventListener('click', async () => {
     $('progressModal').classList.add('hidden');
     if (selectedClientId === clientId) renderAdminProgress();
     if (loggedInClient && loggedInClient.id === clientId) renderClientProgress(loggedInClient);
-    showStatus($('progressModalStatus'), '✅ Saved!', 'success');
   } catch (err) { showStatus($('progressModalStatus'), '❌ '+err.message, 'error'); }
   finally { $('saveProgressBtn').disabled = false; }
 });
 
-// ============ REMINDER PREVIEW (includes login ID + password) ============
+// ============ DAILY TIMES ============
+function renderDailyTimes() {
+  if (!selectedClientId) return;
+  const list = (dailyTimesCache[selectedClientId] || []).slice().sort((a,b) => a.day_date.localeCompare(b.day_date));
+  const container = $('dailyTimesList');
+  if (!container) return;
+  if (list.length === 0) { container.innerHTML = `<div class="empty-message" style="padding:1rem;text-align:center;color:#8d6e00;font-style:italic;">No custom daily times set for this client. Default time applies: <strong>${formatClassTime12(getClientTime(selectedClientId))}</strong></div>`; return; }
+  let html = '';
+  list.forEach(d => {
+    html += `<div class="daily-time-row">
+      <div class="info">
+        <div class="date-label">📅 ${d.day_date}</div>
+        <div class="time-label">⏰ ${formatClassTime12(d.class_time)}</div>
+        ${d.note ? `<div class="note-label">📝 ${escapeHtml(d.note)}</div>` : ''}
+      </div>
+      <div class="actions">
+        <button class="btn-secondary btn-small dt-edit-btn" data-date="${d.day_date}">✏️</button>
+        <button class="btn-danger-small btn-small dt-del-btn" data-date="${d.day_date}">🗑️</button>
+      </div>
+    </div>`;
+  });
+  container.innerHTML = html;
+  container.querySelectorAll('.dt-edit-btn').forEach(b => {
+    b.addEventListener('click', () => openDailyTimeModal(b.dataset.date));
+  });
+  container.querySelectorAll('.dt-del-btn').forEach(b => {
+    b.addEventListener('click', async () => {
+      if (!confirm('Remove this custom time?')) return;
+      try {
+        await supabaseClient.from('daily_times').delete().eq('client_id', selectedClientId).eq('day_date', b.dataset.date);
+        dailyTimesCache[selectedClientId] = (dailyTimesCache[selectedClientId]||[]).filter(x => x.day_date !== b.dataset.date);
+        renderDailyTimes();
+        renderSessions();
+      } catch (err) { console.error(err); }
+    });
+  });
+}
+
+function openDailyTimeModal(dateStr) {
+  const existing = (dailyTimesCache[selectedClientId] || []).find(d => d.day_date === dateStr);
+  $('dtDayDate').value = dateStr;
+  $('dtDateLabel').value = formatDateReadable(...dateStr.split('-').map((v,i) => i===1 ? parseInt(v)-1 : parseInt(v)));
+  $('dtTime').value = existing ? existing.class_time : getClientTime(selectedClientId);
+  $('dtNote').value = existing ? (existing.note || '') : '';
+  $('dailyTimeModal').classList.remove('hidden');
+  clearStatus($('dailyTimeStatus'));
+}
+
+$('addDailyTimeBtn').addEventListener('click', () => {
+  const dateVal = $('dtNewDate').value;
+  if (!dateVal) { showStatus($('dailyTimesStatus'), '⚠️ Pick a date first.', 'error'); return; }
+  openDailyTimeModal(dateVal);
+});
+
+$('cancelDailyTimeBtn').addEventListener('click', () => $('dailyTimeModal').classList.add('hidden'));
+
+$('saveDailyTimeBtn').addEventListener('click', async () => {
+  const dateStr = $('dtDayDate').value;
+  const timeVal = $('dtTime').value;
+  const noteVal = $('dtNote').value.trim();
+  if (!dateStr || !timeVal) { showStatus($('dailyTimeStatus'), '⚠️ Date and time required.', 'error'); return; }
+  try {
+    $('saveDailyTimeBtn').disabled = true;
+    const { error } = await supabaseClient.from('daily_times').upsert({
+      client_id: selectedClientId, day_date: dateStr, class_time: timeVal, note: noteVal || null
+    },{onConflict:'client_id,day_date'});
+    if (error) throw error;
+    if (!dailyTimesCache[selectedClientId]) dailyTimesCache[selectedClientId] = [];
+    dailyTimesCache[selectedClientId] = dailyTimesCache[selectedClientId].filter(d => d.day_date !== dateStr);
+    dailyTimesCache[selectedClientId].push({ day_date: dateStr, class_time: timeVal, note: noteVal || null });
+    $('dailyTimeModal').classList.add('hidden');
+    renderDailyTimes();
+    renderSessions();
+    showStatus($('dailyTimesStatus'), '✅ Daily time saved!', 'success');
+    setTimeout(() => clearStatus($('dailyTimesStatus')), 3000);
+  } catch (err) { showStatus($('dailyTimeStatus'), '❌ '+err.message, 'error'); }
+  finally { $('saveDailyTimeBtn').disabled = false; }
+});
+
+// ============ PROFILE APPROVAL ============
+function renderApprovals() {
+  const container = $('approvalsList');
+  if (!container) return;
+  let list = profileApprovals;
+  if (currentApprovalTab === 'pending') list = list.filter(a => a.status === 'pending');
+  else list = list.filter(a => a.status !== 'pending');
+
+  if (list.length === 0) {
+    container.innerHTML = `<div class="empty-message">No ${currentApprovalTab} approvals.</div>`;
+    return;
+  }
+
+  let html = '';
+  list.forEach(a => {
+    const c = getClient(a.client_id);
+    const clientName = c ? c.name : 'Unknown';
+    const proposed = a.proposed_data || {};
+    const current = a.current_data || {};
+
+    // Build diff table
+    const fields = ['height_cm','gender','birth_date','goal','medical_notes','emergency_contact'];
+    let diffRows = '';
+    fields.forEach(f => {
+      const oldV = current[f] ?? '';
+      const newV = proposed[f] ?? '';
+      if (String(oldV) !== String(newV)) {
+        diffRows += `<tr>
+          <td class="field">${f.replace(/_/g,' ').replace(/\b\w/g, l => l.toUpperCase())}</td>
+          <td class="old">${escapeHtml(String(oldV||'—'))}</td>
+          <td class="arrow">→</td>
+          <td class="new">${escapeHtml(String(newV||'—'))}</td>
+        </tr>`;
+      }
+    });
+
+    const statusClass = a.status === 'pending' ? '' : (a.status === 'approved' ? 'completed' : 'rejected');
+    const statusColor = a.status === 'pending' ? '' : (a.status === 'approved' ? 'completed' : 'rejected');
+    const submitted = new Date(a.submitted_at).toLocaleString();
+    const decided = a.decided_at ? new Date(a.decided_at).toLocaleString() : '';
+
+    html += `<div class="approval-card ${statusClass}">
+      <div class="approval-card-header">
+        <div>
+          <div class="approval-card-title ${statusColor}">
+            ${a.status === 'pending' ? '⏳ Pending' : (a.status === 'approved' ? '✅ Approved' : '❌ Rejected')} — ${escapeHtml(clientName)}
+          </div>
+          <div class="approval-card-date">Submitted: ${submitted}${decided ? ' · Decided: ' + decided : ''}</div>
+        </div>
+        ${a.admin_note ? `<span style="font-size:0.72rem;background:#f3e5f5;color:#6a1b9a;padding:0.2rem 0.6rem;border-radius:20px;font-weight:700;">💬 ${escapeHtml(a.admin_note)}</span>` : ''}
+      </div>
+      ${diffRows ? `<table class="approval-diff-table"><thead><tr><th>Field</th><th>Old</th><th></th><th>New</th></tr></thead><tbody>${diffRows}</tbody></table>` : '<div style="font-size:0.82rem;color:#7893a8;font-style:italic;">No visible differences.</div>'}
+      ${a.status === 'pending' ? `
+        <div class="approval-actions">
+          <input type="text" class="approval-note-input" id="approvalNote-${a.id}" placeholder="Optional note (reason)">
+          <button class="btn-approve" data-id="${a.id}">✅ Approve</button>
+          <button class="btn-reject" data-id="${a.id}">❌ Reject</button>
+        </div>
+      ` : ''}
+    </div>`;
+  });
+  container.innerHTML = html;
+
+  container.querySelectorAll('.btn-approve').forEach(b => {
+    b.addEventListener('click', () => decideApproval(b.dataset.id, 'approved'));
+  });
+  container.querySelectorAll('.btn-reject').forEach(b => {
+    b.addEventListener('click', () => decideApproval(b.dataset.id, 'rejected'));
+  });
+}
+
+async function decideApproval(id, decision) {
+  const a = profileApprovals.find(x => String(x.id) === String(id));
+  if (!a) return;
+  const noteEl = $(`approvalNote-${id}`);
+  const note = noteEl ? noteEl.value.trim() : '';
+
+  if (!confirm(`${decision === 'approved' ? 'Approve' : 'Reject'} this change?`)) return;
+
+  try {
+    const updates = {
+      status: decision,
+      decided_at: new Date().toISOString(),
+      admin_note: note || null
+    };
+    const { error: e1 } = await supabaseClient.from('profile_approvals').update(updates).eq('id', id);
+    if (e1) throw e1;
+
+    // If approved, apply to client_profiles
+    if (decision === 'approved') {
+      const payload = {
+        client_id: a.client_id,
+        height_cm: a.proposed_data.height_cm ?? null,
+        gender: a.proposed_data.gender ?? null,
+        birth_date: a.proposed_data.birth_date ?? null,
+        goal: a.proposed_data.goal ?? null,
+        medical_notes: a.proposed_data.medical_notes ?? null,
+        emergency_contact: a.proposed_data.emergency_contact ?? null,
+        updated_at: new Date().toISOString(),
+        approved_at: new Date().toISOString(),
+        approved_by: adminConfig.admin_login_id
+      };
+      const { error: e2 } = await supabaseClient.from('client_profiles').upsert(payload, { onConflict: 'client_id' });
+      if (e2) throw e2;
+      clientProfiles[a.client_id] = { ...(clientProfiles[a.client_id]||{}), ...payload };
+    }
+
+    Object.assign(a, updates);
+    renderApprovals();
+    updateApprovalsBadge();
+    renderClientList();
+    showStatus($('approvalsStatus'), `✅ ${decision === 'approved' ? 'Approved' : 'Rejected'} successfully.`, 'success');
+    setTimeout(() => clearStatus($('approvalsStatus')), 3000);
+  } catch (err) {
+    console.error(err);
+    showStatus($('approvalsStatus'), `❌ ${err.message}`, 'error');
+  }
+}
+
+function updateApprovalsBadge() {
+  const pending = profileApprovals.filter(a => a.status === 'pending').length;
+  const badge = $('approvalsCountBadge');
+  if (pending > 0) { badge.textContent = pending; badge.classList.remove('hidden'); }
+  else badge.classList.add('hidden');
+}
+
+// ============ REMINDER PREVIEW ============
 async function updateReminderPreview() {
   if (!selectedClientId) return;
   const c = getClient(selectedClientId); if (!c) return;
@@ -1227,7 +1563,7 @@ function sendReminder(method) {
     const phone = (c.phone || '').replace(/\D/g, '');
     if (!phone) { showStatus($('reminderStatus'), '⚠️ No number.', 'error'); return; }
     window.open(`https://wa.me/${phone}?text=${enc}`, '_blank');
-    showStatus($('reminderStatus'), `✅ WhatsApp opened for ${c.name}`, 'success');
+    showStatus($('reminderStatus'), `✅ WhatsApp opened`, 'success');
   } else {
     if (!c.email) { showStatus($('reminderStatus'), '⚠️ No email.', 'error'); return; }
     const subj = `Schedule Updated — ${c.name}`;
@@ -1249,9 +1585,7 @@ function sendToAllClients() {
     setTimeout(() => { window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank'); }, i * 400);
     opened++;
   });
-  const closed = clients.length - active.length;
   let m = `✅ Opening ${opened} WhatsApp tab(s) with credentials`;
-  if (closed > 0) m += ` · Skipped ${closed} closed`;
   showStatus($('sendAllStatus'), m, 'success');
   setTimeout(() => clearStatus($('sendAllStatus')), 8000);
 }
@@ -1265,7 +1599,6 @@ async function closeSelectedClient() {
     await supabaseClient.from('clients').update({ active: false }).eq('id', selectedClientId);
     c.active = false; updateClientStatusUI(c); renderClientList(); renderClientTimesSummary();
     document.querySelectorAll('.client-item').forEach(el => el.classList.toggle('active-client', el.dataset.clientId === selectedClientId));
-    showStatus($('reminderStatus'), `🔒 ${c.name} CLOSED.`, 'info');
   } catch (err) { alert('Failed: ' + err.message); }
 }
 
@@ -1277,14 +1610,11 @@ async function reopenSelectedClient() {
     await supabaseClient.from('clients').update({ active: true }).eq('id', selectedClientId);
     c.active = true; updateClientStatusUI(c); renderClientList(); renderClientTimesSummary();
     document.querySelectorAll('.client-item').forEach(el => el.classList.toggle('active-client', el.dataset.clientId === selectedClientId));
-    showStatus($('reminderStatus'), `🔓 ${c.name} ACTIVE.`, 'success');
   } catch (err) { alert('Failed: ' + err.message); }
 }
 
 $('deleteClientBtn').addEventListener('click', () => {
   if (!selectedClientId) return;
-  const c = getClient(selectedClientId);
-  if (!c) return;
   pendingDeleteClientId = selectedClientId;
   $('deleteClientModal').classList.remove('hidden');
   $('deleteConfirmInput').value = '';
@@ -1297,50 +1627,36 @@ $('deleteConfirmInput').addEventListener('input', (e) => {
 });
 
 $('cancelDeleteClientBtn').addEventListener('click', () => $('deleteClientModal').classList.add('hidden'));
-
 $('confirmDeleteClientBtn').addEventListener('click', async () => {
   if (!pendingDeleteClientId) return;
-  const c = getClient(pendingDeleteClientId);
   const btn = $('confirmDeleteClientBtn');
-  btn.disabled = true;
-  btn.textContent = '⏳ Deleting...';
+  btn.disabled = true; btn.textContent = '⏳ Deleting...';
   try {
-    // Cascade delete handled by FK ON DELETE CASCADE
-    const { error } = await supabaseClient.from('clients').delete().eq('id', pendingDeleteClientId);
-    if (error) throw error;
-
+    await supabaseClient.from('clients').delete().eq('id', pendingDeleteClientId);
     clients = clients.filter(x => x.id !== pendingDeleteClientId);
     delete clientSettings[pendingDeleteClientId];
     delete clientProfiles[pendingDeleteClientId];
     delete progressEntries[pendingDeleteClientId];
     delete clientExercisesCache[pendingDeleteClientId];
+    delete dailyTimesCache[pendingDeleteClientId];
+    profileApprovals = profileApprovals.filter(a => a.client_id !== pendingDeleteClientId);
     Object.keys(sessionCache).forEach(k => { if (k.startsWith(pendingDeleteClientId)) delete sessionCache[k]; });
     Object.keys(workoutLogsCache).forEach(k => { if (k.startsWith(pendingDeleteClientId)) delete workoutLogsCache[k]; });
-
     if (selectedClientId === pendingDeleteClientId) {
       selectedClientId = null;
       $('clientDetailPanel').classList.add('hidden');
       $('noClientSelectedMsg').classList.remove('hidden');
     }
-
-    renderClientList(); renderClientTimesSummary();
-    showStatus($('deleteClientStatus'), `✅ Client "${c?.name || ''}" deleted permanently.`, 'success');
-    setTimeout(() => {
-      $('deleteClientModal').classList.add('hidden');
-      pendingDeleteClientId = null;
-    }, 2000);
+    renderClientList(); renderClientTimesSummary(); updateApprovalsBadge();
+    showStatus($('deleteClientStatus'), `✅ Deleted.`, 'success');
+    setTimeout(() => { $('deleteClientModal').classList.add('hidden'); pendingDeleteClientId = null; }, 1500);
   } catch (err) {
-    console.error(err);
     showStatus($('deleteClientStatus'), `❌ ${err.message}`, 'error');
     btn.disabled = false;
-  } finally {
-    btn.textContent = '🗑️ Delete Permanently';
-  }
+  } finally { btn.textContent = '🗑️ Delete'; }
 });
 
 // ============ CLIENT LOGIN ============
-let loggedInClient = null;
-
 async function handleClientLogin() {
   const loginId = $('clientLoginId').value.trim().toUpperCase();
   const password = $('clientPassword').value.trim();
@@ -1362,24 +1678,36 @@ async function handleClientLogin() {
   renderClientPlan(c);
   renderClientProgress(c);
   renderClientProfile(c);
+
+  // Pending approval banner
+  const hasPending = profileApprovals.some(a => a.client_id === c.id && a.status === 'pending');
+  $('clientPendingBanner').classList.toggle('hidden', !hasPending);
+
   document.querySelectorAll('.tab-btn[data-ctab]').forEach(b => b.classList.toggle('active', b.dataset.ctab === 'plan'));
   document.querySelectorAll('.tab-content[id^="ctab-"]').forEach(t => t.classList.toggle('hidden', t.id !== 'ctab-plan'));
   setTimeout(() => clearStatus($('clientStatus')), 3000);
 }
 
 function renderClientUpcoming(c) {
-  const rs = clientSettings[c.id] || {};
   const today = new Date();
   const tY = today.getFullYear(), tM = today.getMonth(), tD = today.getDate();
   const tmr = new Date(today); tmr.setDate(tmr.getDate() + 1);
   const mY = tmr.getFullYear(), mM = tmr.getMonth(), mD = tmr.getDate();
-  const ct = formatClassTime12(rs.class_time || '07:00');
+
+  const todayTime = getClientTimeForDate(c.id, tY, tM, tD);
+  const tmrTime = getClientTimeForDate(c.id, mY, mM, mD);
+
+  const tTimeHtml = `<span class="client-upcoming-time ${todayTime.isCustom ? 'custom' : ''}">${formatClassTime12(todayTime.time)}</span>${todayTime.isCustom ? `<span class="client-upcoming-time-custom-badge">CUSTOM</span>` : ''}`;
+  const mTimeHtml = `<span class="client-upcoming-time ${tmrTime.isCustom ? 'custom' : ''}">${formatClassTime12(tmrTime.time)}</span>${tmrTime.isCustom ? `<span class="client-upcoming-time-custom-badge">CUSTOM</span>` : ''}`;
+
   let html = '';
   const tDone = getSessions(c.id, tY, tM).some(s => s.day === tD);
-  html += `<div class="client-upcoming-item"><span class="client-upcoming-icon">📅</span><div><div><strong>Today</strong> · <span class="client-upcoming-time">${ct}</span></div><div style="font-size:0.78rem;color:#4c6d84;">${formatDateReadable(tY,tM,tD)} — ${tDone?'✅ Completed':'⏳ Upcoming'}</div></div></div>`;
+  html += `<div class="client-upcoming-item"><span class="client-upcoming-icon">📅</span><div><div><strong>Today</strong> · ${tTimeHtml}</div><div style="font-size:0.78rem;color:#4c6d84;">${formatDateReadable(tY,tM,tD)} — ${tDone?'✅ Completed':'⏳ Upcoming'}</div></div></div>`;
   const mDone = getSessions(c.id, mY, mM).some(s => s.day === mD);
-  html += `<div class="client-upcoming-item"><span class="client-upcoming-icon">📅</span><div><div><strong>Tomorrow</strong> · <span class="client-upcoming-time">${ct}</span></div><div style="font-size:0.78rem;color:#4c6d84;">${formatDateReadable(mY,mM,mD)} — ${mDone?'✅ Completed':'⏳ Upcoming'}</div></div></div>`;
+  html += `<div class="client-upcoming-item"><span class="client-upcoming-icon">📅</span><div><div><strong>Tomorrow</strong> · ${mTimeHtml}</div><div style="font-size:0.78rem;color:#4c6d84;">${formatDateReadable(mY,mM,mD)} — ${mDone?'✅ Completed':'⏳ Upcoming'}</div></div></div>`;
   $('clientUpcomingList').innerHTML = html;
+
+  const rs = clientSettings[c.id] || {};
   if (rs.note) { $('clientUpcomingNote').textContent = `📝 Note from trainer: ${rs.note}`; $('clientUpcomingNote').classList.remove('hidden'); }
   else $('clientUpcomingNote').classList.add('hidden');
   $('clientUpcomingBlock').classList.remove('hidden');
@@ -1430,38 +1758,46 @@ $('clientAddProgressBtn').addEventListener('click', () => {
 $('clientEditProfileBtn').addEventListener('click', () => {
   if (!loggedInClient) return;
   const p = clientProfiles[loggedInClient.id] || {};
-  const height = prompt('Height (cm):', p.height_cm || '');
-  if (height === null) return;
-  const gender = prompt('Gender:', p.gender || '');
-  if (gender === null) return;
-  const birth = prompt('Birth date (YYYY-MM-DD):', p.birth_date || '');
-  if (birth === null) return;
-  const goal = prompt('Your goal:', p.goal || '');
-  if (goal === null) return;
-  const medical = prompt('Medical notes:', p.medical_notes || '');
-  if (medical === null) return;
-  const emerg = prompt('Emergency contact:', p.emergency_contact || '');
-  if (emerg === null) return;
+  $('peHeight').value = p.height_cm || '';
+  $('peGender').value = p.gender || '';
+  $('peBirth').value = p.birth_date || '';
+  $('peGoal').value = p.goal || '';
+  $('peMedical').value = p.medical_notes || '';
+  $('peEmergency').value = p.emergency_contact || '';
+  $('profileEditModal').classList.remove('hidden');
+  clearStatus($('profileEditStatus'));
+});
 
-  const payload = {
-    client_id: loggedInClient.id,
-    height_cm: parseFloat(height) || null,
-    gender: gender || null,
-    birth_date: birth || null,
-    goal: goal || null,
-    medical_notes: medical || null,
-    emergency_contact: emerg || null,
-    updated_at: new Date().toISOString()
+$('cancelProfileEditBtn').addEventListener('click', () => $('profileEditModal').classList.add('hidden'));
+
+$('submitProfileBtn').addEventListener('click', async () => {
+  if (!loggedInClient) return;
+  const proposed = {
+    height_cm: parseFloat($('peHeight').value) || null,
+    gender: $('peGender').value.trim() || null,
+    birth_date: $('peBirth').value || null,
+    goal: $('peGoal').value.trim() || null,
+    medical_notes: $('peMedical').value.trim() || null,
+    emergency_contact: $('peEmergency').value.trim() || null
   };
-  supabaseClient.from('client_profiles').upsert(payload, { onConflict: 'client_id' }).then(({ error }) => {
-    if (!error) {
-      clientProfiles[loggedInClient.id] = payload;
-      renderClientProfile(loggedInClient);
-      alert('✅ Profile saved!');
-    } else {
-      alert('❌ ' + error.message);
-    }
-  });
+  const current = clientProfiles[loggedInClient.id] || {};
+  try {
+    $('submitProfileBtn').disabled = true;
+    const { data, error } = await supabaseClient.from('profile_approvals').insert({
+      client_id: loggedInClient.id,
+      proposed_data: proposed,
+      current_data: current,
+      status: 'pending'
+    }).select().single();
+    if (error) throw error;
+    profileApprovals.unshift(data);
+    $('profileEditModal').classList.add('hidden');
+    $('clientPendingBanner').classList.remove('hidden');
+    updateApprovalsBadge();
+    renderClientList();
+    showStatus($('profileEditStatus'), '✅ Submitted for approval!', 'success');
+  } catch (err) { showStatus($('profileEditStatus'), '❌ '+err.message, 'error'); }
+  finally { $('submitProfileBtn').disabled = false; }
 });
 
 // ============ ADMIN LOGIN ============
@@ -1473,12 +1809,13 @@ function handleAdminLogin() {
     $('adminContent').classList.remove('hidden');
     $('adminDisplayId').textContent = adminConfig.admin_login_id;
     clearStatus($('adminAuthStatus'));
-    renderClientList(); renderClientTimesSummary();
+    renderClientList(); renderClientTimesSummary(); updateApprovalsBadge();
     selectedClientId = null;
     $('clientDetailPanel').classList.add('hidden');
     $('noClientSelectedMsg').classList.remove('hidden');
     $('settingsPanel').classList.add('hidden');
     $('libraryPanel').classList.add('hidden');
+    $('approvalsPanel').classList.add('hidden');
   } else {
     showStatus($('adminAuthStatus'), '⛔ Incorrect login.', 'error');
   }
@@ -1494,16 +1831,25 @@ function lockAdmin() {
   $('noClientSelectedMsg').classList.remove('hidden');
   $('settingsPanel').classList.add('hidden');
   $('libraryPanel').classList.add('hidden');
+  $('approvalsPanel').classList.add('hidden');
 }
 
 // ============ SETTINGS ============
 $('openSettingsBtn').addEventListener('click', () => {
   $('settingsPanel').classList.toggle('hidden');
   $('libraryPanel').classList.add('hidden');
+  $('approvalsPanel').classList.add('hidden');
   if (!$('settingsPanel').classList.contains('hidden')) {
     $('settingsLoginId').value = adminConfig.admin_login_id || DEFAULT_ADMIN_ID;
     $('settingsArchiveEmail').value = adminConfig.archive_email || '';
   }
+});
+
+$('approvalsBtn').addEventListener('click', () => {
+  $('approvalsPanel').classList.toggle('hidden');
+  $('libraryPanel').classList.add('hidden');
+  $('settingsPanel').classList.add('hidden');
+  if (!$('approvalsPanel').classList.contains('hidden')) renderApprovals();
 });
 
 $('saveSettingsBtn').addEventListener('click', async () => {
@@ -1558,6 +1904,8 @@ $('confirmClearAllBtn').addEventListener('click', async () => {
   const btn = $('confirmClearAllBtn');
   btn.disabled = true; btn.textContent = '⏳ Deleting...';
   try {
+    await supabaseClient.from('profile_approvals').delete().neq('id', 0);
+    await supabaseClient.from('daily_times').delete().neq('id', 0);
     await supabaseClient.from('progress_entries').delete().neq('id', 0);
     await supabaseClient.from('workout_logs').delete().neq('id', 0);
     await supabaseClient.from('client_exercises').delete().neq('id', 0);
@@ -1567,28 +1915,26 @@ $('confirmClearAllBtn').addEventListener('click', async () => {
     await supabaseClient.from('clients').delete().neq('id', '00000000-0000-0000-0000-000000000000');
     await supabaseClient.from('exercises').delete().neq('id', '00000000-0000-0000-0000-000000000000');
     await supabaseClient.from('admin_config').update({
-      admin_login_id: DEFAULT_ADMIN_ID,
-      admin_password: DEFAULT_ADMIN_PW,
-      archive_email: 'trainer@example.com',
-      updated_at: new Date().toISOString()
+      admin_login_id: DEFAULT_ADMIN_ID, admin_password: DEFAULT_ADMIN_PW,
+      archive_email: 'trainer@example.com', updated_at: new Date().toISOString()
     }).eq('id', 1);
 
     clients = []; clientSettings = {}; clientProfiles = {}; progressEntries = {};
     sessionCache = {}; exercises = []; clientExercisesCache = {}; workoutLogsCache = {};
-    selectedClientId = null;
+    dailyTimesCache = {}; profileApprovals = []; selectedClientId = null;
     adminConfig = { admin_login_id: DEFAULT_ADMIN_ID, admin_password: DEFAULT_ADMIN_PW, archive_email: 'trainer@example.com' };
 
-    renderClientList(); renderClientTimesSummary();
+    renderClientList(); renderClientTimesSummary(); updateApprovalsBadge();
     $('adminDisplayId').textContent = adminConfig.admin_login_id;
     $('clientDetailPanel').classList.add('hidden');
     $('noClientSelectedMsg').classList.remove('hidden');
     $('settingsPanel').classList.add('hidden');
     $('libraryPanel').classList.add('hidden');
+    $('approvalsPanel').classList.add('hidden');
 
     showStatus($('clearAllStatus'), '✅ All data cleared!', 'success');
     setTimeout(() => { $('clearAllModal').classList.add('hidden'); lockAdmin(); }, 2000);
   } catch (err) {
-    console.error(err);
     showStatus($('clearAllStatus'), `❌ ${err.message}`, 'error');
     btn.disabled = false;
   } finally { btn.textContent = '🗑️ Yes, Clear All'; }
@@ -1598,6 +1944,7 @@ $('confirmClearAllBtn').addEventListener('click', async () => {
 $('exerciseLibraryBtn').addEventListener('click', () => {
   $('libraryPanel').classList.toggle('hidden');
   $('settingsPanel').classList.add('hidden');
+  $('approvalsPanel').classList.add('hidden');
   if (!$('libraryPanel').classList.contains('hidden')) renderLibrary();
 });
 
@@ -1606,8 +1953,7 @@ function renderLibrary() {
   let html = '';
   exercises.forEach(ex => {
     html += `<div class="library-row">
-      <div style="flex:1;">
-        <div class="library-row-name">${escapeHtml(ex.name)}</div>
+      <div style="flex:1;"><div class="library-row-name">${escapeHtml(ex.name)}</div>
         <div class="library-row-meta">${ex.category?escapeHtml(ex.category)+' · ':''}${ex.default_sets||'-'} × ${ex.default_reps||'-'}</div>
       </div>
       <div class="library-row-actions">
@@ -1682,33 +2028,25 @@ $('createClientBtn').addEventListener('click', async () => {
   const email = $('newClientEmail').value.trim() || null;
   const classTime = $('newClientTime').value || '07:00';
   const rate = parseFloat($('newClientRate').value) || 200;
-
   if (!name) { showStatus($('createClientStatus'), 'Name required.', 'error'); return; }
   if (!phone) { showStatus($('createClientStatus'), '⚠️ WhatsApp number required.', 'error'); return; }
-
   const loginId = generateLoginId(name, phone);
   const password = generatePassword(name);
-
   try {
     $('createClientBtn').disabled = true;
     const { data: newC, error: cErr } = await supabaseClient.from('clients').insert({
       login_id: loginId, name, email, phone, password_hint: password, active: true
     }).select().single();
     if (cErr) throw cErr;
-
     await supabaseClient.from('client_settings').insert({
       client_id: newC.id, rate_aed: rate, class_time: classTime, note: ''
     });
-
     clients.push(newC);
     clientSettings[newC.id] = { client_id: newC.id, rate_aed: rate, class_time: classTime, note: '' };
-
     renderClientList(); renderClientTimesSummary();
-
     $('newClientCredsLogin').textContent = loginId;
     $('newClientCredsPass').textContent = password;
     $('newClientCredsBox').classList.remove('hidden');
-
     $('newClientName').value = ''; $('newClientPhone').value = ''; $('newClientEmail').value = '';
     showStatus($('createClientStatus'), `✅ Client "${name}" created!`, 'success');
     setTimeout(() => clearStatus($('createClientStatus')), 4000);
@@ -1744,7 +2082,7 @@ $('draftEmailBtn').addEventListener('click', () => {
   Object.entries(byClient).forEach(([n,l]) => {
     body += `CLIENT: ${n}\nSessions: ${l.length}\n----\n`;
     l.sort((a,b) => a.session_date.localeCompare(b.session_date));
-    l.forEach(s => { body += `  ${s.session_date} — ${s.checked_at?new Date(s.checked_at).toLocaleString():'N/A'}\n`; });
+    l.forEach(s => { body += `  ${s.session_date}\n`; });
     body += `\n`;
   });
   $('emailPreview').textContent = body;
@@ -1769,7 +2107,6 @@ $('wipeDataBtn').addEventListener('click', async () => {
 
 $('archiveLaterBtn').addEventListener('click', () => $('archiveModal').classList.add('hidden'));
 
-// ============ ADMIN ADD PROGRESS ============
 $('adminAddProgressBtn').addEventListener('click', () => {
   if (!selectedClientId) return;
   openProgressModal(null, selectedClientId, 'admin');
@@ -1805,7 +2142,6 @@ $('ratePerSession').addEventListener('change', async e => {
 $('sendWhatsappBtn').addEventListener('click', () => sendReminder('whatsapp'));
 $('sendEmailBtn').addEventListener('click', () => sendReminder('email'));
 
-// ============ INIT ============
 $('monthSelect').value = new Date().getMonth();
 selectedMonth = new Date().getMonth();
 initSupabase();
