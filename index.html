@@ -6,184 +6,208 @@
 <title>Personal Training · Cloud</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-* { margin:0; padding:0; box-sizing:border-box; font-family:system-ui,'Segoe UI',Roboto,sans-serif; }
-body { background:linear-gradient(145deg,#f0f5fa,#e2eaf2); min-height:100vh; padding:1.8rem 1rem; }
-.app-container { max-width:1600px; margin:0 auto; display:flex; flex-wrap:wrap; gap:2rem; justify-content:center; align-items:flex-start; }
-.card { background:rgba(255,255,255,0.92); border-radius:2rem; box-shadow:0 20px 35px -8px rgba(0,20,40,0.25); padding:2rem; border:1px solid rgba(255,255,255,0.7); }
-.client-panel { flex:1 1 380px; max-width:480px; background:white; border-top:6px solid #2b6e9e; }
-.admin-panel { flex:1 1 850px; max-width:1100px; background:#fff; border-top:6px solid #1f4e3d; }
-.badge { display:inline-block; background:#d9e7f5; color:#1e3b5c; font-size:0.72rem; font-weight:700; padding:0.25rem 1rem; border-radius:50px; text-transform:uppercase; margin-bottom:1rem; }
-.admin-badge { background:#d0e6db; color:#0e3829; }
-h2 { font-size:1.85rem; font-weight:700; margin-bottom:0.3rem; color:#0b1e2b; }
-.subhead { color:#4a5d6b; font-size:0.92rem; margin-bottom:1.5rem; border-left:3px solid #2b6e9e; padding-left:0.9rem; }
-.admin-subhead { border-left-color:#1f4e3d; }
-.cloud-status { display:flex; align-items:center; gap:0.5rem; padding:0.5rem 1rem; border-radius:30px; font-size:0.78rem; font-weight:700; margin-bottom:1rem; background:#fff3e0; color:#e65100; border:1.5px solid #ffb74d; }
-.cloud-status.online { background:#e8f5e9; color:#1b5e20; border-color:#a5d6a7; }
-.cloud-status .dot { width:10px; height:10px; border-radius:50%; background:#ff9800; }
-.cloud-status.online .dot { background:#4caf50; animation:pulse 2s infinite; }
-@keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
-.input-group { margin-bottom:1.2rem; }
-label { display:block; font-size:0.8rem; font-weight:700; text-transform:uppercase; letter-spacing:0.4px; color:#2b4b62; margin-bottom:0.35rem; }
-input, select, textarea { width:100%; padding:0.85rem 1.1rem; font-size:0.95rem; background:#f9fcff; border:1.5px solid #cdddee; border-radius:1rem; outline:none; color:#0b1e2b; font-weight:500; font-family:inherit; }
-input:focus, select:focus { border-color:#2b6e9e; box-shadow:0 0 0 4px rgba(43,110,158,0.12); background:#fff; }
-.admin-panel input:focus, .admin-panel select:focus { border-color:#1f4e3d; box-shadow:0 0 0 4px rgba(31,78,61,0.12); }
-button { border:none; border-radius:1rem; font-weight:600; font-size:0.95rem; padding:0.9rem 1.6rem; cursor:pointer; transition:0.15s; display:inline-flex; align-items:center; justify-content:center; gap:0.4rem; background:#fff; color:#0b1e2b; border:1.5px solid #cdddee; }
-button:disabled { opacity:0.5; cursor:not-allowed; }
-.btn-primary { background:#2b6e9e; color:#fff; border:1.5px solid #2b6e9e; width:100%; }
-.btn-admin { background:#1f4e3d; color:#fff; border:1.5px solid #1f4e3d; }
-.btn-secondary { background:#eef3f9; border:1.5px solid #cdddee; color:#1f3a4e; padding:0.6rem 1.2rem; font-size:0.85rem; }
-.btn-settings { background:#f3e5f5; border:1.5px solid #ce93d8; color:#6a1b9a; padding:0.6rem 1.2rem; font-size:0.85rem; font-weight:700; }
-.btn-exercise { background:#e3f2fd; border:1.5px solid #64b5f6; color:#0d47a1; padding:0.6rem 1.2rem; font-size:0.85rem; font-weight:700; }
-.btn-danger { background:#e53935; color:#fff; border:1.5px solid #e53935; font-weight:700; }
-.btn-reopen { background:#2e7d32; color:#fff; border:1.5px solid #2e7d32; font-weight:700; }
-.btn-whatsapp { background:#25D366; color:#fff; border:1.5px solid #25D366; padding:0.85rem 1.6rem; font-weight:700; }
-.btn-email { background:#2b6e9e; color:#fff; border:1.5px solid #2b6e9e; padding:0.85rem 1.6rem; font-weight:700; }
-.btn-send-all { background:linear-gradient(135deg,#128C7E,#25D366); color:#fff; border:none; padding:0.9rem 1.8rem; font-weight:700; width:100%; }
-.btn-archive { background:linear-gradient(135deg,#ff9800,#f57c00); color:#fff; border:none; padding:0.9rem 1.6rem; font-weight:700; }
-.btn-wipe { background:#c62828; color:#fff; border:none; padding:0.9rem 1.6rem; font-weight:700; }
-.btn-save-settings { background:linear-gradient(135deg,#6a1b9a,#8e24aa); color:#fff; border:none; padding:0.9rem 1.6rem; font-weight:700; width:100%; }
-.btn-clear-all { background:#b71c1c; color:#fff; border:none; padding:0.9rem 1.6rem; font-weight:700; width:100%; }
-.btn-small { padding:0.4rem 0.8rem; font-size:0.75rem; border-radius:0.6rem; }
-.btn-danger-small { background:#ffebee; border:1.5px solid #ef9a9a; color:#c62828; }
-.status-msg { margin-top:0.9rem; font-size:0.88rem; padding:0.75rem 1rem; border-radius:1rem; display:none; font-weight:500; }
-.status-success { background:#e2f0e9; color:#1b4b37; border-left:4px solid #1f4e3d; display:block; }
-.status-error { background:#ffe9e9; color:#a12b2b; border-left:4px solid #c0392b; display:block; }
-.status-info { background:#e4eef9; color:#1a4b6e; border-left:4px solid #2b6e9e; display:block; }
-.hidden { display:none !important; }
-.admin-section-title { font-size:0.9rem; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:#1f4e3d; margin:1.5rem 0 0.8rem; }
-.flex-row { display:flex; gap:1rem; flex-wrap:wrap; }
-.flex-row .input-group { flex:1 1 160px; }
-.global-settings { background:linear-gradient(135deg,#fff8e1,#ffecb3); padding:1.1rem 1.4rem; border-radius:1.2rem; border:2px solid #ffd54f; margin-bottom:1.5rem; display:flex; align-items:center; flex-wrap:wrap; gap:1rem; justify-content:space-between; }
-.global-settings-title { font-weight:700; color:#8d6e00; font-size:0.9rem; flex:1 1 auto; }
-.settings-panel { background:linear-gradient(135deg,#f3e5f5,#ede7f6); border:2px solid #ce93d8; border-radius:1.4rem; padding:1.4rem 1.5rem; margin-bottom:1.5rem; }
-.settings-panel h4 { font-size:1.05rem; font-weight:700; color:#6a1b9a; margin-bottom:1rem; }
-.danger-panel { background:linear-gradient(135deg,#ffebee,#fce4ec); border:2px solid #ef5350; border-radius:1.4rem; padding:1.4rem 1.5rem; margin-top:1.5rem; }
-.danger-panel h4 { font-size:1.05rem; font-weight:700; color:#b71c1c; margin-bottom:0.7rem; }
-.danger-panel p { font-size:0.85rem; color:#c62828; margin-bottom:1rem; }
-.password-input-wrapper { position:relative; }
-.password-toggle { position:absolute; right:1rem; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; font-size:1rem; padding:0; color:#6a1b9a; width:auto; }
-.client-list { margin-top:1rem; background:#f7fafd; border-radius:1.5rem; padding:0.7rem; max-height:280px; overflow-y:auto; border:1px solid #dbe8f2; }
-.client-item { display:flex; justify-content:space-between; align-items:center; padding:0.7rem 1.2rem; background:#fff; border-radius:1.2rem; margin-bottom:0.4rem; border:1px solid #e2edf7; cursor:pointer; gap:0.5rem; flex-wrap:wrap; }
-.client-item:hover { background:#f0f8ff; }
-.client-item.active-client { background:#e2f0e9; border:2px solid #1f4e3d; }
-.client-item.closed-client { background:#f0f0f0; opacity:0.7; }
-.client-item.closed-client .client-name { color:#777; text-decoration:line-through; }
-.client-info { display:flex; flex-direction:column; gap:0.15rem; flex:1 1 140px; }
-.client-name { font-weight:700; color:#12344d; font-size:0.95rem; }
-.client-email { font-size:0.73rem; color:#4c6d84; }
-.client-time-badge,.client-phone-badge,.client-pass-badge { font-size:0.72rem; font-weight:600; padding:0.25rem 0.7rem; border-radius:30px; font-family:monospace; }
-.client-time-badge { background:#fff3e0; color:#e65100; border:1px solid #ffb74d; }
-.client-phone-badge { background:#e3f2fd; color:#1565c0; border:1px solid #90caf9; }
-.client-pass-badge { background:#eef6ef; color:#1f4e3d; border:1px solid #bdd9cb; }
-.client-status-badge-closed { background:#ffebee; color:#c62828; font-size:0.7rem; font-weight:700; padding:0.25rem 0.7rem; border-radius:30px; border:1px solid #ef9a9a; text-transform:uppercase; }
-.client-badges { display:flex; gap:0.3rem; flex-wrap:wrap; justify-content:flex-end; align-items:center; }
-.empty-message { padding:1.5rem 1rem; text-align:center; color:#7893a8; font-style:italic; font-size:0.88rem; }
-.client-detail-panel { margin-top:1.8rem; background:#fbfdff; border-radius:1.5rem; padding:1.4rem; border:1px solid #dbe8f2; }
-.client-header-info { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.8rem; margin-bottom:1rem; padding-bottom:0.8rem; border-bottom:1px dashed #cbdae7; }
-.client-header-left { display:flex; align-items:center; gap:0.7rem; flex-wrap:wrap; }
-.client-header-name { font-size:1.15rem; font-weight:700; color:#0b1e2b; }
-.client-header-status-closed { background:#ffebee; color:#c62828; font-size:0.72rem; font-weight:700; padding:0.3rem 0.9rem; border-radius:30px; border:1.5px solid #ef9a9a; text-transform:uppercase; }
-.client-header-rate { background:#eef4f0; padding:0.4rem 1.2rem; border-radius:30px; font-weight:600; color:#1f4e3d; font-size:0.9rem; display:flex; align-items:center; gap:0.5rem; }
-.rate-input { width:100px; padding:0.3rem 0.6rem; font-size:0.85rem; border-radius:0.7rem; border:1.5px solid #bdd9cb; background:#fff; text-align:center; font-weight:600; }
-.closed-client-banner { background:#ffebee; border:2px solid #ef5350; border-radius:1.2rem; padding:1rem 1.3rem; margin-bottom:1.4rem; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.8rem; }
-.closed-client-banner-text { font-weight:700; color:#b71c1c; font-size:0.95rem; }
-.closed-client-banner-sub { font-size:0.8rem; color:#c62828; margin-top:0.2rem; }
-.tabs-bar { display:flex; gap:0.3rem; background:#f0f5fa; padding:0.4rem; border-radius:1rem; margin-bottom:1.4rem; flex-wrap:wrap; }
-.tab-btn { padding:0.6rem 1.2rem; border-radius:0.7rem; font-size:0.85rem; font-weight:700; cursor:pointer; background:transparent; border:none; color:#4c6d84; }
-.tab-btn.active { background:#fff; color:#1f4e3d; box-shadow:0 2px 6px rgba(0,0,0,0.08); }
-.tab-content.hidden { display:none; }
-.reminder-section { background:linear-gradient(135deg,#e8f5e9,#e0f2f1); border-radius:1.4rem; padding:1.4rem 1.5rem; border:2px solid #a5d6a7; margin-bottom:1.5rem; }
-.reminder-section h4 { font-size:1.05rem; font-weight:700; color:#1f4e3d; margin-bottom:1rem; }
-.reminder-preview { background:#fff; border-radius:1rem; padding:1.1rem 1.3rem; border:1.5px dashed #81c784; font-size:0.88rem; color:#1a3a4e; line-height:1.6; margin:1rem 0; white-space:pre-wrap; font-family:'SF Mono',monospace; max-height:200px; overflow-y:auto; }
-.action-buttons { display:flex; gap:0.8rem; flex-wrap:wrap; }
-.small-note { font-size:0.72rem; color:#4d6b5a; margin-top:0.7rem; }
-::-webkit-scrollbar { width:6px; height:6px; }
-::-webkit-scrollbar-thumb { background:#b6cfde; border-radius:20px; }
-.client-credentials-preview { font-family:monospace; background:#f1f6fa; padding:0.1rem 0.3rem; border-radius:6px; }
-.client-dash-card { background:#f5f9ff; padding:1.2rem; border-radius:1.2rem; margin-top:0.5rem; }
-.dash-row { display:flex; justify-content:space-between; padding:0.3rem 0; border-bottom:1px solid #dbe8f2; }
-.dash-row:last-child { border-bottom:none; }
-.client-upcoming { margin-top:1rem; background:linear-gradient(135deg,#e8f5e9,#e0f2f1); padding:1rem 1.1rem; border-radius:1rem; border-left:4px solid #1f4e3d; }
-.client-upcoming-title { font-weight:700; color:#1f4e3d; font-size:0.9rem; margin-bottom:0.5rem; }
-.client-upcoming-item { display:flex; align-items:flex-start; gap:0.6rem; padding:0.5rem 0; border-bottom:1px dashed #a5d6a7; font-size:0.85rem; color:#1a3a4e; }
-.client-upcoming-item:last-child { border-bottom:none; }
-.client-upcoming-icon { font-size:1rem; }
-.client-upcoming-time { font-weight:700; color:#1f4e3d; }
-.client-upcoming-note { font-size:0.78rem; color:#4d6b5a; font-style:italic; margin-top:0.4rem; padding:0.4rem 0.7rem; background:#ffffffaa; border-radius:0.6rem; }
-.client-times-summary { background:#f4f9fd; border-radius:1rem; padding:1rem 1.2rem; border:1px solid #d3e3f0; margin-top:0.8rem; font-size:0.85rem; }
-.client-times-summary-title { font-weight:700; color:#1f4e3d; margin-bottom:0.5rem; font-size:0.85rem; }
-.client-times-row { display:flex; justify-content:space-between; padding:0.35rem 0; border-bottom:1px dashed #cbdae7; align-items:center; }
-.client-times-row:last-child { border-bottom:none; }
-.client-times-name { color:#12344d; font-weight:600; }
-.client-times-value { color:#e65100; font-weight:700; font-family:monospace; }
-.client-times-status { font-size:0.7rem; padding:0.15rem 0.6rem; border-radius:20px; font-weight:700; }
-.status-active-pill { background:#e2f0e9; color:#1f4e3d; border:1px solid #a5d6a7; }
-.status-closed-pill { background:#ffebee; color:#c62828; border:1px solid #ef9a9a; text-transform:uppercase; }
-.month-selector { display:flex; gap:0.6rem; align-items:center; margin-bottom:1rem; flex-wrap:wrap; }
-.month-selector label { margin-bottom:0; font-size:0.75rem; }
-.month-selector select { width:auto; padding:0.5rem 1.2rem; font-size:0.85rem; }
-.sessions-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:0.7rem; margin-top:0.8rem; }
-.session-card { background:#fff; border-radius:1rem; padding:0.7rem 0.7rem 0.6rem; border:1.5px solid #e2edf7; cursor:pointer; }
-.session-card:hover { border-color:#90caf9; }
-.session-card.done { background:#e2f0e9; border-color:#1f4e3d; }
-.session-card.selected-day { border:2.5px solid #2b6e9e; box-shadow:0 4px 10px rgba(43,110,158,0.15); }
-.session-card label { display:flex; align-items:center; gap:0.5rem; cursor:pointer; font-size:0.85rem; font-weight:600; color:#1f3a4e; text-transform:none; letter-spacing:0; margin-bottom:0.3rem; }
-.session-card input[type="checkbox"] { width:18px; height:18px; accent-color:#1f4e3d; cursor:pointer; }
-.session-date { font-size:0.7rem; color:#4c6d84; margin-left:1.7rem; }
-.session-checked-time { font-size:0.68rem; color:#1f4e3d; font-weight:700; margin-left:1.7rem; margin-top:0.15rem; }
-.session-amount { font-size:0.75rem; font-weight:700; color:#1f4e3d; margin-top:0.2rem; margin-left:1.7rem; }
-.summary-box { margin-top:1.5rem; background:#f3f9f6; padding:1rem 1.4rem; border-radius:1.2rem; border-left:5px solid #1f4e3d; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.6rem; }
-.summary-text { font-weight:600; color:#1f3a2e; }
-.summary-amount { font-size:1.8rem; font-weight:800; color:#1f4e3d; }
-.note-admin { font-size:0.75rem; color:#5d7a6b; margin-top:0.4rem; text-align:right; }
-.locked-msg { font-size:0.75rem; color:#9b6b4b; background:#fff3e6; padding:0.2rem 0.7rem; border-radius:30px; font-weight:600; }
-.daily-workout-panel { background:#fffde7; border:2px solid #ffd54f; border-radius:1.4rem; padding:1.4rem; margin-top:1.5rem; }
-.daily-workout-panel h4 { font-size:1.05rem; color:#e65100; margin-bottom:0.8rem; font-weight:700; }
-.daily-workout-panel .subtitle { font-size:0.85rem; color:#8d6e00; margin-bottom:1rem; }
-.exercise-entry { background:#fff; border-radius:1rem; padding:1rem 1.2rem; margin-bottom:0.8rem; border:1.5px solid #ffe082; }
-.exercise-entry-header { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem; margin-bottom:0.6rem; }
-.exercise-entry-name { font-weight:700; color:#0d47a1; font-size:0.95rem; }
-.exercise-entry-meta { font-size:0.75rem; color:#4c6d84; }
-.exercise-entry-fields { display:grid; grid-template-columns:repeat(auto-fit,minmax(90px,1fr)); gap:0.6rem; }
-.exercise-entry-fields .field { display:flex; flex-direction:column; }
-.exercise-entry-fields label { font-size:0.65rem; margin-bottom:0.2rem; color:#7a8f9e; }
-.exercise-entry-fields input { padding:0.5rem 0.7rem; font-size:0.85rem; border-radius:0.6rem; }
-.exercise-notes-row { margin-top:0.6rem; }
-.exercise-notes-row input { padding:0.5rem 0.8rem; font-size:0.85rem; border-radius:0.6rem; }
-.library-list { display:flex; flex-direction:column; gap:0.5rem; max-height:400px; overflow-y:auto; padding:0.3rem; }
-.library-row { display:flex; justify-content:space-between; align-items:center; padding:0.7rem 1rem; background:#fff; border-radius:0.9rem; border:1px solid #e2edf7; gap:0.5rem; flex-wrap:wrap; }
-.library-row-name { font-weight:700; color:#0d47a1; font-size:0.9rem; }
-.library-row-meta { font-size:0.72rem; color:#4c6d84; margin-top:0.15rem; }
-.library-row-actions { display:flex; gap:0.3rem; }
-.assign-list { display:flex; flex-direction:column; gap:0.5rem; max-height:500px; overflow-y:auto; padding:0.3rem; }
-.assign-row { background:#fff; border-radius:1rem; padding:0.9rem 1rem; border:1.5px solid #e2edf7; }
-.assign-row.selected { border-color:#64b5f6; background:#f5fbff; }
-.assign-row-header { display:flex; align-items:center; gap:0.7rem; }
-.assign-row-header input[type="checkbox"] { width:20px; height:20px; accent-color:#1976d2; cursor:pointer; }
-.assign-row-name { font-weight:700; color:#0d47a1; font-size:0.92rem; flex:1; }
-.assign-row-meta { font-size:0.72rem; color:#4c6d84; }
-.assign-custom-fields { display:grid; grid-template-columns:repeat(auto-fit,minmax(90px,1fr)); gap:0.5rem; margin-top:0.7rem; }
-.assign-custom-fields .field label { font-size:0.62rem; }
-.assign-custom-fields input { padding:0.45rem 0.65rem; font-size:0.82rem; border-radius:0.5rem; }
-.modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.6); display:flex; align-items:center; justify-content:center; z-index:9999; padding:1rem; backdrop-filter:blur(4px); }
-.modal-overlay.hidden { display:none !important; }
-.modal-box { background:#fff; border-radius:1.8rem; max-width:720px; width:100%; max-height:90vh; overflow-y:auto; box-shadow:0 30px 60px -12px rgba(0,0,0,0.4); }
-.modal-header { background:linear-gradient(135deg,#ff9800,#f57c00); padding:1.6rem 2rem; color:#fff; border-radius:1.8rem 1.8rem 0 0; }
-.modal-header h3 { font-size:1.4rem; font-weight:800; }
-.modal-header p { font-size:0.9rem; margin-top:0.4rem; opacity:0.95; }
-.modal-header.purple { background:linear-gradient(135deg,#6a1b9a,#8e24aa); }
-.modal-header.red { background:linear-gradient(135deg,#c62828,#b71c1c); }
-.modal-body { padding:1.8rem 2rem; }
-.modal-warning { background:#fff3e0; border-left:5px solid #ff9800; padding:1rem 1.2rem; border-radius:0.8rem; margin-bottom:1.4rem; color:#7a4400; font-size:0.9rem; line-height:1.5; }
-.modal-data-list { background:#f5f9fc; border-radius:1rem; padding:1rem 1.3rem; margin-bottom:1.4rem; font-size:0.88rem; border:1px solid #d3e3f0; max-height:200px; overflow-y:auto; }
-.modal-data-row { display:flex; justify-content:space-between; padding:0.4rem 0; border-bottom:1px dashed #cbdae7; }
-.modal-data-row:last-child { border-bottom:none; }
-.modal-data-row .label { color:#4c6d84; }
-.modal-data-row .value { font-weight:700; color:#12344d; }
-.modal-actions { display:flex; gap:0.8rem; flex-wrap:wrap; margin-top:1.2rem; }
-.modal-actions button { flex:1 1 200px; }
-.modal-email-preview { background:#fafafa; border-radius:1rem; padding:1rem 1.3rem; margin-top:1rem; font-family:'SF Mono',monospace; font-size:0.75rem; color:#444; max-height:220px; overflow-y:auto; border:1px solid #e0e0e0; white-space:pre-wrap; line-height:1.5; }
-@media (max-width:700px) { .card { padding:1.5rem; } .sessions-grid { grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); } }
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,'Segoe UI',Roboto,sans-serif;}
+body{background:linear-gradient(145deg,#f0f5fa,#e2eaf2);min-height:100vh;padding:1.5rem 1rem;}
+.app-container{max-width:1600px;margin:0 auto;display:flex;flex-wrap:wrap;gap:1.8rem;justify-content:center;align-items:flex-start;}
+.card{background:rgba(255,255,255,0.92);border-radius:2rem;box-shadow:0 20px 35px -8px rgba(0,20,40,0.25);padding:2rem;border:1px solid rgba(255,255,255,0.7);}
+.client-panel{flex:1 1 380px;max-width:480px;background:#fff;border-top:6px solid #2b6e9e;}
+.admin-panel{flex:1 1 850px;max-width:1150px;background:#fff;border-top:6px solid #1f4e3d;}
+.badge{display:inline-block;background:#d9e7f5;color:#1e3b5c;font-size:0.72rem;font-weight:700;padding:0.25rem 1rem;border-radius:50px;text-transform:uppercase;margin-bottom:1rem;}
+.admin-badge{background:#d0e6db;color:#0e3829;}
+h2{font-size:1.85rem;font-weight:700;margin-bottom:0.3rem;color:#0b1e2b;}
+.subhead{color:#4a5d6b;font-size:0.92rem;margin-bottom:1.5rem;border-left:3px solid #2b6e9e;padding-left:0.9rem;}
+.admin-subhead{border-left-color:#1f4e3d;}
+.cloud-status{display:flex;align-items:center;gap:0.5rem;padding:0.5rem 1rem;border-radius:30px;font-size:0.78rem;font-weight:700;margin-bottom:1rem;background:#fff3e0;color:#e65100;border:1.5px solid #ffb74d;}
+.cloud-status.online{background:#e8f5e9;color:#1b5e20;border-color:#a5d6a7;}
+.cloud-status .dot{width:10px;height:10px;border-radius:50%;background:#ff9800;}
+.cloud-status.online .dot{background:#4caf50;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+.input-group{margin-bottom:1.2rem;}
+label{display:block;font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;color:#2b4b62;margin-bottom:0.35rem;}
+input,select,textarea{width:100%;padding:0.85rem 1.1rem;font-size:0.95rem;background:#f9fcff;border:1.5px solid #cdddee;border-radius:1rem;outline:none;color:#0b1e2b;font-weight:500;font-family:inherit;}
+input:focus,select:focus{border-color:#2b6e9e;box-shadow:0 0 0 4px rgba(43,110,158,0.12);background:#fff;}
+.admin-panel input:focus,.admin-panel select:focus{border-color:#1f4e3d;box-shadow:0 0 0 4px rgba(31,78,61,0.12);}
+button{border:none;border-radius:1rem;font-weight:600;font-size:0.95rem;padding:0.9rem 1.6rem;cursor:pointer;transition:0.15s;display:inline-flex;align-items:center;justify-content:center;gap:0.4rem;background:#fff;color:#0b1e2b;border:1.5px solid #cdddee;}
+button:disabled{opacity:0.5;cursor:not-allowed;}
+.btn-primary{background:#2b6e9e;color:#fff;border:1.5px solid #2b6e9e;width:100%;}
+.btn-admin{background:#1f4e3d;color:#fff;border:1.5px solid #1f4e3d;}
+.btn-secondary{background:#eef3f9;border:1.5px solid #cdddee;color:#1f3a4e;padding:0.6rem 1.2rem;font-size:0.85rem;}
+.btn-settings{background:#f3e5f5;border:1.5px solid #ce93d8;color:#6a1b9a;padding:0.6rem 1.2rem;font-size:0.85rem;font-weight:700;}
+.btn-exercise{background:#e3f2fd;border:1.5px solid #64b5f6;color:#0d47a1;padding:0.6rem 1.2rem;font-size:0.85rem;font-weight:700;}
+.btn-danger{background:#e53935;color:#fff;border:1.5px solid #e53935;font-weight:700;}
+.btn-reopen{background:#2e7d32;color:#fff;border:1.5px solid #2e7d32;font-weight:700;}
+.btn-whatsapp{background:#25D366;color:#fff;border:1.5px solid #25D366;padding:0.85rem 1.6rem;font-weight:700;}
+.btn-email{background:#2b6e9e;color:#fff;border:1.5px solid #2b6e9e;padding:0.85rem 1.6rem;font-weight:700;}
+.btn-send-all{background:linear-gradient(135deg,#128C7E,#25D366);color:#fff;border:none;padding:0.9rem 1.8rem;font-weight:700;width:100%;}
+.btn-archive{background:linear-gradient(135deg,#ff9800,#f57c00);color:#fff;border:none;padding:0.9rem 1.6rem;font-weight:700;}
+.btn-wipe{background:#c62828;color:#fff;border:none;padding:0.9rem 1.6rem;font-weight:700;}
+.btn-save-settings{background:linear-gradient(135deg,#6a1b9a,#8e24aa);color:#fff;border:none;padding:0.9rem 1.6rem;font-weight:700;width:100%;}
+.btn-clear-all{background:#b71c1c;color:#fff;border:none;padding:0.9rem 1.6rem;font-weight:700;width:100%;}
+.btn-small{padding:0.4rem 0.8rem;font-size:0.75rem;border-radius:0.6rem;}
+.btn-danger-small{background:#ffebee;border:1.5px solid #ef9a9a;color:#c62828;}
+.btn-green-small{background:#e2f0e9;border:1.5px solid #a5d6a7;color:#1f4e3d;}
+.status-msg{margin-top:0.9rem;font-size:0.88rem;padding:0.75rem 1rem;border-radius:1rem;display:none;font-weight:500;}
+.status-success{background:#e2f0e9;color:#1b4b37;border-left:4px solid #1f4e3d;display:block;}
+.status-error{background:#ffe9e9;color:#a12b2b;border-left:4px solid #c0392b;display:block;}
+.status-info{background:#e4eef9;color:#1a4b6e;border-left:4px solid #2b6e9e;display:block;}
+.hidden{display:none !important;}
+.admin-section-title{font-size:0.9rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#1f4e3d;margin:1.5rem 0 0.8rem;}
+.flex-row{display:flex;gap:1rem;flex-wrap:wrap;}
+.flex-row .input-group{flex:1 1 160px;}
+.global-settings{background:linear-gradient(135deg,#fff8e1,#ffecb3);padding:1.1rem 1.4rem;border-radius:1.2rem;border:2px solid #ffd54f;margin-bottom:1.5rem;display:flex;align-items:center;flex-wrap:wrap;gap:1rem;justify-content:space-between;}
+.global-settings-title{font-weight:700;color:#8d6e00;font-size:0.9rem;flex:1 1 auto;}
+.settings-panel{background:linear-gradient(135deg,#f3e5f5,#ede7f6);border:2px solid #ce93d8;border-radius:1.4rem;padding:1.4rem 1.5rem;margin-bottom:1.5rem;}
+.settings-panel h4{font-size:1.05rem;font-weight:700;color:#6a1b9a;margin-bottom:1rem;}
+.danger-panel{background:linear-gradient(135deg,#ffebee,#fce4ec);border:2px solid #ef5350;border-radius:1.4rem;padding:1.4rem 1.5rem;margin-top:1.5rem;}
+.danger-panel h4{font-size:1.05rem;font-weight:700;color:#b71c1c;margin-bottom:0.7rem;}
+.danger-panel p{font-size:0.85rem;color:#c62828;margin-bottom:1rem;}
+.password-input-wrapper{position:relative;}
+.password-toggle{position:absolute;right:1rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:1rem;padding:0;color:#6a1b9a;width:auto;}
+.client-list{margin-top:1rem;background:#f7fafd;border-radius:1.5rem;padding:0.7rem;max-height:280px;overflow-y:auto;border:1px solid #dbe8f2;}
+.client-item{display:flex;justify-content:space-between;align-items:center;padding:0.7rem 1.2rem;background:#fff;border-radius:1.2rem;margin-bottom:0.4rem;border:1px solid #e2edf7;cursor:pointer;gap:0.5rem;flex-wrap:wrap;}
+.client-item:hover{background:#f0f8ff;}
+.client-item.active-client{background:#e2f0e9;border:2px solid #1f4e3d;}
+.client-item.closed-client{background:#f0f0f0;opacity:0.7;}
+.client-item.closed-client .client-name{color:#777;text-decoration:line-through;}
+.client-info{display:flex;flex-direction:column;gap:0.15rem;flex:1 1 140px;}
+.client-name{font-weight:700;color:#12344d;font-size:0.95rem;}
+.client-email{font-size:0.73rem;color:#4c6d84;}
+.client-login-badge,.client-time-badge,.client-phone-badge,.client-pass-badge{font-size:0.72rem;font-weight:600;padding:0.25rem 0.7rem;border-radius:30px;font-family:monospace;}
+.client-login-badge{background:#fce4ec;color:#880e4f;border:1px solid #f48fb1;}
+.client-time-badge{background:#fff3e0;color:#e65100;border:1px solid #ffb74d;}
+.client-phone-badge{background:#e3f2fd;color:#1565c0;border:1px solid #90caf9;}
+.client-pass-badge{background:#eef6ef;color:#1f4e3d;border:1px solid #bdd9cb;}
+.client-status-badge-closed{background:#ffebee;color:#c62828;font-size:0.7rem;font-weight:700;padding:0.25rem 0.7rem;border-radius:30px;border:1px solid #ef9a9a;text-transform:uppercase;}
+.client-badges{display:flex;gap:0.3rem;flex-wrap:wrap;justify-content:flex-end;align-items:center;}
+.empty-message{padding:1.5rem 1rem;text-align:center;color:#7893a8;font-style:italic;font-size:0.88rem;}
+.client-detail-panel{margin-top:1.8rem;background:#fbfdff;border-radius:1.5rem;padding:1.4rem;border:1px solid #dbe8f2;}
+.client-header-info{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.8rem;margin-bottom:1rem;padding-bottom:0.8rem;border-bottom:1px dashed #cbdae7;}
+.client-header-left{display:flex;align-items:center;gap:0.7rem;flex-wrap:wrap;}
+.client-header-name{font-size:1.15rem;font-weight:700;color:#0b1e2b;}
+.client-header-status-closed{background:#ffebee;color:#c62828;font-size:0.72rem;font-weight:700;padding:0.3rem 0.9rem;border-radius:30px;border:1.5px solid #ef9a9a;text-transform:uppercase;}
+.client-header-rate{background:#eef4f0;padding:0.4rem 1.2rem;border-radius:30px;font-weight:600;color:#1f4e3d;font-size:0.9rem;display:flex;align-items:center;gap:0.5rem;}
+.rate-input{width:100px;padding:0.3rem 0.6rem;font-size:0.85rem;border-radius:0.7rem;border:1.5px solid #bdd9cb;background:#fff;text-align:center;font-weight:600;}
+.closed-client-banner{background:#ffebee;border:2px solid #ef5350;border-radius:1.2rem;padding:1rem 1.3rem;margin-bottom:1.4rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.8rem;}
+.closed-client-banner-text{font-weight:700;color:#b71c1c;font-size:0.95rem;}
+.closed-client-banner-sub{font-size:0.8rem;color:#c62828;margin-top:0.2rem;}
+.tabs-bar{display:flex;gap:0.3rem;background:#f0f5fa;padding:0.4rem;border-radius:1rem;margin-bottom:1.4rem;flex-wrap:wrap;}
+.tab-btn{padding:0.6rem 1.2rem;border-radius:0.7rem;font-size:0.85rem;font-weight:700;cursor:pointer;background:transparent;border:none;color:#4c6d84;}
+.tab-btn.active{background:#fff;color:#1f4e3d;box-shadow:0 2px 6px rgba(0,0,0,0.08);}
+.tab-content.hidden{display:none;}
+.reminder-section{background:linear-gradient(135deg,#e8f5e9,#e0f2f1);border-radius:1.4rem;padding:1.4rem 1.5rem;border:2px solid #a5d6a7;margin-bottom:1.5rem;}
+.reminder-section h4{font-size:1.05rem;font-weight:700;color:#1f4e3d;margin-bottom:1rem;}
+.reminder-preview{background:#fff;border-radius:1rem;padding:1.1rem 1.3rem;border:1.5px dashed #81c784;font-size:0.88rem;color:#1a3a4e;line-height:1.6;margin:1rem 0;white-space:pre-wrap;font-family:'SF Mono',monospace;max-height:250px;overflow-y:auto;}
+.action-buttons{display:flex;gap:0.8rem;flex-wrap:wrap;}
+.small-note{font-size:0.72rem;color:#4d6b5a;margin-top:0.7rem;}
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-thumb{background:#b6cfde;border-radius:20px;}
+.client-dash-card{background:#f5f9ff;padding:1.2rem;border-radius:1.2rem;margin-top:0.5rem;}
+.dash-row{display:flex;justify-content:space-between;padding:0.3rem 0;border-bottom:1px solid #dbe8f2;}
+.dash-row:last-child{border-bottom:none;}
+.client-upcoming{margin-top:1rem;background:linear-gradient(135deg,#e8f5e9,#e0f2f1);padding:1rem 1.1rem;border-radius:1rem;border-left:4px solid #1f4e3d;}
+.client-upcoming-title{font-weight:700;color:#1f4e3d;font-size:0.9rem;margin-bottom:0.5rem;}
+.client-upcoming-item{display:flex;align-items:flex-start;gap:0.6rem;padding:0.5rem 0;border-bottom:1px dashed #a5d6a7;font-size:0.85rem;color:#1a3a4e;}
+.client-upcoming-item:last-child{border-bottom:none;}
+.client-upcoming-icon{font-size:1rem;}
+.client-upcoming-time{font-weight:700;color:#1f4e3d;}
+.client-upcoming-note{font-size:0.78rem;color:#4d6b5a;font-style:italic;margin-top:0.4rem;padding:0.4rem 0.7rem;background:#ffffffaa;border-radius:0.6rem;}
+.client-times-summary{background:#f4f9fd;border-radius:1rem;padding:1rem 1.2rem;border:1px solid #d3e3f0;margin-top:0.8rem;font-size:0.85rem;}
+.client-times-summary-title{font-weight:700;color:#1f4e3d;margin-bottom:0.5rem;font-size:0.85rem;}
+.client-times-row{display:flex;justify-content:space-between;padding:0.35rem 0;border-bottom:1px dashed #cbdae7;align-items:center;}
+.client-times-row:last-child{border-bottom:none;}
+.client-times-name{color:#12344d;font-weight:600;}
+.client-times-value{color:#e65100;font-weight:700;font-family:monospace;}
+.client-times-status{font-size:0.7rem;padding:0.15rem 0.6rem;border-radius:20px;font-weight:700;}
+.status-active-pill{background:#e2f0e9;color:#1f4e3d;border:1px solid #a5d6a7;}
+.status-closed-pill{background:#ffebee;color:#c62828;border:1px solid #ef9a9a;text-transform:uppercase;}
+.month-selector{display:flex;gap:0.6rem;align-items:center;margin-bottom:1rem;flex-wrap:wrap;}
+.month-selector label{margin-bottom:0;font-size:0.75rem;}
+.month-selector select{width:auto;padding:0.5rem 1.2rem;font-size:0.85rem;}
+.sessions-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:0.7rem;margin-top:0.8rem;}
+.session-card{background:#fff;border-radius:1rem;padding:0.7rem 0.7rem 0.6rem;border:1.5px solid #e2edf7;cursor:pointer;}
+.session-card:hover{border-color:#90caf9;}
+.session-card.done{background:#e2f0e9;border-color:#1f4e3d;}
+.session-card.selected-day{border:2.5px solid #2b6e9e;box-shadow:0 4px 10px rgba(43,110,158,0.15);}
+.session-card label{display:flex;align-items:center;gap:0.5rem;cursor:pointer;font-size:0.85rem;font-weight:600;color:#1f3a4e;text-transform:none;letter-spacing:0;margin-bottom:0.3rem;}
+.session-card input[type="checkbox"]{width:18px;height:18px;accent-color:#1f4e3d;cursor:pointer;}
+.session-date{font-size:0.7rem;color:#4c6d84;margin-left:1.7rem;}
+.session-checked-time{font-size:0.68rem;color:#1f4e3d;font-weight:700;margin-left:1.7rem;margin-top:0.15rem;}
+.session-amount{font-size:0.75rem;font-weight:700;color:#1f4e3d;margin-top:0.2rem;margin-left:1.7rem;}
+.summary-box{margin-top:1.5rem;background:#f3f9f6;padding:1rem 1.4rem;border-radius:1.2rem;border-left:5px solid #1f4e3d;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.6rem;}
+.summary-text{font-weight:600;color:#1f3a2e;}
+.summary-amount{font-size:1.8rem;font-weight:800;color:#1f4e3d;}
+.note-admin{font-size:0.75rem;color:#5d7a6b;margin-top:0.4rem;text-align:right;}
+.locked-msg{font-size:0.75rem;color:#9b6b4b;background:#fff3e6;padding:0.2rem 0.7rem;border-radius:30px;font-weight:600;}
+.daily-workout-panel{background:#fffde7;border:2px solid #ffd54f;border-radius:1.4rem;padding:1.4rem;margin-top:1.5rem;}
+.daily-workout-panel h4{font-size:1.05rem;color:#e65100;margin-bottom:0.8rem;font-weight:700;}
+.daily-workout-panel .subtitle{font-size:0.85rem;color:#8d6e00;margin-bottom:1rem;}
+.exercise-entry{background:#fff;border-radius:1rem;padding:1rem 1.2rem;margin-bottom:0.8rem;border:1.5px solid #ffe082;}
+.exercise-entry-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.6rem;}
+.exercise-entry-name{font-weight:700;color:#0d47a1;font-size:0.95rem;}
+.exercise-entry-meta{font-size:0.75rem;color:#4c6d84;}
+.exercise-entry-fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:0.6rem;}
+.exercise-entry-fields .field{display:flex;flex-direction:column;}
+.exercise-entry-fields label{font-size:0.65rem;margin-bottom:0.2rem;color:#7a8f9e;}
+.exercise-entry-fields input{padding:0.5rem 0.7rem;font-size:0.85rem;border-radius:0.6rem;}
+.exercise-notes-row{margin-top:0.6rem;}
+.exercise-notes-row input{padding:0.5rem 0.8rem;font-size:0.85rem;border-radius:0.6rem;}
+.library-list{display:flex;flex-direction:column;gap:0.5rem;max-height:400px;overflow-y:auto;padding:0.3rem;}
+.library-row{display:flex;justify-content:space-between;align-items:center;padding:0.7rem 1rem;background:#fff;border-radius:0.9rem;border:1px solid #e2edf7;gap:0.5rem;flex-wrap:wrap;}
+.library-row-name{font-weight:700;color:#0d47a1;font-size:0.9rem;}
+.library-row-meta{font-size:0.72rem;color:#4c6d84;margin-top:0.15rem;}
+.library-row-actions{display:flex;gap:0.3rem;}
+.assign-list{display:flex;flex-direction:column;gap:0.5rem;max-height:500px;overflow-y:auto;padding:0.3rem;}
+.assign-row{background:#fff;border-radius:1rem;padding:0.9rem 1rem;border:1.5px solid #e2edf7;}
+.assign-row.selected{border-color:#64b5f6;background:#f5fbff;}
+.assign-row-header{display:flex;align-items:center;gap:0.7rem;}
+.assign-row-header input[type="checkbox"]{width:20px;height:20px;accent-color:#1976d2;cursor:pointer;}
+.assign-row-name{font-weight:700;color:#0d47a1;font-size:0.92rem;flex:1;}
+.assign-row-meta{font-size:0.72rem;color:#4c6d84;}
+.assign-custom-fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:0.5rem;margin-top:0.7rem;}
+.assign-custom-fields .field label{font-size:0.62rem;}
+.assign-custom-fields input{padding:0.45rem 0.65rem;font-size:0.82rem;border-radius:0.5rem;}
+/* Progress entries */
+.progress-list{display:flex;flex-direction:column;gap:0.6rem;max-height:400px;overflow-y:auto;padding:0.3rem;}
+.progress-entry{background:#fff;border-radius:1rem;padding:0.8rem 1rem;border:1.5px solid #e2edf7;}
+.progress-entry-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.5rem;}
+.progress-entry-date{font-weight:700;color:#0d47a1;font-size:0.9rem;}
+.progress-entry-by{font-size:0.7rem;color:#6a1b9a;background:#f3e5f5;padding:0.15rem 0.6rem;border-radius:20px;font-weight:700;}
+.progress-entry-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:0.6rem;font-size:0.82rem;}
+.progress-entry-grid .item{background:#f5f9ff;padding:0.4rem 0.6rem;border-radius:0.6rem;}
+.progress-entry-grid .item .label{font-size:0.62rem;color:#7a8f9e;text-transform:uppercase;font-weight:700;letter-spacing:0.3px;}
+.progress-entry-grid .item .value{font-weight:700;color:#0b1e2b;}
+.progress-entry-note{margin-top:0.5rem;font-size:0.8rem;color:#4c6d84;font-style:italic;padding:0.4rem 0.6rem;background:#f8f9fa;border-radius:0.6rem;}
+/* Profile */
+.profile-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;}
+.profile-field{background:#fff;padding:0.9rem 1rem;border-radius:1rem;border:1px solid #e2edf7;}
+.profile-field .label{font-size:0.68rem;color:#7a8f9e;text-transform:uppercase;font-weight:700;letter-spacing:0.3px;margin-bottom:0.2rem;}
+.profile-field .value{font-weight:700;color:#0b1e2b;font-size:1rem;}
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:9999;padding:1rem;backdrop-filter:blur(4px);}
+.modal-overlay.hidden{display:none !important;}
+.modal-box{background:#fff;border-radius:1.8rem;max-width:720px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 30px 60px -12px rgba(0,0,0,0.4);}
+.modal-header{background:linear-gradient(135deg,#ff9800,#f57c00);padding:1.6rem 2rem;color:#fff;border-radius:1.8rem 1.8rem 0 0;}
+.modal-header h3{font-size:1.4rem;font-weight:800;}
+.modal-header p{font-size:0.9rem;margin-top:0.4rem;opacity:0.95;}
+.modal-header.purple{background:linear-gradient(135deg,#6a1b9a,#8e24aa);}
+.modal-header.red{background:linear-gradient(135deg,#c62828,#b71c1c);}
+.modal-header.green{background:linear-gradient(135deg,#2e7d32,#1b5e20);}
+.modal-body{padding:1.8rem 2rem;}
+.modal-warning{background:#fff3e0;border-left:5px solid #ff9800;padding:1rem 1.2rem;border-radius:0.8rem;margin-bottom:1.4rem;color:#7a4400;font-size:0.9rem;line-height:1.5;}
+.modal-data-list{background:#f5f9fc;border-radius:1rem;padding:1rem 1.3rem;margin-bottom:1.4rem;font-size:0.88rem;border:1px solid #d3e3f0;max-height:200px;overflow-y:auto;}
+.modal-data-row{display:flex;justify-content:space-between;padding:0.4rem 0;border-bottom:1px dashed #cbdae7;}
+.modal-data-row:last-child{border-bottom:none;}
+.modal-data-row .label{color:#4c6d84;}
+.modal-data-row .value{font-weight:700;color:#12344d;}
+.modal-actions{display:flex;gap:0.8rem;flex-wrap:wrap;margin-top:1.2rem;}
+.modal-actions button{flex:1 1 200px;}
+.modal-email-preview{background:#fafafa;border-radius:1rem;padding:1rem 1.3rem;margin-top:1rem;font-family:'SF Mono',monospace;font-size:0.75rem;color:#444;max-height:220px;overflow-y:auto;border:1px solid #e0e0e0;white-space:pre-wrap;line-height:1.5;}
+.credentials-box{background:linear-gradient(135deg,#e8f5e9,#e0f2f1);border:2px solid #a5d6a7;border-radius:1rem;padding:1rem 1.2rem;margin:1rem 0;}
+.credentials-box .label{font-size:0.72rem;color:#1f4e3d;text-transform:uppercase;font-weight:700;letter-spacing:0.3px;margin-bottom:0.3rem;}
+.credentials-box .value{font-family:monospace;font-size:1.1rem;font-weight:800;color:#0b1e2b;user-select:all;padding:0.3rem 0;}
+.credentials-box .row{display:flex;justify-content:space-between;align-items:center;gap:0.5rem;padding:0.4rem 0;border-bottom:1px dashed #a5d6a7;}
+.credentials-box .row:last-child{border-bottom:none;}
+@media (max-width:700px){.card{padding:1.5rem;}.sessions-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));}}
 </style>
 </head>
 <body>
@@ -191,10 +215,7 @@ button:disabled { opacity:0.5; cursor:not-allowed; }
 <!-- ARCHIVE MODAL -->
 <div id="archiveModal" class="modal-overlay hidden">
   <div class="modal-box">
-    <div class="modal-header">
-      <h3>📦 Time to Archive Old Data</h3>
-      <p>Data before <span id="archiveCutoffLabel">—</span> is ready to archive.</p>
-    </div>
+    <div class="modal-header"><h3>📦 Time to Archive Old Data</h3><p>Data before <span id="archiveCutoffLabel">—</span> is ready to archive.</p></div>
     <div class="modal-body">
       <div class="modal-warning"><strong>⚠️ Important:</strong> Draft the email, send it, then confirm to wipe old data.</div>
       <div class="modal-data-list" id="archiveDataList"></div>
@@ -204,10 +225,10 @@ button:disabled { opacity:0.5; cursor:not-allowed; }
       </div>
       <div id="archiveStatus" class="status-msg"></div>
       <div id="emailPreviewContainer" class="hidden" style="margin-top:1rem;">
-        <div style="font-size:0.85rem; font-weight:700; color:#1f4e3d; margin-bottom:0.4rem;">📧 Email Preview:</div>
+        <div style="font-size:0.85rem;font-weight:700;color:#1f4e3d;margin-bottom:0.4rem;">📧 Email Preview:</div>
         <div class="modal-email-preview" id="emailPreview"></div>
       </div>
-      <button class="btn-secondary" id="archiveLaterBtn" style="margin-top:1rem; width:100%;">⏰ Remind Me Later</button>
+      <button class="btn-secondary" id="archiveLaterBtn" style="margin-top:1rem;width:100%;">⏰ Remind Me Later</button>
     </div>
   </div>
 </div>
@@ -215,9 +236,7 @@ button:disabled { opacity:0.5; cursor:not-allowed; }
 <!-- EXERCISE MODAL -->
 <div id="exerciseModal" class="modal-overlay hidden">
   <div class="modal-box">
-    <div class="modal-header purple">
-      <h3 id="exerciseModalTitle">➕ Add Exercise</h3>
-    </div>
+    <div class="modal-header purple"><h3 id="exerciseModalTitle">➕ Add Exercise</h3></div>
     <div class="modal-body">
       <input type="hidden" id="editExerciseId">
       <div class="flex-row">
@@ -233,10 +252,7 @@ button:disabled { opacity:0.5; cursor:not-allowed; }
       </div>
       <div class="input-group"><label for="exNotes">Notes</label><input type="text" id="exNotes"></div>
       <div class="input-group"><label for="exVideo">Video URL</label><input type="text" id="exVideo"></div>
-      <div class="modal-actions">
-        <button class="btn-admin" id="saveExerciseBtn">💾 Save</button>
-        <button class="btn-secondary" id="cancelExerciseBtn">Cancel</button>
-      </div>
+      <div class="modal-actions"><button class="btn-admin" id="saveExerciseBtn">💾 Save</button><button class="btn-secondary" id="cancelExerciseBtn">Cancel</button></div>
       <div id="exerciseModalStatus" class="status-msg"></div>
     </div>
   </div>
@@ -245,24 +261,61 @@ button:disabled { opacity:0.5; cursor:not-allowed; }
 <!-- CLEAR ALL MODAL -->
 <div id="clearAllModal" class="modal-overlay hidden">
   <div class="modal-box">
-    <div class="modal-header red">
-      <h3>⚠️ Clear ALL Data From Cloud</h3>
-      <p>This permanently deletes everything — clients, sessions, exercises, logs.</p>
-    </div>
+    <div class="modal-header red"><h3>⚠️ Clear ALL Data From Cloud</h3><p>Permanently delete everything.</p></div>
     <div class="modal-body">
-      <div class="modal-warning" style="background:#ffebee; border-left-color:#c62828; color:#7f1d1d;">
-        <strong>🚨 Cannot be undone.</strong><br>
-        Type <strong>DELETE</strong> below and click to confirm.
-      </div>
-      <div class="input-group">
-        <label for="clearConfirmInput">Type DELETE to confirm</label>
-        <input type="text" id="clearConfirmInput" placeholder="DELETE" autocomplete="off">
-      </div>
-      <div class="modal-actions">
-        <button class="btn-danger" id="confirmClearAllBtn" disabled>🗑️ Yes, Clear All Data</button>
-        <button class="btn-secondary" id="cancelClearAllBtn">Cancel</button>
-      </div>
+      <div class="modal-warning" style="background:#ffebee;border-left-color:#c62828;color:#7f1d1d;"><strong>🚨 Cannot be undone.</strong><br>Type <strong>DELETE</strong> to confirm.</div>
+      <div class="input-group"><label for="clearConfirmInput">Type DELETE</label><input type="text" id="clearConfirmInput" autocomplete="off"></div>
+      <div class="modal-actions"><button class="btn-danger" id="confirmClearAllBtn" disabled>🗑️ Yes, Clear All</button><button class="btn-secondary" id="cancelClearAllBtn">Cancel</button></div>
       <div id="clearAllStatus" class="status-msg"></div>
+    </div>
+  </div>
+</div>
+
+<!-- DELETE CLIENT MODAL -->
+<div id="deleteClientModal" class="modal-overlay hidden">
+  <div class="modal-box">
+    <div class="modal-header red"><h3>🗑️ Delete Client Permanently</h3><p>This will delete the client and ALL their data.</p></div>
+    <div class="modal-body">
+      <div class="modal-warning" style="background:#ffebee;border-left-color:#c62828;color:#7f1d1d;">
+        <strong>🚨 Permanent deletion:</strong><br>Client, sessions, exercises, progress, logs — all gone forever.
+      </div>
+      <div class="input-group"><label for="deleteConfirmInput">Type DELETE to confirm</label><input type="text" id="deleteConfirmInput" placeholder="DELETE"></div>
+      <div class="modal-actions">
+        <button class="btn-danger" id="confirmDeleteClientBtn" disabled>🗑️ Delete Permanently</button>
+        <button class="btn-secondary" id="cancelDeleteClientBtn">Cancel</button>
+      </div>
+      <div id="deleteClientStatus" class="status-msg"></div>
+    </div>
+  </div>
+</div>
+
+<!-- PROGRESS MODAL -->
+<div id="progressModal" class="modal-overlay hidden">
+  <div class="modal-box">
+    <div class="modal-header green"><h3 id="progressModalTitle">➕ Add Progress Entry</h3></div>
+    <div class="modal-body">
+      <input type="hidden" id="editProgressId">
+      <div class="flex-row">
+        <div class="input-group"><label for="pgDate">Date</label><input type="date" id="pgDate"></div>
+        <div class="input-group"><label for="pgWeight">Weight (kg)</label><input type="number" id="pgWeight" step="0.1" placeholder="72.5"></div>
+        <div class="input-group"><label for="pgBodyFat">Body fat %</label><input type="number" id="pgBodyFat" step="0.1" placeholder="18"></div>
+      </div>
+      <div class="flex-row">
+        <div class="input-group"><label for="pgChest">Chest (cm)</label><input type="number" id="pgChest" step="0.1"></div>
+        <div class="input-group"><label for="pgWaist">Waist (cm)</label><input type="number" id="pgWaist" step="0.1"></div>
+        <div class="input-group"><label for="pgHips">Hips (cm)</label><input type="number" id="pgHips" step="0.1"></div>
+      </div>
+      <div class="flex-row">
+        <div class="input-group"><label for="pgArms">Arms (cm)</label><input type="number" id="pgArms" step="0.1"></div>
+        <div class="input-group"><label for="pgThighs">Thighs (cm)</label><input type="number" id="pgThighs" step="0.1"></div>
+        <div class="input-group"><label for="pgPhoto">Photo URL (optional)</label><input type="text" id="pgPhoto" placeholder="https://..."></div>
+      </div>
+      <div class="input-group"><label for="pgNotes">Notes</label><input type="text" id="pgNotes" placeholder="How do you feel?"></div>
+      <div class="modal-actions">
+        <button class="btn-admin" id="saveProgressBtn">💾 Save Entry</button>
+        <button class="btn-secondary" id="cancelProgressBtn">Cancel</button>
+      </div>
+      <div id="progressModalStatus" class="status-msg"></div>
     </div>
   </div>
 </div>
@@ -272,28 +325,61 @@ button:disabled { opacity:0.5; cursor:not-allowed; }
   <div class="card client-panel">
     <span class="badge">🔐 client access</span>
     <h2>Personal training</h2>
-    <div class="subhead">Log in to view your plan, sessions & payments</div>
+    <div class="subhead">Log in to view your plan, sessions & progress</div>
     <div id="cloudStatusClient" class="cloud-status"><div class="dot"></div><span id="cloudStatusClientText">Checking cloud...</span></div>
-    <div class="input-group"><label for="clientEmail">Email</label><input type="email" id="clientEmail" placeholder="your@email.com"></div>
-    <div class="input-group"><label for="clientPassword">Password</label><input type="password" id="clientPassword" placeholder="••••••••"></div>
+    <div class="input-group">
+      <label for="clientLoginId">Login ID</label>
+      <input type="text" id="clientLoginId" placeholder="Your login ID" autocomplete="off">
+    </div>
+    <div class="input-group">
+      <label for="clientPassword">Password</label>
+      <input type="password" id="clientPassword" placeholder="Password" autocomplete="off">
+    </div>
     <button class="btn-primary" id="clientLoginBtn">Log in</button>
     <div id="clientStatus" class="status-msg"></div>
 
-    <div id="clientDashboard" class="hidden client-dash-card">
-      <div style="font-weight:700; color:#1f4e3d; font-size:1.1rem;">💪 Welcome, <span id="welcomeClientName">Client</span>!</div>
-      <div style="margin-top:0.7rem; color:#1e3b5c;">
-        <div class="dash-row"><span>Month:</span> <strong id="clientDashMonth">—</strong></div>
-        <div class="dash-row"><span>Sessions done:</span> <strong id="clientDashDone">0</strong></div>
-        <div class="dash-row"><span>Amount due:</span> <strong id="clientDashAmount">AED 0</strong></div>
+    <div id="clientDashboard" class="hidden">
+      <div class="client-dash-card">
+        <div style="font-weight:700;color:#1f4e3d;font-size:1.1rem;">💪 Welcome, <span id="welcomeClientName">Client</span>!</div>
+        <div style="margin-top:0.7rem;color:#1e3b5c;">
+          <div class="dash-row"><span>Month:</span> <strong id="clientDashMonth">—</strong></div>
+          <div class="dash-row"><span>Sessions done:</span> <strong id="clientDashDone">0</strong></div>
+          <div class="dash-row"><span>Amount due:</span> <strong id="clientDashAmount">AED 0</strong></div>
+        </div>
+        <div id="clientUpcomingBlock" class="hidden client-upcoming">
+          <div class="client-upcoming-title">📅 Your upcoming schedule</div>
+          <div id="clientUpcomingList"></div>
+          <div id="clientUpcomingNote" class="hidden client-upcoming-note"></div>
+        </div>
       </div>
-      <div id="clientUpcomingBlock" class="hidden client-upcoming">
-        <div class="client-upcoming-title">📅 Your upcoming schedule</div>
-        <div id="clientUpcomingList"></div>
-        <div id="clientUpcomingNote" class="hidden client-upcoming-note"></div>
+
+      <!-- Client tabs -->
+      <div class="tabs-bar" style="margin-top:1.2rem;">
+        <button class="tab-btn active" data-ctab="plan">🏋️ My Plan</button>
+        <button class="tab-btn" data-ctab="progress">📈 Progress</button>
+        <button class="tab-btn" data-ctab="profile">👤 My Profile</button>
       </div>
-      <div id="clientPlanBlock" class="hidden" style="margin-top:1rem; background:#f5fbff; padding:1rem; border-radius:1rem; border-left:4px solid #1976d2;">
-        <div style="font-weight:700; color:#0d47a1; font-size:0.9rem; margin-bottom:0.5rem;">🏋️ Your Exercise Plan</div>
-        <div id="clientPlanList"></div>
+
+      <div class="tab-content" id="ctab-plan">
+        <div id="clientPlanBlock" style="background:#f5fbff;padding:1rem;border-radius:1rem;border-left:4px solid #1976d2;">
+          <div style="font-weight:700;color:#0d47a1;font-size:0.9rem;margin-bottom:0.5rem;">🏋️ Your Exercise Plan</div>
+          <div id="clientPlanList"></div>
+        </div>
+      </div>
+
+      <div class="tab-content hidden" id="ctab-progress">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.8rem;flex-wrap:wrap;gap:0.5rem;">
+          <span style="font-weight:700;color:#1f4e3d;font-size:0.9rem;">📈 Your Progress</span>
+          <button class="btn-green-small btn-small" id="clientAddProgressBtn">➕ Add Entry</button>
+        </div>
+        <div id="clientProgressList" class="progress-list"></div>
+      </div>
+
+      <div class="tab-content hidden" id="ctab-profile">
+        <div style="display:flex;justify-content:flex-end;margin-bottom:0.6rem;">
+          <button class="btn-green-small btn-small" id="clientEditProfileBtn">✏️ Edit Profile</button>
+        </div>
+        <div id="clientProfileView"></div>
       </div>
     </div>
   </div>
@@ -302,81 +388,62 @@ button:disabled { opacity:0.5; cursor:not-allowed; }
   <div class="card admin-panel">
     <span class="badge admin-badge">⚙️ admin portal</span>
     <h2>Trainer dashboard</h2>
-    <div class="subhead admin-subhead">Manage clients, exercises, sessions & payments</div>
+    <div class="subhead admin-subhead">Manage clients, exercises, sessions & progress</div>
     <div id="cloudStatusAdmin" class="cloud-status"><div class="dot"></div><span id="cloudStatusAdminText">Checking cloud...</span></div>
 
     <div id="adminLoginBlock">
       <div class="input-group">
         <label for="adminLoginId">Admin Login ID</label>
-        <input type="text" id="adminLoginId" placeholder="Enter admin ID" autocomplete="off">
+        <input type="text" id="adminLoginId" placeholder="Login ID" autocomplete="off">
       </div>
       <div class="input-group">
         <label for="adminMasterPassword">Admin Password</label>
-        <input type="password" id="adminMasterPassword" placeholder="Enter password">
-        <div style="font-size:0.72rem; color:#7a8f9e; margin-top:0.3rem;">Default: <span class="client-credentials-preview">TAS-Abhi</span> / <span class="client-credentials-preview">Abhu@1818</span></div>
+        <input type="password" id="adminMasterPassword" placeholder="Password" autocomplete="off">
       </div>
-      <button class="btn-admin" id="adminLoginBtn" style="width:100%;">Unlock admin panel</button>
+      <button class="btn-admin" id="adminLoginBtn" style="width:100%;">Unlock</button>
       <div id="adminAuthStatus" class="status-msg"></div>
     </div>
 
     <div id="adminContent" class="hidden">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.8rem; flex-wrap:wrap; gap:0.5rem;">
-        <span style="font-weight:600; color:#1f4e3d;">✔️ Admin mode (<span id="adminDisplayId">—</span>)</span>
-        <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
-          <button class="btn-exercise" id="exerciseLibraryBtn">🏋️ Exercise Library</button>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.8rem;flex-wrap:wrap;gap:0.5rem;">
+        <span style="font-weight:600;color:#1f4e3d;">✔️ Admin (<span id="adminDisplayId">—</span>)</span>
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+          <button class="btn-exercise" id="exerciseLibraryBtn">🏋️ Library</button>
           <button class="btn-settings" id="openSettingsBtn">⚙️ Settings</button>
           <button class="btn-secondary" id="adminLockBtn">Lock</button>
         </div>
       </div>
 
-      <!-- SETTINGS -->
       <div id="settingsPanel" class="settings-panel hidden">
         <h4>⚙️ Admin Settings</h4>
         <div class="flex-row">
-          <div class="input-group">
-            <label for="settingsLoginId">Admin Login ID</label>
-            <input type="text" id="settingsLoginId" placeholder="TAS-Abhi">
-          </div>
+          <div class="input-group"><label for="settingsLoginId">Admin Login ID</label><input type="text" id="settingsLoginId"></div>
           <div class="input-group">
             <label for="settingsCurrentPassword">Current password</label>
-            <div class="password-input-wrapper">
-              <input type="password" id="settingsCurrentPassword" placeholder="Enter current">
-              <button class="password-toggle" data-target="settingsCurrentPassword">👁️</button>
-            </div>
+            <div class="password-input-wrapper"><input type="password" id="settingsCurrentPassword"><button class="password-toggle" data-target="settingsCurrentPassword">👁️</button></div>
           </div>
         </div>
         <div class="flex-row">
           <div class="input-group">
             <label for="settingsNewPassword">New password</label>
-            <div class="password-input-wrapper">
-              <input type="password" id="settingsNewPassword" placeholder="Min 4 chars">
-              <button class="password-toggle" data-target="settingsNewPassword">👁️</button>
-            </div>
+            <div class="password-input-wrapper"><input type="password" id="settingsNewPassword"><button class="password-toggle" data-target="settingsNewPassword">👁️</button></div>
           </div>
           <div class="input-group">
-            <label for="settingsConfirmPassword">Confirm new password</label>
-            <div class="password-input-wrapper">
-              <input type="password" id="settingsConfirmPassword" placeholder="Repeat">
-              <button class="password-toggle" data-target="settingsConfirmPassword">👁️</button>
-            </div>
+            <label for="settingsConfirmPassword">Confirm password</label>
+            <div class="password-input-wrapper"><input type="password" id="settingsConfirmPassword"><button class="password-toggle" data-target="settingsConfirmPassword">👁️</button></div>
           </div>
         </div>
-        <div class="input-group" style="margin-top:0.8rem;">
-          <label for="settingsArchiveEmail">Archive email</label>
-          <input type="email" id="settingsArchiveEmail" placeholder="you@example.com">
-        </div>
+        <div class="input-group"><label for="settingsArchiveEmail">Archive email</label><input type="email" id="settingsArchiveEmail"></div>
         <button class="btn-save-settings" id="saveSettingsBtn">💾 Save Settings</button>
         <div id="settingsStatus" class="status-msg"></div>
-
         <div class="danger-panel">
           <h4>🚨 Danger Zone — Clear All Data</h4>
-          <p>Permanently delete ALL clients, sessions, exercises, and logs from the cloud. Database schema stays intact. Cannot be undone.</p>
+          <p>Permanently delete ALL clients, sessions, exercises, and logs. Cannot be undone.</p>
           <button class="btn-clear-all" id="clearAllBtn">🗑️ Clear All Data From Cloud</button>
         </div>
       </div>
 
-      <!-- EXERCISE LIBRARY -->
-      <div id="libraryPanel" class="settings-panel hidden" style="background:linear-gradient(135deg,#e3f2fd,#bbdefb); border-color:#64b5f6;">
+      <div id="libraryPanel" class="settings-panel hidden" style="background:linear-gradient(135deg,#e3f2fd,#bbdefb);border-color:#64b5f6;">
         <h4 style="color:#0d47a1;">🏋️ Exercise Library</h4>
         <button class="btn-exercise" id="addExerciseBtn">➕ Add New Exercise</button>
         <div id="libraryList" class="library-list" style="margin-top:1rem;"></div>
@@ -384,7 +451,7 @@ button:disabled { opacity:0.5; cursor:not-allowed; }
       </div>
 
       <div class="global-settings">
-        <div class="global-settings-title">📢 Send "schedule updated" broadcast to all active clients (not saved to cloud)</div>
+        <div class="global-settings-title">📢 Send "schedule updated" broadcast (includes login ID + password)</div>
         <button class="btn-send-all" id="sendAllBtn">Send Broadcast to All Active Clients</button>
       </div>
       <div id="sendAllStatus" class="status-msg"></div>
@@ -397,16 +464,22 @@ button:disabled { opacity:0.5; cursor:not-allowed; }
       <div class="admin-section-title">➕ Create new client</div>
       <div class="flex-row">
         <div class="input-group" style="flex:2;"><label for="newClientName">Full name</label><input type="text" id="newClientName" placeholder="Alex Rivera"></div>
-        <div class="input-group" style="flex:2;"><label for="newClientEmail">Email</label><input type="email" id="newClientEmail" placeholder="alex@fit.com"></div>
+        <div class="input-group" style="flex:2;"><label for="newClientPhone">WhatsApp (country code, no +)</label><input type="text" id="newClientPhone" placeholder="919876543210"></div>
       </div>
       <div class="flex-row">
-        <div class="input-group" style="flex:2;"><label for="newClientPhone">WhatsApp (country code, no +)</label><input type="text" id="newClientPhone" placeholder="919876543210"></div>
-        <div class="input-group" style="flex:2;"><label for="newClientPassword">Client password</label><input type="text" id="newClientPassword" placeholder="Set password"></div>
-        <div class="input-group" style="flex:1; display:flex; align-items:flex-end; margin-bottom:1.2rem;">
+        <div class="input-group" style="flex:2;"><label for="newClientEmail">Email (optional)</label><input type="email" id="newClientEmail" placeholder="alex@fit.com"></div>
+        <div class="input-group" style="flex:2;"><label for="newClientTime">Class time</label><input type="time" id="newClientTime" value="07:00"></div>
+        <div class="input-group" style="flex:2;"><label for="newClientRate">Rate (AED)</label><input type="number" id="newClientRate" value="200" min="1"></div>
+        <div class="input-group" style="flex:1;display:flex;align-items:flex-end;margin-bottom:1.2rem;">
           <button class="btn-admin" id="createClientBtn" style="width:100%;">Create</button>
         </div>
       </div>
       <div id="createClientStatus" class="status-msg"></div>
+      <div id="newClientCredsBox" class="credentials-box hidden">
+        <div style="font-weight:700;color:#1f4e3d;font-size:0.9rem;margin-bottom:0.5rem;">✅ Client Created — Share These Credentials</div>
+        <div class="row"><span class="label">Login ID</span><span class="value" id="newClientCredsLogin">—</span></div>
+        <div class="row"><span class="label">Password</span><span class="value" id="newClientCredsPass">—</span></div>
+      </div>
 
       <div class="admin-section-title">📋 Client list</div>
       <div id="clientListContainer" class="client-list"><div class="empty-message">Loading...</div></div>
@@ -420,6 +493,12 @@ button:disabled { opacity:0.5; cursor:not-allowed; }
           <div class="client-header-rate">💵 Rate (AED): <input type="number" id="ratePerSession" class="rate-input" value="200" min="1"></div>
         </div>
 
+        <div class="credentials-box">
+          <div style="font-weight:700;color:#1f4e3d;font-size:0.9rem;margin-bottom:0.5rem;">🔑 Client Credentials</div>
+          <div class="row"><span class="label">Login ID</span><span class="value" id="detailClientLogin">—</span></div>
+          <div class="row"><span class="label">Password</span><span class="value" id="detailClientPass">—</span></div>
+        </div>
+
         <div id="closedClientBanner" class="hidden closed-client-banner">
           <div>
             <div class="closed-client-banner-text">🔒 This client is CLOSED</div>
@@ -428,33 +507,32 @@ button:disabled { opacity:0.5; cursor:not-allowed; }
           <button class="btn-reopen" id="reopenClientBtn">🔓 Reopen</button>
         </div>
 
-        <div id="closeClientBar" style="margin-bottom:1.4rem; display:flex; justify-content:flex-end;">
+        <div id="closeClientBar" style="margin-bottom:1.4rem;display:flex;justify-content:flex-end;gap:0.5rem;flex-wrap:wrap;">
+          <button class="btn-secondary" id="deleteClientBtn">🗑️ Delete Permanently</button>
           <button class="btn-danger" id="closeClientBtn">🔒 Close Client</button>
         </div>
 
         <div class="tabs-bar">
-          <button class="tab-btn active" data-tab="reminder">📨 Reminder</button>
-          <button class="tab-btn" data-tab="tracker">📊 Sessions & Payments</button>
-          <button class="tab-btn" data-tab="plan">🏋️ Exercise Plan</button>
+          <button class="tab-btn active" data-tab="reminder">📨 Message</button>
+          <button class="tab-btn" data-tab="tracker">📊 Sessions</button>
+          <button class="tab-btn" data-tab="plan">🏋️ Exercises</button>
+          <button class="tab-btn" data-tab="progress">📈 Progress</button>
         </div>
 
         <div class="tab-content" id="tab-reminder">
           <div class="reminder-section">
-            <h4>📨 Send reminder to <span id="reminderClientNameInline">—</span></h4>
-            <div style="font-size:0.78rem; color:#1f4e3d; margin-bottom:0.6rem; background:#ffffffaa; padding:0.4rem 0.8rem; border-radius:0.7rem; display:inline-block;">
-              📱 Will be sent to: <span id="reminderPhoneDisplay" style="font-family:monospace; font-weight:700;">—</span>
+            <h4>📨 Personal message to <span id="reminderClientNameInline">—</span></h4>
+            <div style="font-size:0.78rem;color:#1f4e3d;margin-bottom:0.6rem;background:#ffffffaa;padding:0.4rem 0.8rem;border-radius:0.7rem;display:inline-block;">
+              📱 Sending to: <span id="reminderPhoneDisplay" style="font-family:monospace;font-weight:700;">—</span>
             </div>
-            <div class="input-group">
-              <label for="reminderNote">Note (optional — included in message)</label>
-              <input type="text" id="reminderNote" placeholder="Optional note" value="">
-            </div>
+            <div class="input-group"><label for="reminderNote">Personal note (optional)</label><input type="text" id="reminderNote" placeholder="Optional personal note" value=""></div>
             <div class="reminder-preview" id="reminderPreview"><strong>Preview:</strong> <span id="reminderPreviewText">—</span></div>
             <div class="action-buttons">
-              <button class="btn-whatsapp" id="sendWhatsappBtn">📱 Send via WhatsApp</button>
-              <button class="btn-email" id="sendEmailBtn">✉️ Send via Email</button>
+              <button class="btn-whatsapp" id="sendWhatsappBtn">📱 Send WhatsApp</button>
+              <button class="btn-email" id="sendEmailBtn">✉️ Send Email</button>
             </div>
             <div id="reminderStatus" class="status-msg"></div>
-            <div class="small-note">💡 This message is NOT saved to the cloud — it opens directly in WhatsApp/Email.</div>
+            <div class="small-note">💡 Message includes this client's login ID & password. Not saved to cloud.</div>
           </div>
         </div>
 
@@ -472,7 +550,7 @@ button:disabled { opacity:0.5; cursor:not-allowed; }
           <div id="sessionsGridContainer"></div>
           <div class="summary-box">
             <div>
-              <div class="summary-text">✅ Completed sessions: <span id="summaryDoneCount">0</span></div>
+              <div class="summary-text">✅ Completed: <span id="summaryDoneCount">0</span></div>
               <div class="summary-text" style="font-size:0.85rem;">Rate: <strong>AED <span id="summaryRate">200</span></strong></div>
             </div>
             <div>
@@ -482,40 +560,44 @@ button:disabled { opacity:0.5; cursor:not-allowed; }
           </div>
           <div id="dailyWorkoutPanel" class="daily-workout-panel hidden">
             <h4>📝 Workout Log — <span id="dailyWorkoutDate">—</span></h4>
-            <div class="subtitle">Select an exercise from the plan, then fill the fields.</div>
-            <div class="input-group"><label for="dailyExerciseSelect">🏋️ Add exercise from plan</label>
-              <select id="dailyExerciseSelect"><option value="">— Select an exercise —</option></select>
+            <div class="subtitle">Select an exercise from the plan, then fill fields.</div>
+            <div class="input-group"><label for="dailyExerciseSelect">🏋️ Add exercise</label>
+              <select id="dailyExerciseSelect"><option value="">— Select —</option></select>
             </div>
             <div id="dailyExerciseEntries"></div>
           </div>
         </div>
 
         <div class="tab-content hidden" id="tab-plan">
-          <div class="reminder-section" style="background:linear-gradient(135deg,#e3f2fd,#bbdefb); border-color:#64b5f6;">
-            <h4 style="color:#0d47a1;">🏋️ Assign exercises to this client</h4>
-            <div style="font-size:0.82rem; color:#0d47a1; margin-bottom:1rem; background:#ffffffaa; padding:0.5rem 0.8rem; border-radius:0.7rem;">
-              ✅ Check the exercises this client should do. Customize reps/weight below each.
-            </div>
+          <div class="reminder-section" style="background:linear-gradient(135deg,#e3f2fd,#bbdefb);border-color:#64b5f6;">
+            <h4 style="color:#0d47a1;">🏋️ Assign exercises</h4>
             <div id="assignList" class="assign-list"><div class="empty-message">Loading...</div></div>
             <div id="assignStatus" class="status-msg"></div>
           </div>
         </div>
+
+        <div class="tab-content hidden" id="tab-progress">
+          <div class="reminder-section" style="background:linear-gradient(135deg,#f3e5f5,#ede7f6);border-color:#ce93d8;">
+            <h4 style="color:#6a1b9a;">📈 Client Progress</h4>
+            <button class="btn-green-small btn-small" id="adminAddProgressBtn" style="margin-bottom:0.8rem;">➕ Add Entry (as Admin)</button>
+            <div id="adminProgressList" class="progress-list"></div>
+          </div>
+        </div>
       </div>
 
-      <div id="noClientSelectedMsg" style="margin-top:1.5rem; color:#7893a8; font-style:italic; text-align:center; padding:1rem;">
-        👆 Select a client above to manage their plan, sessions, and reminders.
+      <div id="noClientSelectedMsg" style="margin-top:1.5rem;color:#7893a8;font-style:italic;text-align:center;padding:1rem;">
+        👆 Select a client above to manage.
       </div>
     </div>
   </div>
 </div>
 
 <script>
-// ============ YOUR SUPABASE CONFIG ============
+// ============ SUPABASE ============
 const SUPABASE_URL = 'https://tacgfjxutmdpcatztcpu.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRhY2dmanh1dG1kcGNhdHp0Y3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk4OTEwOTYsImV4cCI6MjEwNTQ2NzA5Nn0.FpqZOgvf6ATllwPPMFLAkz_3HvexD4aztFQTY-FgQZw';
 const CURRENCY = 'AED';
 const CURRENT_YEAR = new Date().getFullYear();
-
 const DEFAULT_ADMIN_ID = 'TAS-Abhi';
 const DEFAULT_ADMIN_PW = 'Abhu@1818';
 
@@ -523,14 +605,18 @@ let adminConfig = { admin_login_id: DEFAULT_ADMIN_ID, admin_password: DEFAULT_AD
 let supabaseClient = null;
 let clients = [];
 let clientSettings = {};
+let clientProfiles = {};
+let progressEntries = {};   // clientId -> [entries]
 let sessionCache = {};
 let exercises = [];
 let clientExercisesCache = {};
 let workoutLogsCache = {};
 let selectedClientId = null;
+let selectedClientForProgress = null;
 let selectedMonth = new Date().getMonth();
 let selectedDay = null;
 let archiveDataPending = null;
+let pendingDeleteClientId = null;
 
 const $ = (id) => document.getElementById(id);
 const escapeHtml = (t) => { const d = document.createElement('div'); d.textContent = t ?? ''; return d.innerHTML; };
@@ -542,17 +628,16 @@ function showStatus(el, msg, type = 'error') {
   if (type === 'success') el.classList.add('status-success');
   else if (type === 'error') el.classList.add('status-error');
   else if (type === 'info') el.classList.add('status-info');
-  if (type !== 'info') setTimeout(() => { if (el.textContent === msg) { el.textContent = ''; el.className = 'status-msg'; } }, 5000);
+  if (type !== 'info') setTimeout(() => { if (el.textContent === msg) { el.textContent=''; el.className='status-msg'; } }, 5000);
 }
-const clearStatus = (el) => { if (el) { el.textContent = ''; el.className = 'status-msg'; } };
+const clearStatus = (el) => { if (el) { el.textContent=''; el.className='status-msg'; } };
 
 function setCloudStatus(online) {
   ['cloudStatusClient','cloudStatusAdmin'].forEach(id => {
-    const el = $(id);
-    if (!el) return;
+    const el = $(id); if (!el) return;
     el.classList.toggle('online', online);
   });
-  const txt = online ? '☁️ Connected to Supabase' : '⚠️ Offline';
+  const txt = online ? '☁️ Connected' : '⚠️ Offline';
   $('cloudStatusClientText').textContent = txt;
   $('cloudStatusAdminText').textContent = txt;
 }
@@ -570,6 +655,29 @@ const getClientTime = (id) => clientSettings[id]?.class_time || '07:00';
 const getSessions = (cid,y,m) => sessionCache[getSessionCacheKey(cid,y,m)] || [];
 const getExercise = (id) => exercises.find(e => e.id === id);
 
+// ==== AUTO-GENERATE LOGIN ID & PASSWORD ====
+function generateLoginId(name, phone) {
+  const first = (name || 'user').split(' ')[0].toUpperCase().replace(/[^A-Z]/g, '').slice(0, 8) || 'USER';
+  const digits = (phone || '').replace(/\D/g, '');
+  const last4 = digits.slice(-4) || String(Math.floor(1000 + Math.random() * 9000));
+  let base = `${first}-${last4}`;
+  let candidate = base;
+  let n = 1;
+  while (clients.some(c => c.login_id === candidate)) {
+    candidate = `${base}-${n++}`;
+  }
+  return candidate;
+}
+
+function generatePassword(name) {
+  const first = (name || 'X').trim()[0].toUpperCase();
+  const last = (name || 'X').trim().split(' ').pop()[0].toUpperCase() || 'Z';
+  const num = Math.floor(1000 + Math.random() * 9000);
+  const symbols = ['@', '#', '$', '!'];
+  const sym = symbols[Math.floor(Math.random() * symbols.length)];
+  return `${first}${last}${sym}${num}`;
+}
+
 // ============ INIT ============
 async function initSupabase() {
   try {
@@ -584,38 +692,45 @@ async function initSupabase() {
   } catch (err) {
     console.error('Init failed:', err);
     setCloudStatus(false);
-    showStatus($('adminAuthStatus'), '⚠️ Cloud unavailable: ' + err.message, 'error');
+    showStatus($('adminAuthStatus'), '⚠️ ' + err.message, 'error');
   }
 }
 
 async function loadAdminConfig() {
-  const { data, error } = await supabaseClient.from('admin_config').select('*').eq('id', 1).single();
+  const { data, error } = await supabaseClient.from('admin_config').select('*').eq('id',1).single();
   if (!error && data) adminConfig = { ...adminConfig, ...data };
 }
 
 async function loadAllData() {
-  const { data: cd } = await supabaseClient.from('clients').select('*').order('created_at', { ascending: true });
+  const { data: cd } = await supabaseClient.from('clients').select('*').order('created_at',{ascending:true});
   clients = cd || [];
   const { data: sd } = await supabaseClient.from('client_settings').select('*');
-  clientSettings = {}; (sd || []).forEach(s => { clientSettings[s.client_id] = s; });
+  clientSettings = {}; (sd||[]).forEach(s => { clientSettings[s.client_id] = s; });
+  const { data: pd } = await supabaseClient.from('client_profiles').select('*');
+  clientProfiles = {}; (pd||[]).forEach(p => { clientProfiles[p.client_id] = p; });
+  const { data: pr } = await supabaseClient.from('progress_entries').select('*').order('entry_date',{ascending:false});
+  progressEntries = {}; (pr||[]).forEach(p => {
+    if (!progressEntries[p.client_id]) progressEntries[p.client_id] = [];
+    progressEntries[p.client_id].push(p);
+  });
   const { data: sess } = await supabaseClient.from('sessions').select('*')
-    .gte('session_date', `${CURRENT_YEAR}-01-01`).lte('session_date', `${CURRENT_YEAR}-12-31`);
+    .gte('session_date',`${CURRENT_YEAR}-01-01`).lte('session_date',`${CURRENT_YEAR}-12-31`);
   sessionCache = {};
-  (sess || []).forEach(s => {
+  (sess||[]).forEach(s => {
     const d = new Date(s.session_date);
-    const k = getSessionCacheKey(s.client_id, d.getFullYear(), d.getMonth());
+    const k = getSessionCacheKey(s.client_id,d.getFullYear(),d.getMonth());
     if (!sessionCache[k]) sessionCache[k] = [];
     sessionCache[k].push({ day: d.getDate(), checked_at: s.checked_at });
   });
-  const { data: ex } = await supabaseClient.from('exercises').select('*').order('name', { ascending: true });
+  const { data: ex } = await supabaseClient.from('exercises').select('*').order('name',{ascending:true});
   exercises = ex || [];
   const { data: ce } = await supabaseClient.from('client_exercises').select('*');
   clientExercisesCache = {};
-  (ce || []).forEach(a => { if (!clientExercisesCache[a.client_id]) clientExercisesCache[a.client_id] = []; clientExercisesCache[a.client_id].push(a); });
+  (ce||[]).forEach(a => { if (!clientExercisesCache[a.client_id]) clientExercisesCache[a.client_id]=[]; clientExercisesCache[a.client_id].push(a); });
   const { data: wl } = await supabaseClient.from('workout_logs').select('*')
-    .gte('session_date', `${CURRENT_YEAR}-01-01`).lte('session_date', `${CURRENT_YEAR}-12-31`);
+    .gte('session_date',`${CURRENT_YEAR}-01-01`).lte('session_date',`${CURRENT_YEAR}-12-31`);
   workoutLogsCache = {};
-  (wl || []).forEach(w => {
+  (wl||[]).forEach(w => {
     const k = `${w.client_id}-${w.session_date}`;
     if (!workoutLogsCache[k]) workoutLogsCache[k] = [];
     workoutLogsCache[k].push(w);
@@ -635,13 +750,13 @@ function renderClientList() {
     html += `<div class="client-item ${selectedClientId === c.id ? 'active-client' : ''} ${isClosed ? 'closed-client' : ''}" data-client-id="${c.id}">
       <div class="client-info">
         <span class="client-name">${escapeHtml(c.name)}</span>
-        <span class="client-email">${escapeHtml(c.email)} · ${CURRENCY} ${rate}/session</span>
+        <span class="client-email">${escapeHtml(c.email || '—')} · ${CURRENCY} ${rate}/session</span>
       </div>
       <div class="client-badges">
         ${isClosed ? `<span class="client-status-badge-closed">Closed</span>` :
-          `<span class="client-time-badge">⏰ ${formatClassTime12(time)}</span>
+          `<span class="client-login-badge">🆔 ${escapeHtml(c.login_id)}</span>
+           <span class="client-time-badge">⏰ ${formatClassTime12(time)}</span>
            <span class="client-phone-badge">📱 ${escapeHtml(c.phone||'—')}</span>`}
-        <span class="client-pass-badge">🔑 ${escapeHtml(c.password_hint||'•••')}</span>
       </div>
     </div>`;
   });
@@ -677,6 +792,8 @@ function selectClient(clientId) {
   $('clientDetailPanel').classList.remove('hidden');
   $('noClientSelectedMsg').classList.add('hidden');
   $('detailClientName').textContent = c.name;
+  $('detailClientLogin').textContent = c.login_id;
+  $('detailClientPass').textContent = c.password_hint;
   $('reminderClientNameInline').textContent = c.name;
   $('reminderPhoneDisplay').textContent = c.phone || '—';
   $('ratePerSession').value = getRate(clientId);
@@ -687,6 +804,7 @@ function selectClient(clientId) {
   document.querySelectorAll('.tab-content').forEach(t => t.classList.toggle('hidden', t.id !== 'tab-reminder'));
   renderSessions();
   renderAssignList();
+  renderAdminProgress();
   updateReminderPreview();
 }
 
@@ -698,11 +816,18 @@ function updateClientStatusUI(c) {
 }
 
 // ============ TABS ============
-document.querySelectorAll('.tab-btn').forEach(btn => {
+document.querySelectorAll('.tab-btn[data-tab]').forEach(btn => {
   btn.addEventListener('click', () => {
     const tab = btn.dataset.tab;
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b === btn));
-    document.querySelectorAll('.tab-content').forEach(t => t.classList.toggle('hidden', t.id !== `tab-${tab}`));
+    document.querySelectorAll('.tab-btn[data-tab]').forEach(b => b.classList.toggle('active', b === btn));
+    document.querySelectorAll('.tab-content[id^="tab-"]').forEach(t => t.classList.toggle('hidden', t.id !== `tab-${tab}`));
+  });
+});
+document.querySelectorAll('.tab-btn[data-ctab]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const tab = btn.dataset.ctab;
+    document.querySelectorAll('.tab-btn[data-ctab]').forEach(b => b.classList.toggle('active', b === btn));
+    document.querySelectorAll('.tab-content[id^="ctab-"]').forEach(t => t.classList.toggle('hidden', t.id !== `ctab-${tab}`));
   });
 });
 
@@ -721,7 +846,7 @@ function renderSessions() {
   let html = '';
   for (let day = 1; day <= daysInMonth; day++) {
     const isDone = doneDays.includes(day);
-    const dow = new Date(y, m, day).toLocaleDateString('en-US', { weekday: 'short' });
+    const dow = new Date(y, m, day).toLocaleDateString('en-US',{weekday:'short'});
     const amount = isDone ? rate : 0;
     const td = checkedTimes[day] ? formatTime12(checkedTimes[day]) : '';
     const isSel = selectedDay === day;
@@ -738,7 +863,7 @@ function renderSessions() {
   document.querySelectorAll('.session-checkbox').forEach(cb => {
     cb.addEventListener('click', async (e) => {
       e.stopPropagation();
-      await toggleSession(selectedClientId, y, m, parseInt(cb.dataset.day, 10), cb.checked);
+      await toggleSession(selectedClientId, y, m, parseInt(cb.dataset.day,10), cb.checked);
     });
   });
   document.querySelectorAll('.session-card').forEach(card => {
@@ -754,7 +879,7 @@ async function toggleSession(cid, y, m, day, checked) {
   const key = getSessionCacheKey(cid, y, m);
   try {
     if (checked) {
-      const { error } = await supabaseClient.from('sessions').upsert({ client_id: cid, session_date: dateStr, checked_at: new Date().toISOString() }, { onConflict: 'client_id,session_date' });
+      const { error } = await supabaseClient.from('sessions').upsert({ client_id: cid, session_date: dateStr, checked_at: new Date().toISOString() },{onConflict:'client_id,session_date'});
       if (error) throw error;
       if (!sessionCache[key]) sessionCache[key] = [];
       sessionCache[key] = sessionCache[key].filter(s => s.day !== day);
@@ -765,7 +890,7 @@ async function toggleSession(cid, y, m, day, checked) {
       if (sessionCache[key]) sessionCache[key] = sessionCache[key].filter(s => s.day !== day);
     }
     renderSessions();
-  } catch (err) { console.error(err); alert('⚠️ Save failed: ' + err.message); renderSessions(); }
+  } catch (err) { console.error(err); alert('Save failed: ' + err.message); renderSessions(); }
 }
 
 // ============ DAILY WORKOUT ============
@@ -777,8 +902,8 @@ function openDailyWorkout(day) {
   $('dailyWorkoutDate').textContent = formatDateReadable(y, m, day);
   renderSessions();
   const assigned = clientExercisesCache[selectedClientId] || [];
-  const usedIds = new Set((workoutLogsCache[`${selectedClientId}-${dateStr}`] || []).map(w => w.exercise_id));
-  let opts = '<option value="">— Select an exercise —</option>';
+  const usedIds = new Set((workoutLogsCache[`${selectedClientId}-${dateStr}`]||[]).map(w => w.exercise_id));
+  let opts = '<option value="">— Select —</option>';
   assigned.forEach(a => {
     const ex = getExercise(a.exercise_id);
     if (!ex || usedIds.has(a.exercise_id)) return;
@@ -791,7 +916,7 @@ function openDailyWorkout(day) {
 function renderDailyEntries(dateStr, assigned) {
   const logs = workoutLogsCache[`${selectedClientId}-${dateStr}`] || [];
   if (logs.length === 0) {
-    $('dailyExerciseEntries').innerHTML = `<div style="padding:1rem;text-align:center;color:#8d6e00;font-size:0.85rem;font-style:italic;">No exercises logged yet. Select one above.</div>`;
+    $('dailyExerciseEntries').innerHTML = `<div style="padding:1rem;text-align:center;color:#8d6e00;font-size:0.85rem;font-style:italic;">No exercises logged yet.</div>`;
     return;
   }
   let html = '';
@@ -803,17 +928,17 @@ function renderDailyEntries(dateStr, assigned) {
       <div class="exercise-entry-header">
         <div>
           <div class="exercise-entry-name">${escapeHtml(ex.name)}</div>
-          <div class="exercise-entry-meta">Plan: ${a.custom_sets || ex.default_sets || '-'} × ${a.custom_reps || ex.default_reps || '-'}${(a.custom_weight || ex.default_weight) ? ' · ' + (a.custom_weight || ex.default_weight) : ''}</div>
+          <div class="exercise-entry-meta">Plan: ${a.custom_sets||ex.default_sets||'-'} × ${a.custom_reps||ex.default_reps||'-'}${(a.custom_weight||ex.default_weight)?' · '+(a.custom_weight||ex.default_weight):''}</div>
         </div>
-        <button class="btn-danger-small btn-small remove-log-btn" data-exercise-id="${ex.id}">✖ Remove</button>
+        <button class="btn-danger-small btn-small remove-log-btn" data-exercise-id="${ex.id}">✖</button>
       </div>
       <div class="exercise-entry-fields">
-        <div class="field"><label>Sets</label><input type="number" class="log-field" data-field="sets_done" value="${log.sets_done || ''}" placeholder="${a.custom_sets || ex.default_sets || ''}"></div>
-        <div class="field"><label>Reps</label><input type="text" class="log-field" data-field="reps_done" value="${escapeHtml(log.reps_done || '')}" placeholder="${escapeHtml(a.custom_reps || ex.default_reps || '')}"></div>
-        <div class="field"><label>Weight</label><input type="text" class="log-field" data-field="weight_done" value="${escapeHtml(log.weight_done || '')}" placeholder="${escapeHtml(a.custom_weight || ex.default_weight || '')}"></div>
-        <div class="field"><label>Rest</label><input type="text" class="log-field" data-field="rest_done" value="${escapeHtml(log.rest_done || '')}" placeholder="${escapeHtml(a.custom_rest || ex.default_rest || '')}"></div>
+        <div class="field"><label>Sets</label><input type="number" class="log-field" data-field="sets_done" value="${log.sets_done||''}" placeholder="${a.custom_sets||ex.default_sets||''}"></div>
+        <div class="field"><label>Reps</label><input type="text" class="log-field" data-field="reps_done" value="${escapeHtml(log.reps_done||'')}" placeholder="${escapeHtml(a.custom_reps||ex.default_reps||'')}"></div>
+        <div class="field"><label>Weight</label><input type="text" class="log-field" data-field="weight_done" value="${escapeHtml(log.weight_done||'')}" placeholder="${escapeHtml(a.custom_weight||ex.default_weight||'')}"></div>
+        <div class="field"><label>Rest</label><input type="text" class="log-field" data-field="rest_done" value="${escapeHtml(log.rest_done||'')}" placeholder="${escapeHtml(a.custom_rest||ex.default_rest||'')}"></div>
       </div>
-      <div class="exercise-notes-row"><input type="text" class="log-field" data-field="notes" value="${escapeHtml(log.notes || '')}" placeholder="Notes"></div>
+      <div class="exercise-notes-row"><input type="text" class="log-field" data-field="notes" value="${escapeHtml(log.notes||'')}" placeholder="Notes"></div>
     </div>`;
   });
   $('dailyExerciseEntries').innerHTML = html;
@@ -825,7 +950,7 @@ function renderDailyEntries(dateStr, assigned) {
   });
   document.querySelectorAll('.remove-log-btn').forEach(btn => {
     btn.addEventListener('click', async () => {
-      if (!confirm('Remove this exercise from log?')) return;
+      if (!confirm('Remove?')) return;
       await removeWorkoutLog(dateStr, btn.dataset.exerciseId);
     });
   });
@@ -836,7 +961,7 @@ $('dailyExerciseSelect').addEventListener('change', async (e) => {
   if (!exId || !selectedDay) return;
   const y = CURRENT_YEAR, m = selectedMonth;
   const dateStr = formatDateISO(y, m, selectedDay);
-  const a = (clientExercisesCache[selectedClientId] || []).find(x => x.exercise_id === exId);
+  const a = (clientExercisesCache[selectedClientId]||[]).find(x => x.exercise_id === exId);
   const ex = getExercise(exId);
   const payload = {
     client_id: selectedClientId, session_date: dateStr, exercise_id: exId,
@@ -847,7 +972,7 @@ $('dailyExerciseSelect').addEventListener('change', async (e) => {
     notes: null
   };
   try {
-    const { error } = await supabaseClient.from('workout_logs').upsert(payload, { onConflict: 'client_id,session_date,exercise_id' });
+    const { error } = await supabaseClient.from('workout_logs').upsert(payload,{onConflict:'client_id,session_date,exercise_id'});
     if (error) throw error;
     const k = `${selectedClientId}-${dateStr}`;
     if (!workoutLogsCache[k]) workoutLogsCache[k] = [];
@@ -860,10 +985,10 @@ $('dailyExerciseSelect').addEventListener('change', async (e) => {
 
 async function saveWorkoutLogField(dateStr, exId, field, val) {
   try {
-    await supabaseClient.from('workout_logs').update({ [field]: val || null })
+    await supabaseClient.from('workout_logs').update({ [field]: val||null })
       .eq('client_id', selectedClientId).eq('session_date', dateStr).eq('exercise_id', exId);
     const k = `${selectedClientId}-${dateStr}`;
-    const log = (workoutLogsCache[k] || []).find(w => w.exercise_id === exId);
+    const log = (workoutLogsCache[k]||[]).find(w => w.exercise_id === exId);
     if (log) log[field] = val || null;
   } catch (err) { console.error(err); }
 }
@@ -878,12 +1003,12 @@ async function removeWorkoutLog(dateStr, exId) {
   } catch (err) { console.error(err); }
 }
 
-// ============ ASSIGN EXERCISES ============
+// ============ ASSIGN ============
 function renderAssignList() {
   if (!selectedClientId) return;
   const assigned = clientExercisesCache[selectedClientId] || [];
   const map = {}; assigned.forEach(a => { map[a.exercise_id] = a; });
-  if (exercises.length === 0) { $('assignList').innerHTML = `<div class="empty-message">No exercises in library.</div>`; return; }
+  if (exercises.length === 0) { $('assignList').innerHTML = `<div class="empty-message">No exercises.</div>`; return; }
   let html = '';
   exercises.forEach(ex => {
     const sel = !!map[ex.id];
@@ -893,14 +1018,14 @@ function renderAssignList() {
         <input type="checkbox" class="assign-checkbox" data-ex-id="${ex.id}" ${sel ? 'checked' : ''}>
         <div style="flex:1;">
           <div class="assign-row-name">${escapeHtml(ex.name)}</div>
-          <div class="assign-row-meta">${ex.category ? escapeHtml(ex.category)+' · ' : ''}${ex.muscle_group ? escapeHtml(ex.muscle_group)+' · ' : ''}Default: ${ex.default_sets||'-'} × ${ex.default_reps||'-'}${ex.default_weight ? ' · '+escapeHtml(ex.default_weight) : ''}</div>
+          <div class="assign-row-meta">${ex.category?escapeHtml(ex.category)+' · ':''}${ex.default_sets||'-'} × ${ex.default_reps||'-'}</div>
         </div>
       </div>
       ${sel ? `<div class="assign-custom-fields">
-        <div class="field"><label>Sets</label><input type="number" class="assign-field" data-ex-id="${ex.id}" data-field="custom_sets" value="${a.custom_sets ?? ''}" placeholder="${ex.default_sets||''}"></div>
-        <div class="field"><label>Reps</label><input type="text" class="assign-field" data-ex-id="${ex.id}" data-field="custom_reps" value="${escapeHtml(a.custom_reps||'')}" placeholder="${escapeHtml(ex.default_reps||'')}"></div>
-        <div class="field"><label>Weight</label><input type="text" class="assign-field" data-ex-id="${ex.id}" data-field="custom_weight" value="${escapeHtml(a.custom_weight||'')}" placeholder="${escapeHtml(ex.default_weight||'')}"></div>
-        <div class="field"><label>Rest</label><input type="text" class="assign-field" data-ex-id="${ex.id}" data-field="custom_rest" value="${escapeHtml(a.custom_rest||'')}" placeholder="${escapeHtml(ex.default_rest||'')}"></div>
+        <div class="field"><label>Sets</label><input type="number" class="assign-field" data-ex-id="${ex.id}" data-field="custom_sets" value="${a.custom_sets ?? ''}"></div>
+        <div class="field"><label>Reps</label><input type="text" class="assign-field" data-ex-id="${ex.id}" data-field="custom_reps" value="${escapeHtml(a.custom_reps||'')}"></div>
+        <div class="field"><label>Weight</label><input type="text" class="assign-field" data-ex-id="${ex.id}" data-field="custom_weight" value="${escapeHtml(a.custom_weight||'')}"></div>
+        <div class="field"><label>Rest</label><input type="text" class="assign-field" data-ex-id="${ex.id}" data-field="custom_rest" value="${escapeHtml(a.custom_rest||'')}"></div>
       </div>
       <div class="exercise-notes-row" style="margin-top:0.5rem;"><input type="text" class="assign-field" data-ex-id="${ex.id}" data-field="custom_notes" value="${escapeHtml(a.custom_notes||'')}" placeholder="Custom notes" style="padding:0.5rem 0.8rem;font-size:0.82rem;border-radius:0.6rem;"></div>` : ''}
     </div>`;
@@ -929,7 +1054,7 @@ async function assignExercise(exId) {
       clientExercisesCache[selectedClientId].push({ client_id: selectedClientId, exercise_id: exId, sort_order: 0 });
     }
     renderAssignList();
-  } catch (err) { showStatus($('assignStatus'), '❌ ' + err.message, 'error'); }
+  } catch (err) { showStatus($('assignStatus'), '❌ '+err.message, 'error'); }
 }
 
 async function unassignExercise(exId) {
@@ -942,50 +1067,160 @@ async function unassignExercise(exId) {
 
 async function updateAssignmentField(exId, field, val) {
   try {
-    await supabaseClient.from('client_exercises').update({ [field]: val || null }).eq('client_id', selectedClientId).eq('exercise_id', exId);
-    const a = (clientExercisesCache[selectedClientId] || []).find(x => x.exercise_id === exId);
+    await supabaseClient.from('client_exercises').update({ [field]: val||null }).eq('client_id', selectedClientId).eq('exercise_id', exId);
+    const a = (clientExercisesCache[selectedClientId]||[]).find(x => x.exercise_id === exId);
     if (a) a[field] = val || null;
   } catch (err) { console.error(err); }
 }
 
-// ============ REMINDER PREVIEW ============
+// ============ PROGRESS RENDERING ============
+function renderProgressEntries(containerId, clientId, adminMode) {
+  const entries = progressEntries[clientId] || [];
+  const container = $(containerId);
+  if (!container) return;
+  if (entries.length === 0) {
+    container.innerHTML = `<div class="empty-message">No progress entries yet.</div>`;
+    return;
+  }
+  let html = '';
+  entries.forEach(e => {
+    const byLabel = e.added_by === 'admin' ? '👨‍🏫 Admin' : '🙋 Client';
+    const parts = [];
+    if (e.weight_kg) parts.push(`<div class="item"><div class="label">Weight</div><div class="value">${e.weight_kg} kg</div></div>`);
+    if (e.body_fat_pct) parts.push(`<div class="item"><div class="label">Body Fat</div><div class="value">${e.body_fat_pct}%</div></div>`);
+    if (e.chest_cm) parts.push(`<div class="item"><div class="label">Chest</div><div class="value">${e.chest_cm} cm</div></div>`);
+    if (e.waist_cm) parts.push(`<div class="item"><div class="label">Waist</div><div class="value">${e.waist_cm} cm</div></div>`);
+    if (e.hips_cm) parts.push(`<div class="item"><div class="label">Hips</div><div class="value">${e.hips_cm} cm</div></div>`);
+    if (e.arms_cm) parts.push(`<div class="item"><div class="label">Arms</div><div class="value">${e.arms_cm} cm</div></div>`);
+    if (e.thighs_cm) parts.push(`<div class="item"><div class="label">Thighs</div><div class="value">${e.thighs_cm} cm</div></div>`);
+    html += `<div class="progress-entry">
+      <div class="progress-entry-header">
+        <span class="progress-entry-date">📅 ${e.entry_date}</span>
+        <span class="progress-entry-by">${byLabel}</span>
+      </div>
+      <div class="progress-entry-grid">${parts.join('')}</div>
+      ${e.notes ? `<div class="progress-entry-note">📝 ${escapeHtml(e.notes)}</div>` : ''}
+      ${e.photo_url ? `<div style="margin-top:0.4rem;font-size:0.78rem;"><a href="${escapeHtml(e.photo_url)}" target="_blank" style="color:#1976d2;">📷 View photo</a></div>` : ''}
+      ${adminMode ? `<div style="margin-top:0.5rem;text-align:right;"><button class="btn-danger-small btn-small delete-progress-btn" data-id="${e.id}" data-client="${clientId}">🗑️</button></div>` : ''}
+    </div>`;
+  });
+  container.innerHTML = html;
+  if (adminMode) {
+    container.querySelectorAll('.delete-progress-btn').forEach(b => {
+      b.addEventListener('click', async () => {
+        if (!confirm('Delete this entry?')) return;
+        await supabaseClient.from('progress_entries').delete().eq('id', b.dataset.id);
+        progressEntries[b.dataset.client] = (progressEntries[b.dataset.client]||[]).filter(x => String(x.id) !== String(b.dataset.id));
+        renderProgressEntries(containerId, b.dataset.client, true);
+      });
+    });
+  }
+}
+
+function renderAdminProgress() {
+  if (!selectedClientId) return;
+  renderProgressEntries('adminProgressList', selectedClientId, true);
+}
+
+// ============ PROGRESS MODAL ============
+function openProgressModal(entry, clientId, addedBy) {
+  selectedClientForProgress = { clientId, addedBy };
+  if (entry) {
+    $('editProgressId').value = entry.id;
+    $('progressModalTitle').textContent = '✏️ Edit Progress Entry';
+    $('pgDate').value = entry.entry_date || '';
+    $('pgWeight').value = entry.weight_kg || '';
+    $('pgBodyFat').value = entry.body_fat_pct || '';
+    $('pgChest').value = entry.chest_cm || '';
+    $('pgWaist').value = entry.waist_cm || '';
+    $('pgHips').value = entry.hips_cm || '';
+    $('pgArms').value = entry.arms_cm || '';
+    $('pgThighs').value = entry.thighs_cm || '';
+    $('pgNotes').value = entry.notes || '';
+    $('pgPhoto').value = entry.photo_url || '';
+  } else {
+    $('editProgressId').value = '';
+    $('progressModalTitle').textContent = addedBy === 'admin' ? '➕ Add Entry (as Admin)' : '➕ Add My Progress';
+    $('pgDate').value = new Date().toISOString().split('T')[0];
+    ['pgWeight','pgBodyFat','pgChest','pgWaist','pgHips','pgArms','pgThighs','pgNotes','pgPhoto'].forEach(i => $(i).value = '');
+  }
+  $('progressModal').classList.remove('hidden');
+  clearStatus($('progressModalStatus'));
+}
+
+$('cancelProgressBtn').addEventListener('click', () => $('progressModal').classList.add('hidden'));
+
+$('saveProgressBtn').addEventListener('click', async () => {
+  if (!selectedClientForProgress) return;
+  const { clientId, addedBy } = selectedClientForProgress;
+  const payload = {
+    client_id: clientId,
+    entry_date: $('pgDate').value || new Date().toISOString().split('T')[0],
+    weight_kg: parseFloat($('pgWeight').value) || null,
+    body_fat_pct: parseFloat($('pgBodyFat').value) || null,
+    chest_cm: parseFloat($('pgChest').value) || null,
+    waist_cm: parseFloat($('pgWaist').value) || null,
+    hips_cm: parseFloat($('pgHips').value) || null,
+    arms_cm: parseFloat($('pgArms').value) || null,
+    thighs_cm: parseFloat($('pgThighs').value) || null,
+    notes: $('pgNotes').value.trim() || null,
+    photo_url: $('pgPhoto').value.trim() || null,
+    added_by: addedBy
+  };
+  try {
+    $('saveProgressBtn').disabled = true;
+    const editId = $('editProgressId').value;
+    if (editId) {
+      const { error } = await supabaseClient.from('progress_entries').update(payload).eq('id', editId);
+      if (error) throw error;
+    } else {
+      const { data, error } = await supabaseClient.from('progress_entries').insert(payload).select().single();
+      if (error) throw error;
+      if (!progressEntries[clientId]) progressEntries[clientId] = [];
+      progressEntries[clientId].unshift(data);
+    }
+    progressEntries[clientId].sort((a,b) => (b.entry_date||'').localeCompare(a.entry_date||''));
+    $('progressModal').classList.add('hidden');
+    if (selectedClientId === clientId) renderAdminProgress();
+    if (loggedInClient && loggedInClient.id === clientId) renderClientProgress(loggedInClient);
+    showStatus($('progressModalStatus'), '✅ Saved!', 'success');
+  } catch (err) { showStatus($('progressModalStatus'), '❌ '+err.message, 'error'); }
+  finally { $('saveProgressBtn').disabled = false; }
+});
+
+// ============ REMINDER PREVIEW (includes login ID + password) ============
 async function updateReminderPreview() {
   if (!selectedClientId) return;
   const c = getClient(selectedClientId); if (!c) return;
-  await saveClientSettings(selectedClientId);
   const note = $('reminderNote').value.trim();
   const noteStr = note ? `\n\n📝 Note: ${note}` : '';
-  $('reminderPreviewText').textContent = `Hi ${c.name},\n\nYour schedule has been updated. Please check.${noteStr}\n\nSee you there! 💪`;
+  const creds = `\n\n🔑 Your login details:\nLogin ID: ${c.login_id}\nPassword: ${c.password_hint}`;
+  $('reminderPreviewText').textContent = `Hi ${c.name},\n\nYour schedule has been updated. Please check.${noteStr}${creds}\n\nSee you there! 💪`;
 }
 
-async function saveClientSettings(cid) {
-  const payload = {
-    client_id: cid,
-    rate_aed: parseFloat($('ratePerSession').value) || 200,
-    note: $('reminderNote').value.trim()
-  };
+$('reminderNote').addEventListener('input', async () => {
+  if (!selectedClientId) return;
+  const note = $('reminderNote').value.trim();
   try {
-    await supabaseClient.from('client_settings').upsert(payload, { onConflict: 'client_id' });
-    clientSettings[cid] = { ...clientSettings[cid], ...payload };
-    renderClientList(); renderClientTimesSummary();
-    document.querySelectorAll('.client-item').forEach(el => el.classList.toggle('active-client', el.dataset.clientId === cid));
-  } catch (err) { console.error('saveClientSettings error:', err); }
-}
+    await supabaseClient.from('client_settings').update({ note }).eq('client_id', selectedClientId);
+    if (clientSettings[selectedClientId]) clientSettings[selectedClientId].note = note;
+  } catch (err) { console.error(err); }
+  updateReminderPreview();
+});
 
-// ============ SEND REMINDERS (NOT SAVED TO CLOUD) ============
+// ============ SEND ============
 function buildBroadcastMessage(c) {
   const rs = clientSettings[c.id] || {};
   const note = rs.note || '';
   const noteStr = note ? `\n\n📝 Note: ${note}` : '';
-  return `Hi ${c.name},\n\nYour schedule has been updated. Please check.${noteStr}\n\nSee you there! 💪`;
+  const creds = `\n\n🔑 Your login details:\nLogin ID: ${c.login_id}\nPassword: ${c.password_hint}`;
+  return `Hi ${c.name},\n\nYour schedule has been updated. Please check.${noteStr}${creds}\n\nSee you there! 💪`;
 }
 
 function sendReminder(method) {
   if (!selectedClientId) return;
   const c = getClient(selectedClientId); if (!c) return;
   if (!c.active) { showStatus($('reminderStatus'), `⚠️ ${c.name} is CLOSED.`, 'error'); return; }
-  // Save note first (but not the message itself)
-  saveClientSettings(selectedClientId);
   const msg = buildBroadcastMessage(c);
   const enc = encodeURIComponent(msg);
   if (method === 'whatsapp') {
@@ -994,6 +1229,7 @@ function sendReminder(method) {
     window.open(`https://wa.me/${phone}?text=${enc}`, '_blank');
     showStatus($('reminderStatus'), `✅ WhatsApp opened for ${c.name}`, 'success');
   } else {
+    if (!c.email) { showStatus($('reminderStatus'), '⚠️ No email.', 'error'); return; }
     const subj = `Schedule Updated — ${c.name}`;
     window.location.href = `mailto:${c.email}?subject=${encodeURIComponent(subj)}&body=${enc}`;
     showStatus($('reminderStatus'), `✅ Email opened`, 'success');
@@ -1005,7 +1241,7 @@ function sendToAllClients() {
   const active = clients.filter(c => c.active);
   if (active.length === 0) { showStatus($('sendAllStatus'), '⚠️ No active clients.', 'error'); return; }
   const missing = active.filter(c => !c.phone || !c.phone.replace(/\D/g, ''));
-  if (missing.length > 0) { showStatus($('sendAllStatus'), `⚠️ Missing number: ${missing.map(x => x.name).join(', ')}`, 'error'); return; }
+  if (missing.length > 0) { showStatus($('sendAllStatus'), `⚠️ Missing phone: ${missing.map(x => x.name).join(', ')}`, 'error'); return; }
   let opened = 0;
   active.forEach((c, i) => {
     const msg = buildBroadcastMessage(c);
@@ -1014,13 +1250,13 @@ function sendToAllClients() {
     opened++;
   });
   const closed = clients.length - active.length;
-  let m = `✅ Opening ${opened} WhatsApp tab(s). Message NOT saved to cloud.`;
+  let m = `✅ Opening ${opened} WhatsApp tab(s) with credentials`;
   if (closed > 0) m += ` · Skipped ${closed} closed`;
   showStatus($('sendAllStatus'), m, 'success');
   setTimeout(() => clearStatus($('sendAllStatus')), 8000);
 }
 
-// ============ CLOSE / REOPEN ============
+// ============ CLOSE / REOPEN / DELETE ============
 async function closeSelectedClient() {
   if (!selectedClientId) return;
   const c = getClient(selectedClientId); if (!c) return;
@@ -1029,7 +1265,7 @@ async function closeSelectedClient() {
     await supabaseClient.from('clients').update({ active: false }).eq('id', selectedClientId);
     c.active = false; updateClientStatusUI(c); renderClientList(); renderClientTimesSummary();
     document.querySelectorAll('.client-item').forEach(el => el.classList.toggle('active-client', el.dataset.clientId === selectedClientId));
-    showStatus($('reminderStatus'), `🔒 ${c.name} is CLOSED.`, 'info');
+    showStatus($('reminderStatus'), `🔒 ${c.name} CLOSED.`, 'info');
   } catch (err) { alert('Failed: ' + err.message); }
 }
 
@@ -1041,19 +1277,79 @@ async function reopenSelectedClient() {
     await supabaseClient.from('clients').update({ active: true }).eq('id', selectedClientId);
     c.active = true; updateClientStatusUI(c); renderClientList(); renderClientTimesSummary();
     document.querySelectorAll('.client-item').forEach(el => el.classList.toggle('active-client', el.dataset.clientId === selectedClientId));
-    showStatus($('reminderStatus'), `🔓 ${c.name} is ACTIVE.`, 'success');
+    showStatus($('reminderStatus'), `🔓 ${c.name} ACTIVE.`, 'success');
   } catch (err) { alert('Failed: ' + err.message); }
 }
 
+$('deleteClientBtn').addEventListener('click', () => {
+  if (!selectedClientId) return;
+  const c = getClient(selectedClientId);
+  if (!c) return;
+  pendingDeleteClientId = selectedClientId;
+  $('deleteClientModal').classList.remove('hidden');
+  $('deleteConfirmInput').value = '';
+  $('confirmDeleteClientBtn').disabled = true;
+  clearStatus($('deleteClientStatus'));
+});
+
+$('deleteConfirmInput').addEventListener('input', (e) => {
+  $('confirmDeleteClientBtn').disabled = e.target.value.trim() !== 'DELETE';
+});
+
+$('cancelDeleteClientBtn').addEventListener('click', () => $('deleteClientModal').classList.add('hidden'));
+
+$('confirmDeleteClientBtn').addEventListener('click', async () => {
+  if (!pendingDeleteClientId) return;
+  const c = getClient(pendingDeleteClientId);
+  const btn = $('confirmDeleteClientBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Deleting...';
+  try {
+    // Cascade delete handled by FK ON DELETE CASCADE
+    const { error } = await supabaseClient.from('clients').delete().eq('id', pendingDeleteClientId);
+    if (error) throw error;
+
+    clients = clients.filter(x => x.id !== pendingDeleteClientId);
+    delete clientSettings[pendingDeleteClientId];
+    delete clientProfiles[pendingDeleteClientId];
+    delete progressEntries[pendingDeleteClientId];
+    delete clientExercisesCache[pendingDeleteClientId];
+    Object.keys(sessionCache).forEach(k => { if (k.startsWith(pendingDeleteClientId)) delete sessionCache[k]; });
+    Object.keys(workoutLogsCache).forEach(k => { if (k.startsWith(pendingDeleteClientId)) delete workoutLogsCache[k]; });
+
+    if (selectedClientId === pendingDeleteClientId) {
+      selectedClientId = null;
+      $('clientDetailPanel').classList.add('hidden');
+      $('noClientSelectedMsg').classList.remove('hidden');
+    }
+
+    renderClientList(); renderClientTimesSummary();
+    showStatus($('deleteClientStatus'), `✅ Client "${c?.name || ''}" deleted permanently.`, 'success');
+    setTimeout(() => {
+      $('deleteClientModal').classList.add('hidden');
+      pendingDeleteClientId = null;
+    }, 2000);
+  } catch (err) {
+    console.error(err);
+    showStatus($('deleteClientStatus'), `❌ ${err.message}`, 'error');
+    btn.disabled = false;
+  } finally {
+    btn.textContent = '🗑️ Delete Permanently';
+  }
+});
+
 // ============ CLIENT LOGIN ============
+let loggedInClient = null;
+
 async function handleClientLogin() {
-  const email = $('clientEmail').value.trim();
+  const loginId = $('clientLoginId').value.trim().toUpperCase();
   const password = $('clientPassword').value.trim();
-  if (!email || !password) { showStatus($('clientStatus'), 'Enter email and password.', 'error'); return; }
-  const c = clients.find(x => x.email.toLowerCase() === email.toLowerCase() && x.password_hint === password);
-  if (!c) { showStatus($('clientStatus'), '❌ Invalid credentials.', 'error'); $('clientDashboard').classList.add('hidden'); return; }
-  if (!c.active) { showStatus($('clientStatus'), '🔒 Account closed. Contact trainer.', 'error'); $('clientDashboard').classList.add('hidden'); return; }
-  showStatus($('clientStatus'), `✅ Welcome back, ${c.name}!`, 'success');
+  if (!loginId || !password) { showStatus($('clientStatus'), 'Enter login ID and password.', 'error'); return; }
+  const c = clients.find(x => (x.login_id || '').toUpperCase() === loginId && x.password_hint === password);
+  if (!c) { showStatus($('clientStatus'), '❌ Invalid login.', 'error'); $('clientDashboard').classList.add('hidden'); return; }
+  if (!c.active) { showStatus($('clientStatus'), '🔒 Account closed.', 'error'); $('clientDashboard').classList.add('hidden'); return; }
+  loggedInClient = c;
+  showStatus($('clientStatus'), `✅ Welcome, ${c.name}!`, 'success');
   $('clientDashboard').classList.remove('hidden');
   $('welcomeClientName').textContent = c.name;
   const y = CURRENT_YEAR, m = new Date().getMonth();
@@ -1064,6 +1360,10 @@ async function handleClientLogin() {
   $('clientDashAmount').textContent = `${CURRENCY} ${sessions.length * rate}`;
   renderClientUpcoming(c);
   renderClientPlan(c);
+  renderClientProgress(c);
+  renderClientProfile(c);
+  document.querySelectorAll('.tab-btn[data-ctab]').forEach(b => b.classList.toggle('active', b.dataset.ctab === 'plan'));
+  document.querySelectorAll('.tab-content[id^="ctab-"]').forEach(t => t.classList.toggle('hidden', t.id !== 'ctab-plan'));
   setTimeout(() => clearStatus($('clientStatus')), 3000);
 }
 
@@ -1076,9 +1376,9 @@ function renderClientUpcoming(c) {
   const ct = formatClassTime12(rs.class_time || '07:00');
   let html = '';
   const tDone = getSessions(c.id, tY, tM).some(s => s.day === tD);
-  html += `<div class="client-upcoming-item"><span class="client-upcoming-icon">📅</span><div><div><strong>Today</strong> · <span class="client-upcoming-time">${ct}</span></div><div style="font-size:0.78rem;color:#4c6d84;">${formatDateReadable(tY,tM,tD)} — ${tDone ? '✅ Completed' : '⏳ Upcoming'}</div></div></div>`;
+  html += `<div class="client-upcoming-item"><span class="client-upcoming-icon">📅</span><div><div><strong>Today</strong> · <span class="client-upcoming-time">${ct}</span></div><div style="font-size:0.78rem;color:#4c6d84;">${formatDateReadable(tY,tM,tD)} — ${tDone?'✅ Completed':'⏳ Upcoming'}</div></div></div>`;
   const mDone = getSessions(c.id, mY, mM).some(s => s.day === mD);
-  html += `<div class="client-upcoming-item"><span class="client-upcoming-icon">📅</span><div><div><strong>Tomorrow</strong> · <span class="client-upcoming-time">${ct}</span></div><div style="font-size:0.78rem;color:#4c6d84;">${formatDateReadable(mY,mM,mD)} — ${mDone ? '✅ Completed' : '⏳ Upcoming'}</div></div></div>`;
+  html += `<div class="client-upcoming-item"><span class="client-upcoming-icon">📅</span><div><div><strong>Tomorrow</strong> · <span class="client-upcoming-time">${ct}</span></div><div style="font-size:0.78rem;color:#4c6d84;">${formatDateReadable(mY,mM,mD)} — ${mDone?'✅ Completed':'⏳ Upcoming'}</div></div></div>`;
   $('clientUpcomingList').innerHTML = html;
   if (rs.note) { $('clientUpcomingNote').textContent = `📝 Note from trainer: ${rs.note}`; $('clientUpcomingNote').classList.remove('hidden'); }
   else $('clientUpcomingNote').classList.add('hidden');
@@ -1087,19 +1387,82 @@ function renderClientUpcoming(c) {
 
 function renderClientPlan(c) {
   const assigned = clientExercisesCache[c.id] || [];
-  if (assigned.length === 0) { $('clientPlanBlock').classList.add('hidden'); return; }
+  if (assigned.length === 0) { $('clientPlanList').innerHTML = '<div style="font-size:0.85rem;color:#7893a8;font-style:italic;">No exercises assigned yet.</div>'; return; }
   let html = '';
   assigned.forEach(a => {
     const ex = getExercise(a.exercise_id); if (!ex) return;
     html += `<div style="padding:0.5rem 0;border-bottom:1px dashed #b3e5fc;font-size:0.83rem;">
       <div style="font-weight:700;color:#0d47a1;">${escapeHtml(ex.name)}</div>
-      <div style="font-size:0.72rem;color:#4c6d84;">${a.custom_sets || ex.default_sets || '-'} × ${a.custom_reps || ex.default_reps || '-'}${(a.custom_weight || ex.default_weight) ? ' · ' + escapeHtml(a.custom_weight || ex.default_weight) : ''}${(a.custom_rest || ex.default_rest) ? ' · rest ' + escapeHtml(a.custom_rest || ex.default_rest) : ''}</div>
+      <div style="font-size:0.72rem;color:#4c6d84;">${a.custom_sets||ex.default_sets||'-'} × ${a.custom_reps||ex.default_reps||'-'}${(a.custom_weight||ex.default_weight)?' · '+escapeHtml(a.custom_weight||ex.default_weight):''}</div>
       ${a.custom_notes ? `<div style="font-size:0.72rem;color:#6a1b9a;font-style:italic;">📝 ${escapeHtml(a.custom_notes)}</div>` : ''}
     </div>`;
   });
   $('clientPlanList').innerHTML = html;
-  $('clientPlanBlock').classList.remove('hidden');
 }
+
+function renderClientProgress(c) {
+  renderProgressEntries('clientProgressList', c.id, false);
+}
+
+function renderClientProfile(c) {
+  const p = clientProfiles[c.id] || {};
+  const fields = [
+    ['Height', p.height_cm ? p.height_cm + ' cm' : '—'],
+    ['Gender', p.gender || '—'],
+    ['Birth date', p.birth_date || '—'],
+    ['Goal', p.goal || '—'],
+    ['Medical notes', p.medical_notes || '—'],
+    ['Emergency contact', p.emergency_contact || '—']
+  ];
+  let html = '<div class="profile-grid">';
+  fields.forEach(([k,v]) => {
+    html += `<div class="profile-field"><div class="label">${escapeHtml(k)}</div><div class="value">${escapeHtml(v)}</div></div>`;
+  });
+  html += '</div>';
+  $('clientProfileView').innerHTML = html;
+}
+
+$('clientAddProgressBtn').addEventListener('click', () => {
+  if (!loggedInClient) return;
+  openProgressModal(null, loggedInClient.id, 'client');
+});
+
+$('clientEditProfileBtn').addEventListener('click', () => {
+  if (!loggedInClient) return;
+  const p = clientProfiles[loggedInClient.id] || {};
+  const height = prompt('Height (cm):', p.height_cm || '');
+  if (height === null) return;
+  const gender = prompt('Gender:', p.gender || '');
+  if (gender === null) return;
+  const birth = prompt('Birth date (YYYY-MM-DD):', p.birth_date || '');
+  if (birth === null) return;
+  const goal = prompt('Your goal:', p.goal || '');
+  if (goal === null) return;
+  const medical = prompt('Medical notes:', p.medical_notes || '');
+  if (medical === null) return;
+  const emerg = prompt('Emergency contact:', p.emergency_contact || '');
+  if (emerg === null) return;
+
+  const payload = {
+    client_id: loggedInClient.id,
+    height_cm: parseFloat(height) || null,
+    gender: gender || null,
+    birth_date: birth || null,
+    goal: goal || null,
+    medical_notes: medical || null,
+    emergency_contact: emerg || null,
+    updated_at: new Date().toISOString()
+  };
+  supabaseClient.from('client_profiles').upsert(payload, { onConflict: 'client_id' }).then(({ error }) => {
+    if (!error) {
+      clientProfiles[loggedInClient.id] = payload;
+      renderClientProfile(loggedInClient);
+      alert('✅ Profile saved!');
+    } else {
+      alert('❌ ' + error.message);
+    }
+  });
+});
 
 // ============ ADMIN LOGIN ============
 function handleAdminLogin() {
@@ -1117,7 +1480,7 @@ function handleAdminLogin() {
     $('settingsPanel').classList.add('hidden');
     $('libraryPanel').classList.add('hidden');
   } else {
-    showStatus($('adminAuthStatus'), '⛔ Incorrect login ID or password.', 'error');
+    showStatus($('adminAuthStatus'), '⛔ Incorrect login.', 'error');
   }
 }
 
@@ -1150,18 +1513,14 @@ $('saveSettingsBtn').addEventListener('click', async () => {
   const confirmPw = $('settingsConfirmPassword').value.trim();
   const newEmail = $('settingsArchiveEmail').value.trim();
   if (currentPw !== adminConfig.admin_password) { showStatus($('settingsStatus'), '⛔ Current password wrong.', 'error'); return; }
-  if (!newLoginId) { showStatus($('settingsStatus'), '⚠️ Login ID required.', 'error'); return; }
   const updates = {};
-  if (newLoginId !== adminConfig.admin_login_id) updates.admin_login_id = newLoginId;
+  if (newLoginId && newLoginId !== adminConfig.admin_login_id) updates.admin_login_id = newLoginId;
   if (newPw || confirmPw) {
     if (newPw.length < 4) { showStatus($('settingsStatus'), '⚠️ Password min 4 chars.', 'error'); return; }
     if (newPw !== confirmPw) { showStatus($('settingsStatus'), '⚠️ Passwords do not match.', 'error'); return; }
     updates.admin_password = newPw;
   }
-  if (newEmail && newEmail !== adminConfig.archive_email) {
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail)) { showStatus($('settingsStatus'), '⚠️ Invalid email.', 'error'); return; }
-    updates.archive_email = newEmail;
-  }
+  if (newEmail && newEmail !== adminConfig.archive_email) updates.archive_email = newEmail;
   if (Object.keys(updates).length === 0) { showStatus($('settingsStatus'), 'ℹ️ No changes.', 'info'); return; }
   updates.updated_at = new Date().toISOString();
   try {
@@ -1170,7 +1529,7 @@ $('saveSettingsBtn').addEventListener('click', async () => {
     if (error) throw error;
     Object.assign(adminConfig, updates);
     $('adminDisplayId').textContent = adminConfig.admin_login_id;
-    showStatus($('settingsStatus'), '✅ Settings saved!', 'success');
+    showStatus($('settingsStatus'), '✅ Saved!', 'success');
     $('settingsCurrentPassword').value = ''; $('settingsNewPassword').value = ''; $('settingsConfirmPassword').value = '';
   } catch (err) { showStatus($('settingsStatus'), `❌ ${err.message}`, 'error'); }
   finally { $('saveSettingsBtn').disabled = false; }
@@ -1184,28 +1543,26 @@ document.querySelectorAll('.password-toggle').forEach(btn => {
   });
 });
 
-// ============ CLEAR ALL DATA ============
+// ============ CLEAR ALL ============
 $('clearAllBtn').addEventListener('click', () => {
   $('clearAllModal').classList.remove('hidden');
   $('clearConfirmInput').value = '';
   $('confirmClearAllBtn').disabled = true;
   clearStatus($('clearAllStatus'));
 });
-
 $('clearConfirmInput').addEventListener('input', (e) => {
   $('confirmClearAllBtn').disabled = e.target.value.trim() !== 'DELETE';
 });
-
 $('cancelClearAllBtn').addEventListener('click', () => $('clearAllModal').classList.add('hidden'));
-
 $('confirmClearAllBtn').addEventListener('click', async () => {
   const btn = $('confirmClearAllBtn');
-  btn.disabled = true;
-  btn.textContent = '⏳ Deleting...';
+  btn.disabled = true; btn.textContent = '⏳ Deleting...';
   try {
+    await supabaseClient.from('progress_entries').delete().neq('id', 0);
     await supabaseClient.from('workout_logs').delete().neq('id', 0);
     await supabaseClient.from('client_exercises').delete().neq('id', 0);
     await supabaseClient.from('sessions').delete().neq('id', 0);
+    await supabaseClient.from('client_profiles').delete().neq('client_id', '00000000-0000-0000-0000-000000000000');
     await supabaseClient.from('client_settings').delete().neq('client_id', '00000000-0000-0000-0000-000000000000');
     await supabaseClient.from('clients').delete().neq('id', '00000000-0000-0000-0000-000000000000');
     await supabaseClient.from('exercises').delete().neq('id', '00000000-0000-0000-0000-000000000000');
@@ -1216,8 +1573,9 @@ $('confirmClearAllBtn').addEventListener('click', async () => {
       updated_at: new Date().toISOString()
     }).eq('id', 1);
 
-    clients = []; clientSettings = {}; sessionCache = {}; exercises = [];
-    clientExercisesCache = {}; workoutLogsCache = {}; selectedClientId = null;
+    clients = []; clientSettings = {}; clientProfiles = {}; progressEntries = {};
+    sessionCache = {}; exercises = []; clientExercisesCache = {}; workoutLogsCache = {};
+    selectedClientId = null;
     adminConfig = { admin_login_id: DEFAULT_ADMIN_ID, admin_password: DEFAULT_ADMIN_PW, archive_email: 'trainer@example.com' };
 
     renderClientList(); renderClientTimesSummary();
@@ -1227,18 +1585,13 @@ $('confirmClearAllBtn').addEventListener('click', async () => {
     $('settingsPanel').classList.add('hidden');
     $('libraryPanel').classList.add('hidden');
 
-    showStatus($('clearAllStatus'), '✅ All data cleared! Admin reset to TAS-Abhi / Abhu@1818.', 'success');
-    setTimeout(() => {
-      $('clearAllModal').classList.add('hidden');
-      lockAdmin();
-    }, 2500);
+    showStatus($('clearAllStatus'), '✅ All data cleared!', 'success');
+    setTimeout(() => { $('clearAllModal').classList.add('hidden'); lockAdmin(); }, 2000);
   } catch (err) {
     console.error(err);
     showStatus($('clearAllStatus'), `❌ ${err.message}`, 'error');
     btn.disabled = false;
-  } finally {
-    btn.textContent = '🗑️ Yes, Clear All Data';
-  }
+  } finally { btn.textContent = '🗑️ Yes, Clear All'; }
 });
 
 // ============ EXERCISE LIBRARY ============
@@ -1249,16 +1602,16 @@ $('exerciseLibraryBtn').addEventListener('click', () => {
 });
 
 function renderLibrary() {
-  if (exercises.length === 0) { $('libraryList').innerHTML = `<div class="empty-message">No exercises yet.</div>`; return; }
+  if (exercises.length === 0) { $('libraryList').innerHTML = `<div class="empty-message">No exercises.</div>`; return; }
   let html = '';
   exercises.forEach(ex => {
     html += `<div class="library-row">
       <div style="flex:1;">
         <div class="library-row-name">${escapeHtml(ex.name)}</div>
-        <div class="library-row-meta">${ex.category ? escapeHtml(ex.category)+' · ' : ''}${ex.muscle_group ? escapeHtml(ex.muscle_group)+' · ' : ''}${ex.default_sets||'-'} × ${ex.default_reps||'-'}${ex.default_weight ? ' · '+escapeHtml(ex.default_weight) : ''}</div>
+        <div class="library-row-meta">${ex.category?escapeHtml(ex.category)+' · ':''}${ex.default_sets||'-'} × ${ex.default_reps||'-'}</div>
       </div>
       <div class="library-row-actions">
-        <button class="btn-secondary btn-small edit-ex-btn" data-id="${ex.id}">✏️ Edit</button>
+        <button class="btn-secondary btn-small edit-ex-btn" data-id="${ex.id}">✏️</button>
         <button class="btn-danger-small btn-small del-ex-btn" data-id="${ex.id}">🗑️</button>
       </div>
     </div>`;
@@ -1266,45 +1619,41 @@ function renderLibrary() {
   $('libraryList').innerHTML = html;
   document.querySelectorAll('.edit-ex-btn').forEach(b => b.addEventListener('click', () => openExerciseModal(b.dataset.id)));
   document.querySelectorAll('.del-ex-btn').forEach(b => b.addEventListener('click', async () => {
-    if (!confirm('Delete this exercise?')) return;
-    try {
-      await supabaseClient.from('exercises').delete().eq('id', b.dataset.id);
-      exercises = exercises.filter(e => e.id !== b.dataset.id);
-      renderLibrary();
-    } catch (err) { showStatus($('libraryStatus'), `❌ ${err.message}`, 'error'); }
+    if (!confirm('Delete?')) return;
+    await supabaseClient.from('exercises').delete().eq('id', b.dataset.id);
+    exercises = exercises.filter(e => e.id !== b.dataset.id);
+    renderLibrary();
   }));
 }
 
 $('addExerciseBtn').addEventListener('click', () => openExerciseModal(null));
-
 function openExerciseModal(id) {
   $('editExerciseId').value = id || '';
   if (id) {
     const ex = getExercise(id); if (!ex) return;
-    $('exerciseModalTitle').textContent = '✏️ Edit Exercise';
-    $('exName').value = ex.name || ''; $('exCategory').value = ex.category || '';
-    $('exMuscle').value = ex.muscle_group || ''; $('exSets').value = ex.default_sets || '';
-    $('exReps').value = ex.default_reps || ''; $('exWeight').value = ex.default_weight || '';
-    $('exRest').value = ex.default_rest || ''; $('exNotes').value = ex.notes || '';
-    $('exVideo').value = ex.video_url || '';
+    $('exerciseModalTitle').textContent = '✏️ Edit';
+    $('exName').value = ex.name||''; $('exCategory').value = ex.category||'';
+    $('exMuscle').value = ex.muscle_group||''; $('exSets').value = ex.default_sets||'';
+    $('exReps').value = ex.default_reps||''; $('exWeight').value = ex.default_weight||'';
+    $('exRest').value = ex.default_rest||''; $('exNotes').value = ex.notes||'';
+    $('exVideo').value = ex.video_url||'';
   } else {
-    $('exerciseModalTitle').textContent = '➕ Add Exercise';
-    ['exName','exCategory','exMuscle','exSets','exReps','exWeight','exRest','exNotes','exVideo'].forEach(i => $(i).value = '');
+    $('exerciseModalTitle').textContent = '➕ Add';
+    ['exName','exCategory','exMuscle','exSets','exReps','exWeight','exRest','exNotes','exVideo'].forEach(i => $(i).value='');
   }
   $('exerciseModal').classList.remove('hidden');
   clearStatus($('exerciseModalStatus'));
 }
 
 $('cancelExerciseBtn').addEventListener('click', () => $('exerciseModal').classList.add('hidden'));
-
 $('saveExerciseBtn').addEventListener('click', async () => {
   const name = $('exName').value.trim();
   if (!name) { showStatus($('exerciseModalStatus'), '⚠️ Name required.', 'error'); return; }
   const payload = {
-    name, category: $('exCategory').value.trim() || null, muscle_group: $('exMuscle').value.trim() || null,
-    default_sets: parseInt($('exSets').value, 10) || null, default_reps: $('exReps').value.trim() || null,
-    default_weight: $('exWeight').value.trim() || null, default_rest: $('exRest').value.trim() || null,
-    notes: $('exNotes').value.trim() || null, video_url: $('exVideo').value.trim() || null
+    name, category: $('exCategory').value.trim()||null, muscle_group: $('exMuscle').value.trim()||null,
+    default_sets: parseInt($('exSets').value,10)||null, default_reps: $('exReps').value.trim()||null,
+    default_weight: $('exWeight').value.trim()||null, default_rest: $('exRest').value.trim()||null,
+    notes: $('exNotes').value.trim()||null, video_url: $('exVideo').value.trim()||null
   };
   try {
     $('saveExerciseBtn').disabled = true;
@@ -1319,11 +1668,9 @@ $('saveExerciseBtn').addEventListener('click', async () => {
       if (error) throw error;
       exercises.push(data);
     }
-    exercises.sort((a, b) => a.name.localeCompare(b.name));
+    exercises.sort((a,b) => a.name.localeCompare(b.name));
     renderLibrary();
     $('exerciseModal').classList.add('hidden');
-    showStatus($('libraryStatus'), '✅ Saved!', 'success');
-    setTimeout(() => clearStatus($('libraryStatus')), 2000);
   } catch (err) { showStatus($('exerciseModalStatus'), `❌ ${err.message}`, 'error'); }
   finally { $('saveExerciseBtn').disabled = false; }
 });
@@ -1331,27 +1678,38 @@ $('saveExerciseBtn').addEventListener('click', async () => {
 // ============ CREATE CLIENT ============
 $('createClientBtn').addEventListener('click', async () => {
   const name = $('newClientName').value.trim();
-  const email = $('newClientEmail').value.trim();
   const phone = $('newClientPhone').value.trim().replace(/\D/g, '');
-  const password = $('newClientPassword').value.trim();
-  if (!name || !email || !password) { showStatus($('createClientStatus'), 'Name, email, password required.', 'error'); return; }
-  if (password.length < 3) { showStatus($('createClientStatus'), 'Password too short.', 'error'); return; }
-  if (clients.some(c => c.email.toLowerCase() === email.toLowerCase())) { showStatus($('createClientStatus'), 'Email exists.', 'error'); return; }
+  const email = $('newClientEmail').value.trim() || null;
+  const classTime = $('newClientTime').value || '07:00';
+  const rate = parseFloat($('newClientRate').value) || 200;
+
+  if (!name) { showStatus($('createClientStatus'), 'Name required.', 'error'); return; }
   if (!phone) { showStatus($('createClientStatus'), '⚠️ WhatsApp number required.', 'error'); return; }
+
+  const loginId = generateLoginId(name, phone);
+  const password = generatePassword(name);
+
   try {
     $('createClientBtn').disabled = true;
     const { data: newC, error: cErr } = await supabaseClient.from('clients').insert({
-      name, email, phone, password_hint: password, active: true
+      login_id: loginId, name, email, phone, password_hint: password, active: true
     }).select().single();
     if (cErr) throw cErr;
+
     await supabaseClient.from('client_settings').insert({
-      client_id: newC.id, rate_aed: 200, class_time: '07:00',
-      include_today: true, include_tomorrow: true, note: ''
+      client_id: newC.id, rate_aed: rate, class_time: classTime, note: ''
     });
+
     clients.push(newC);
-    clientSettings[newC.id] = { client_id: newC.id, rate_aed: 200, class_time: '07:00', include_today: true, include_tomorrow: true, note: '' };
+    clientSettings[newC.id] = { client_id: newC.id, rate_aed: rate, class_time: classTime, note: '' };
+
     renderClientList(); renderClientTimesSummary();
-    $('newClientName').value = ''; $('newClientEmail').value = ''; $('newClientPhone').value = ''; $('newClientPassword').value = '';
+
+    $('newClientCredsLogin').textContent = loginId;
+    $('newClientCredsPass').textContent = password;
+    $('newClientCredsBox').classList.remove('hidden');
+
+    $('newClientName').value = ''; $('newClientPhone').value = ''; $('newClientEmail').value = '';
     showStatus($('createClientStatus'), `✅ Client "${name}" created!`, 'success');
     setTimeout(() => clearStatus($('createClientStatus')), 4000);
   } catch (err) { showStatus($('createClientStatus'), `❌ ${err.message}`, 'error'); }
@@ -1368,11 +1726,10 @@ async function checkArchiveNeeded() {
     archiveDataPending = { cutoff: cutoffISO, sessions: oldSessions };
     $('archiveCutoffLabel').textContent = `${getMonthName(cutoff.getMonth())} ${cutoff.getFullYear()}`;
     const byClient = {};
-    oldSessions.forEach(s => { const n = s.clients?.name || 'Unknown'; byClient[n] = (byClient[n] || 0) + 1; });
+    oldSessions.forEach(s => { const n = s.clients?.name || 'Unknown'; byClient[n] = (byClient[n]||0)+1; });
     let html = `<div class="modal-data-row"><span class="label">📅 Cutoff</span><span class="value">${cutoffISO}</span></div>
-      <div class="modal-data-row"><span class="label">🗂️ Sessions</span><span class="value">${oldSessions.length}</span></div>
-      <div class="modal-data-row"><span class="label">👥 Clients</span><span class="value">${Object.keys(byClient).length}</span></div>`;
-    Object.entries(byClient).forEach(([n, c]) => { html += `<div class="modal-data-row"><span class="label">• ${escapeHtml(n)}</span><span class="value">${c}</span></div>`; });
+      <div class="modal-data-row"><span class="label">🗂️ Sessions</span><span class="value">${oldSessions.length}</span></div>`;
+    Object.entries(byClient).forEach(([n,c]) => { html += `<div class="modal-data-row"><span class="label">• ${escapeHtml(n)}</span><span class="value">${c}</span></div>`; });
     $('archiveDataList').innerHTML = html;
     $('archiveModal').classList.remove('hidden');
   }
@@ -1382,44 +1739,46 @@ $('draftEmailBtn').addEventListener('click', () => {
   if (!archiveDataPending) return;
   const { cutoff, sessions } = archiveDataPending;
   const byClient = {};
-  sessions.forEach(s => { const n = s.clients?.name || 'Unknown'; if (!byClient[n]) byClient[n] = []; byClient[n].push(s); });
+  sessions.forEach(s => { const n = s.clients?.name || 'Unknown'; if (!byClient[n]) byClient[n]=[]; byClient[n].push(s); });
   let body = `PERSONAL TRAINING ARCHIVE\nCutoff: ${cutoff}\nGenerated: ${new Date().toLocaleString()}\n\n========\n\n`;
-  Object.entries(byClient).forEach(([n, l]) => {
+  Object.entries(byClient).forEach(([n,l]) => {
     body += `CLIENT: ${n}\nSessions: ${l.length}\n----\n`;
-    l.sort((a, b) => a.session_date.localeCompare(b.session_date));
-    l.forEach(s => { body += `  ${s.session_date} — ${s.checked_at ? new Date(s.checked_at).toLocaleString() : 'N/A'}\n`; });
+    l.sort((a,b) => a.session_date.localeCompare(b.session_date));
+    l.forEach(s => { body += `  ${s.session_date} — ${s.checked_at?new Date(s.checked_at).toLocaleString():'N/A'}\n`; });
     body += `\n`;
   });
   $('emailPreview').textContent = body;
   $('emailPreviewContainer').classList.remove('hidden');
-  window.location.href = `mailto:${adminConfig.archive_email || 'trainer@example.com'}?subject=${encodeURIComponent('Training Archive — Before ' + cutoff)}&body=${encodeURIComponent(body)}`;
+  window.location.href = `mailto:${adminConfig.archive_email||'trainer@example.com'}?subject=${encodeURIComponent('Training Archive — Before '+cutoff)}&body=${encodeURIComponent(body)}`;
   showStatus($('archiveStatus'), '✅ Email drafted!', 'success');
   $('wipeDataBtn').disabled = false;
 });
 
 $('wipeDataBtn').addEventListener('click', async () => {
   if (!archiveDataPending) return;
-  if (!confirm('⚠️ PERMANENTLY delete old data?\n\nEmail sent?')) return;
+  if (!confirm('⚠️ PERMANENTLY delete old data?')) return;
   try {
     $('wipeDataBtn').disabled = true;
     const { error } = await supabaseClient.from('sessions').delete().lt('session_date', archiveDataPending.cutoff);
     if (error) throw error;
     await supabaseClient.from('archive_log').insert({ cutoff_date: archiveDataPending.cutoff, sessions_affected: archiveDataPending.sessions.length, email_sent_to: adminConfig.archive_email });
     showStatus($('archiveStatus'), `✅ Wiped ${archiveDataPending.sessions.length} sessions.`, 'success');
-    setTimeout(() => {
-      $('archiveModal').classList.add('hidden');
-      archiveDataPending = null;
-      $('wipeDataBtn').disabled = true;
-      $('emailPreviewContainer').classList.add('hidden');
-    }, 2000);
+    setTimeout(() => { $('archiveModal').classList.add('hidden'); archiveDataPending = null; $('wipeDataBtn').disabled = true; $('emailPreviewContainer').classList.add('hidden'); }, 2000);
   } catch (err) { showStatus($('archiveStatus'), `❌ ${err.message}`, 'error'); }
 });
 
 $('archiveLaterBtn').addEventListener('click', () => $('archiveModal').classList.add('hidden'));
 
+// ============ ADMIN ADD PROGRESS ============
+$('adminAddProgressBtn').addEventListener('click', () => {
+  if (!selectedClientId) return;
+  openProgressModal(null, selectedClientId, 'admin');
+});
+
 // ============ EVENTS ============
 $('clientLoginBtn').addEventListener('click', handleClientLogin);
 $('clientPassword').addEventListener('keypress', e => { if (e.key === 'Enter') handleClientLogin(); });
+$('clientLoginId').addEventListener('keypress', e => { if (e.key === 'Enter') handleClientLogin(); });
 $('adminLoginBtn').addEventListener('click', handleAdminLogin);
 $('adminMasterPassword').addEventListener('keypress', e => { if (e.key === 'Enter') handleAdminLogin(); });
 $('adminLoginId').addEventListener('keypress', e => { if (e.key === 'Enter') handleAdminLogin(); });
@@ -1433,15 +1792,16 @@ $('monthSelect').addEventListener('change', e => {
   $('dailyWorkoutPanel').classList.add('hidden');
   if (selectedClientId) renderSessions();
 });
-$('ratePerSession').addEventListener('change', e => {
+$('ratePerSession').addEventListener('change', async e => {
   if (!selectedClientId) return;
   let r = parseFloat(e.target.value);
   if (isNaN(r) || r < 1) r = 200;
   e.target.value = Math.round(r);
-  saveClientSettings(selectedClientId);
-  renderSessions();
+  await supabaseClient.from('client_settings').update({ rate_aed: r }).eq('client_id', selectedClientId);
+  if (clientSettings[selectedClientId]) clientSettings[selectedClientId].rate_aed = r;
+  renderSessions(); renderClientList();
+  document.querySelectorAll('.client-item').forEach(el => el.classList.toggle('active-client', el.dataset.clientId === selectedClientId));
 });
-$('reminderNote').addEventListener('input', updateReminderPreview);
 $('sendWhatsappBtn').addEventListener('click', () => sendReminder('whatsapp'));
 $('sendEmailBtn').addEventListener('click', () => sendReminder('email'));
 
