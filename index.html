@@ -2,256 +2,404 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
 <title>Personal Training · Cloud</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,'Segoe UI',Roboto,sans-serif;}
-body{background:linear-gradient(145deg,#f0f5fa,#e2eaf2);min-height:100vh;padding:1.5rem 1rem;}
-.app-container{max-width:1600px;margin:0 auto;display:flex;flex-wrap:wrap;gap:1.8rem;justify-content:center;align-items:flex-start;}
-.card{background:rgba(255,255,255,0.92);border-radius:2rem;box-shadow:0 20px 35px -8px rgba(0,20,40,0.25);padding:2rem;border:1px solid rgba(255,255,255,0.7);}
-.client-panel{flex:1 1 380px;max-width:480px;background:#fff;border-top:6px solid #2b6e9e;}
-.admin-panel{flex:1 1 850px;max-width:1150px;background:#fff;border-top:6px solid #1f4e3d;}
-.badge{display:inline-block;background:#d9e7f5;color:#1e3b5c;font-size:0.72rem;font-weight:700;padding:0.25rem 1rem;border-radius:50px;text-transform:uppercase;margin-bottom:1rem;}
+/* ============ BASE / RESET ============ */
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,'Segoe UI',Roboto,sans-serif;-webkit-tap-highlight-color:transparent;}
+html,body{overflow-x:hidden;}
+body{background:linear-gradient(145deg,#f0f5fa,#e2eaf2);min-height:100vh;padding:1rem 0.7rem;font-size:15px;line-height:1.4;}
+img{max-width:100%;height:auto;display:block;}
+input,select,textarea,button{font-family:inherit;}
+
+/* ============ LAYOUT ============ */
+.app-container{max-width:1600px;margin:0 auto;display:flex;flex-wrap:wrap;gap:1.5rem;justify-content:center;align-items:flex-start;width:100%;}
+.card{background:rgba(255,255,255,0.92);border-radius:1.5rem;box-shadow:0 12px 28px -8px rgba(0,20,40,0.2);padding:1.6rem;border:1px solid rgba(255,255,255,0.7);width:100%;}
+.client-panel{flex:1 1 380px;max-width:480px;background:#fff;border-top:5px solid #2b6e9e;}
+.admin-panel{flex:1 1 850px;max-width:1150px;background:#fff;border-top:5px solid #1f4e3d;}
+
+/* ============ HEADINGS ============ */
+.badge{display:inline-block;background:#d9e7f5;color:#1e3b5c;font-size:0.7rem;font-weight:700;padding:0.25rem 0.9rem;border-radius:50px;text-transform:uppercase;margin-bottom:0.8rem;letter-spacing:0.5px;}
 .admin-badge{background:#d0e6db;color:#0e3829;}
-h2{font-size:1.85rem;font-weight:700;margin-bottom:0.3rem;color:#0b1e2b;}
-.subhead{color:#4a5d6b;font-size:0.92rem;margin-bottom:1.5rem;border-left:3px solid #2b6e9e;padding-left:0.9rem;}
+h2{font-size:clamp(1.4rem, 3.5vw, 1.85rem);font-weight:700;margin-bottom:0.3rem;color:#0b1e2b;line-height:1.2;}
+.subhead{color:#4a5d6b;font-size:0.88rem;margin-bottom:1.2rem;border-left:3px solid #2b6e9e;padding-left:0.8rem;line-height:1.5;}
 .admin-subhead{border-left-color:#1f4e3d;}
-.cloud-status{display:flex;align-items:center;gap:0.5rem;padding:0.5rem 1rem;border-radius:30px;font-size:0.78rem;font-weight:700;margin-bottom:1rem;background:#fff3e0;color:#e65100;border:1.5px solid #ffb74d;}
+
+/* ============ CLOUD STATUS ============ */
+.cloud-status{display:flex;align-items:center;gap:0.5rem;padding:0.5rem 0.9rem;border-radius:30px;font-size:0.75rem;font-weight:700;margin-bottom:1rem;background:#fff3e0;color:#e65100;border:1.5px solid #ffb74d;width:fit-content;}
 .cloud-status.online{background:#e8f5e9;color:#1b5e20;border-color:#a5d6a7;}
-.cloud-status .dot{width:10px;height:10px;border-radius:50%;background:#ff9800;}
+.cloud-status .dot{width:9px;height:9px;border-radius:50%;background:#ff9800;flex-shrink:0;}
 .cloud-status.online .dot{background:#4caf50;animation:pulse 2s infinite;}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
-.input-group{margin-bottom:1.2rem;}
-label{display:block;font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;color:#2b4b62;margin-bottom:0.35rem;}
-input,select,textarea{width:100%;padding:0.85rem 1.1rem;font-size:0.95rem;background:#f9fcff;border:1.5px solid #cdddee;border-radius:1rem;outline:none;color:#0b1e2b;font-weight:500;font-family:inherit;}
-input:focus,select:focus{border-color:#2b6e9e;box-shadow:0 0 0 4px rgba(43,110,158,0.12);background:#fff;}
-.admin-panel input:focus,.admin-panel select:focus{border-color:#1f4e3d;box-shadow:0 0 0 4px rgba(31,78,61,0.12);}
-button{border:none;border-radius:1rem;font-weight:600;font-size:0.95rem;padding:0.9rem 1.6rem;cursor:pointer;transition:0.15s;display:inline-flex;align-items:center;justify-content:center;gap:0.4rem;background:#fff;color:#0b1e2b;border:1.5px solid #cdddee;}
+
+/* ============ INPUTS ============ */
+.input-group{margin-bottom:1rem;}
+label{display:block;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.3px;color:#2b4b62;margin-bottom:0.3rem;}
+input,select,textarea{width:100%;padding:0.75rem 1rem;font-size:0.95rem;background:#f9fcff;border:1.5px solid #cdddee;border-radius:0.8rem;outline:none;color:#0b1e2b;font-weight:500;-webkit-appearance:none;appearance:none;min-height:44px;}
+input:focus,select:focus,textarea:focus{border-color:#2b6e9e;box-shadow:0 0 0 3px rgba(43,110,158,0.12);background:#fff;}
+.admin-panel input:focus,.admin-panel select:focus{border-color:#1f4e3d;box-shadow:0 0 0 3px rgba(31,78,61,0.12);}
+
+/* ============ BUTTONS ============ */
+button{border:none;border-radius:0.8rem;font-weight:600;font-size:0.9rem;padding:0.75rem 1.3rem;cursor:pointer;transition:0.15s;display:inline-flex;align-items:center;justify-content:center;gap:0.4rem;background:#fff;color:#0b1e2b;border:1.5px solid #cdddee;min-height:42px;text-align:center;line-height:1.2;}
 button:disabled{opacity:0.5;cursor:not-allowed;}
-.btn-primary{background:#2b6e9e;color:#fff;border:1.5px solid #2b6e9e;width:100%;}
-.btn-admin{background:#1f4e3d;color:#fff;border:1.5px solid #1f4e3d;}
-.btn-secondary{background:#eef3f9;border:1.5px solid #cdddee;color:#1f3a4e;padding:0.6rem 1.2rem;font-size:0.85rem;}
-.btn-settings{background:#f3e5f5;border:1.5px solid #ce93d8;color:#6a1b9a;padding:0.6rem 1.2rem;font-size:0.85rem;font-weight:700;}
-.btn-exercise{background:#e3f2fd;border:1.5px solid #64b5f6;color:#0d47a1;padding:0.6rem 1.2rem;font-size:0.85rem;font-weight:700;}
-.btn-approvals{background:#fff3e0;border:1.5px solid #ffb74d;color:#e65100;padding:0.6rem 1.2rem;font-size:0.85rem;font-weight:700;position:relative;}
+.btn-primary{background:#2b6e9e;color:#fff;border-color:#2b6e9e;width:100%;}
+.btn-primary:hover:not(:disabled){background:#1f547a;}
+.btn-admin{background:#1f4e3d;color:#fff;border-color:#1f4e3d;}
+.btn-admin:hover:not(:disabled){background:#123a2c;}
+.btn-secondary{background:#eef3f9;border-color:#cdddee;color:#1f3a4e;padding:0.55rem 1rem;font-size:0.8rem;}
+.btn-settings{background:#f3e5f5;border-color:#ce93d8;color:#6a1b9a;padding:0.55rem 1rem;font-size:0.8rem;font-weight:700;}
+.btn-exercise{background:#e3f2fd;border-color:#64b5f6;color:#0d47a1;padding:0.55rem 1rem;font-size:0.8rem;font-weight:700;}
+.btn-approvals{background:#fff3e0;border-color:#ffb74d;color:#e65100;padding:0.55rem 1rem;font-size:0.8rem;font-weight:700;position:relative;}
 .btn-approvals .badge-count{background:#c62828;color:#fff;font-size:0.65rem;padding:0.1rem 0.5rem;border-radius:20px;margin-left:0.3rem;font-weight:700;}
-.btn-danger{background:#e53935;color:#fff;border:1.5px solid #e53935;font-weight:700;}
-.btn-reopen{background:#2e7d32;color:#fff;border:1.5px solid #2e7d32;font-weight:700;}
-.btn-whatsapp{background:#25D366;color:#fff;border:1.5px solid #25D366;padding:0.85rem 1.6rem;font-weight:700;}
-.btn-email{background:#2b6e9e;color:#fff;border:1.5px solid #2b6e9e;padding:0.85rem 1.6rem;font-weight:700;}
-.btn-send-all{background:linear-gradient(135deg,#128C7E,#25D366);color:#fff;border:none;padding:0.9rem 1.8rem;font-weight:700;width:100%;}
-.btn-archive{background:linear-gradient(135deg,#ff9800,#f57c00);color:#fff;border:none;padding:0.9rem 1.6rem;font-weight:700;}
-.btn-wipe{background:#c62828;color:#fff;border:none;padding:0.9rem 1.6rem;font-weight:700;}
-.btn-save-settings{background:linear-gradient(135deg,#6a1b9a,#8e24aa);color:#fff;border:none;padding:0.9rem 1.6rem;font-weight:700;width:100%;}
-.btn-clear-all{background:#b71c1c;color:#fff;border:none;padding:0.9rem 1.6rem;font-weight:700;width:100%;}
-.btn-small{padding:0.4rem 0.8rem;font-size:0.75rem;border-radius:0.6rem;}
-.btn-danger-small{background:#ffebee;border:1.5px solid #ef9a9a;color:#c62828;}
-.btn-green-small{background:#e2f0e9;border:1.5px solid #a5d6a7;color:#1f4e3d;}
-.btn-orange-small{background:#fff3e0;border:1.5px solid #ffb74d;color:#e65100;}
-.btn-approve{background:#2e7d32;color:#fff;border:1.5px solid #2e7d32;font-weight:700;padding:0.5rem 1rem;font-size:0.8rem;}
-.btn-reject{background:#c62828;color:#fff;border:1.5px solid #c62828;font-weight:700;padding:0.5rem 1rem;font-size:0.8rem;}
-.status-msg{margin-top:0.9rem;font-size:0.88rem;padding:0.75rem 1rem;border-radius:1rem;display:none;font-weight:500;}
+.btn-danger{background:#e53935;color:#fff;border-color:#e53935;font-weight:700;}
+.btn-reopen{background:#2e7d32;color:#fff;border-color:#2e7d32;font-weight:700;}
+.btn-whatsapp{background:#25D366;color:#fff;border-color:#25D366;padding:0.75rem 1.3rem;font-weight:700;}
+.btn-email{background:#2b6e9e;color:#fff;border-color:#2b6e9e;padding:0.75rem 1.3rem;font-weight:700;}
+.btn-send-all{background:linear-gradient(135deg,#128C7E,#25D366);color:#fff;border:none;padding:0.8rem 1.4rem;font-weight:700;width:100%;}
+.btn-archive{background:linear-gradient(135deg,#ff9800,#f57c00);color:#fff;border:none;padding:0.8rem 1.2rem;font-weight:700;}
+.btn-wipe{background:#c62828;color:#fff;border:none;padding:0.8rem 1.2rem;font-weight:700;}
+.btn-save-settings{background:linear-gradient(135deg,#6a1b9a,#8e24aa);color:#fff;border:none;padding:0.8rem 1.3rem;font-weight:700;width:100%;}
+.btn-clear-all{background:#b71c1c;color:#fff;border:none;padding:0.8rem 1.3rem;font-weight:700;width:100%;}
+.btn-small{padding:0.4rem 0.7rem;font-size:0.72rem;border-radius:0.5rem;min-height:34px;}
+.btn-danger-small{background:#ffebee;border-color:#ef9a9a;color:#c62828;}
+.btn-green-small{background:#e2f0e9;border-color:#a5d6a7;color:#1f4e3d;}
+.btn-orange-small{background:#fff3e0;border-color:#ffb74d;color:#e65100;}
+.btn-approve{background:#2e7d32;color:#fff;border-color:#2e7d32;font-weight:700;padding:0.5rem 1rem;font-size:0.78rem;}
+.btn-reject{background:#c62828;color:#fff;border-color:#c62828;font-weight:700;padding:0.5rem 1rem;font-size:0.78rem;}
+
+/* ============ STATUS ============ */
+.status-msg{margin-top:0.8rem;font-size:0.85rem;padding:0.7rem 0.9rem;border-radius:0.8rem;display:none;font-weight:500;line-height:1.4;}
 .status-success{background:#e2f0e9;color:#1b4b37;border-left:4px solid #1f4e3d;display:block;}
 .status-error{background:#ffe9e9;color:#a12b2b;border-left:4px solid #c0392b;display:block;}
 .status-info{background:#e4eef9;color:#1a4b6e;border-left:4px solid #2b6e9e;display:block;}
 .status-warning{background:#fff3e0;color:#7a4400;border-left:4px solid #ff9800;display:block;}
 .hidden{display:none !important;}
-.admin-section-title{font-size:0.9rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#1f4e3d;margin:1.5rem 0 0.8rem;}
-.flex-row{display:flex;gap:1rem;flex-wrap:wrap;}
-.flex-row .input-group{flex:1 1 160px;}
-.global-settings{background:linear-gradient(135deg,#fff8e1,#ffecb3);padding:1.1rem 1.4rem;border-radius:1.2rem;border:2px solid #ffd54f;margin-bottom:1.5rem;display:flex;align-items:center;flex-wrap:wrap;gap:1rem;justify-content:space-between;}
-.global-settings-title{font-weight:700;color:#8d6e00;font-size:0.9rem;flex:1 1 auto;}
-.settings-panel{background:linear-gradient(135deg,#f3e5f5,#ede7f6);border:2px solid #ce93d8;border-radius:1.4rem;padding:1.4rem 1.5rem;margin-bottom:1.5rem;}
-.settings-panel h4{font-size:1.05rem;font-weight:700;color:#6a1b9a;margin-bottom:1rem;}
-.danger-panel{background:linear-gradient(135deg,#ffebee,#fce4ec);border:2px solid #ef5350;border-radius:1.4rem;padding:1.4rem 1.5rem;margin-top:1.5rem;}
-.danger-panel h4{font-size:1.05rem;font-weight:700;color:#b71c1c;margin-bottom:0.7rem;}
-.danger-panel p{font-size:0.85rem;color:#c62828;margin-bottom:1rem;}
+
+/* ============ SECTION TITLES ============ */
+.admin-section-title{font-size:0.85rem;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;color:#1f4e3d;margin:1.3rem 0 0.7rem;}
+
+/* ============ GRID / FLEX ============ */
+.flex-row{display:flex;gap:0.7rem;flex-wrap:wrap;}
+.flex-row .input-group{flex:1 1 160px;min-width:0;}
+
+/* ============ SETTINGS PANELS ============ */
+.global-settings{background:linear-gradient(135deg,#fff8e1,#ffecb3);padding:1rem 1.1rem;border-radius:1rem;border:2px solid #ffd54f;margin-bottom:1.2rem;display:flex;align-items:center;flex-wrap:wrap;gap:0.8rem;justify-content:space-between;}
+.global-settings-title{font-weight:700;color:#8d6e00;font-size:0.85rem;flex:1 1 200px;}
+.settings-panel{background:linear-gradient(135deg,#f3e5f5,#ede7f6);border:2px solid #ce93d8;border-radius:1.1rem;padding:1.1rem 1.2rem;margin-bottom:1.2rem;}
+.settings-panel h4{font-size:1rem;font-weight:700;color:#6a1b9a;margin-bottom:0.8rem;}
+.danger-panel{background:linear-gradient(135deg,#ffebee,#fce4ec);border:2px solid #ef5350;border-radius:1.1rem;padding:1.1rem 1.2rem;margin-top:1.2rem;}
+.danger-panel h4{font-size:1rem;font-weight:700;color:#b71c1c;margin-bottom:0.6rem;}
+.danger-panel p{font-size:0.82rem;color:#c62828;margin-bottom:0.9rem;line-height:1.4;}
 .password-input-wrapper{position:relative;}
-.password-toggle{position:absolute;right:1rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:1rem;padding:0;color:#6a1b9a;width:auto;}
-.client-list{margin-top:1rem;background:#f7fafd;border-radius:1.5rem;padding:0.7rem;max-height:280px;overflow-y:auto;border:1px solid #dbe8f2;}
-.client-item{display:flex;justify-content:space-between;align-items:center;padding:0.7rem 1.2rem;background:#fff;border-radius:1.2rem;margin-bottom:0.4rem;border:1px solid #e2edf7;cursor:pointer;gap:0.5rem;flex-wrap:wrap;}
+.password-toggle{position:absolute;right:0.6rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:1rem;padding:0.3rem;color:#6a1b9a;width:auto;min-height:auto;}
+
+/* ============ CLIENT LIST ============ */
+.client-list{margin-top:0.8rem;background:#f7fafd;border-radius:1.1rem;padding:0.6rem;max-height:320px;overflow-y:auto;border:1px solid #dbe8f2;}
+.client-item{display:flex;justify-content:space-between;align-items:center;padding:0.7rem 0.9rem;background:#fff;border-radius:0.9rem;margin-bottom:0.4rem;border:1px solid #e2edf7;cursor:pointer;gap:0.5rem;flex-wrap:wrap;transition:0.1s;}
 .client-item:hover{background:#f0f8ff;}
 .client-item.active-client{background:#e2f0e9;border:2px solid #1f4e3d;}
 .client-item.closed-client{background:#f0f0f0;opacity:0.7;}
 .client-item.closed-client .client-name{color:#777;text-decoration:line-through;}
 .client-item.has-pending{background:#fff8e1;border:2px solid #ffb74d;}
-.client-info{display:flex;flex-direction:column;gap:0.15rem;flex:1 1 140px;}
-.client-name{font-weight:700;color:#12344d;font-size:0.95rem;}
-.client-email{font-size:0.73rem;color:#4c6d84;}
-.client-login-badge,.client-time-badge,.client-phone-badge,.client-pass-badge,.client-pending-badge{font-size:0.72rem;font-weight:600;padding:0.25rem 0.7rem;border-radius:30px;font-family:monospace;}
+.client-info{display:flex;flex-direction:column;gap:0.15rem;flex:1 1 140px;min-width:0;}
+.client-name{font-weight:700;color:#12344d;font-size:0.9rem;word-break:break-word;}
+.client-email{font-size:0.7rem;color:#4c6d84;word-break:break-word;}
+.client-login-badge,.client-time-badge,.client-phone-badge,.client-pass-badge,.client-pending-badge{font-size:0.68rem;font-weight:600;padding:0.22rem 0.6rem;border-radius:30px;font-family:monospace;white-space:nowrap;}
 .client-login-badge{background:#fce4ec;color:#880e4f;border:1px solid #f48fb1;}
 .client-time-badge{background:#fff3e0;color:#e65100;border:1px solid #ffb74d;}
 .client-phone-badge{background:#e3f2fd;color:#1565c0;border:1px solid #90caf9;}
 .client-pass-badge{background:#eef6ef;color:#1f4e3d;border:1px solid #bdd9cb;}
 .client-pending-badge{background:#fff3e0;color:#e65100;border:1px solid #ffb74d;font-family:inherit;}
-.client-status-badge-closed{background:#ffebee;color:#c62828;font-size:0.7rem;font-weight:700;padding:0.25rem 0.7rem;border-radius:30px;border:1px solid #ef9a9a;text-transform:uppercase;}
+.client-status-badge-closed{background:#ffebee;color:#c62828;font-size:0.65rem;font-weight:700;padding:0.22rem 0.6rem;border-radius:30px;border:1px solid #ef9a9a;text-transform:uppercase;}
 .client-badges{display:flex;gap:0.3rem;flex-wrap:wrap;justify-content:flex-end;align-items:center;}
-.empty-message{padding:1.5rem 1rem;text-align:center;color:#7893a8;font-style:italic;font-size:0.88rem;}
-.client-detail-panel{margin-top:1.8rem;background:#fbfdff;border-radius:1.5rem;padding:1.4rem;border:1px solid #dbe8f2;}
-.client-header-info{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.8rem;margin-bottom:1rem;padding-bottom:0.8rem;border-bottom:1px dashed #cbdae7;}
-.client-header-left{display:flex;align-items:center;gap:0.7rem;flex-wrap:wrap;}
-.client-header-name{font-size:1.15rem;font-weight:700;color:#0b1e2b;}
-.client-header-status-closed{background:#ffebee;color:#c62828;font-size:0.72rem;font-weight:700;padding:0.3rem 0.9rem;border-radius:30px;border:1.5px solid #ef9a9a;text-transform:uppercase;}
-.client-header-rate{background:#eef4f0;padding:0.4rem 1.2rem;border-radius:30px;font-weight:600;color:#1f4e3d;font-size:0.9rem;display:flex;align-items:center;gap:0.5rem;}
-.rate-input{width:100px;padding:0.3rem 0.6rem;font-size:0.85rem;border-radius:0.7rem;border:1.5px solid #bdd9cb;background:#fff;text-align:center;font-weight:600;}
-.closed-client-banner{background:#ffebee;border:2px solid #ef5350;border-radius:1.2rem;padding:1rem 1.3rem;margin-bottom:1.4rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.8rem;}
-.closed-client-banner-text{font-weight:700;color:#b71c1c;font-size:0.95rem;}
-.closed-client-banner-sub{font-size:0.8rem;color:#c62828;margin-top:0.2rem;}
-.tabs-bar{display:flex;gap:0.3rem;background:#f0f5fa;padding:0.4rem;border-radius:1rem;margin-bottom:1.4rem;flex-wrap:wrap;}
-.tab-btn{padding:0.6rem 1.2rem;border-radius:0.7rem;font-size:0.85rem;font-weight:700;cursor:pointer;background:transparent;border:none;color:#4c6d84;}
-.tab-btn.active{background:#fff;color:#1f4e3d;box-shadow:0 2px 6px rgba(0,0,0,0.08);}
+.empty-message{padding:1.2rem 1rem;text-align:center;color:#7893a8;font-style:italic;font-size:0.85rem;}
+
+/* ============ CLIENT DETAIL ============ */
+.client-detail-panel{margin-top:1.4rem;background:#fbfdff;border-radius:1.2rem;padding:1.1rem;border:1px solid #dbe8f2;}
+.client-header-info{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.7rem;margin-bottom:1rem;padding-bottom:0.7rem;border-bottom:1px dashed #cbdae7;}
+.client-header-left{display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;}
+.client-header-name{font-size:1.05rem;font-weight:700;color:#0b1e2b;}
+.client-header-status-closed{background:#ffebee;color:#c62828;font-size:0.68rem;font-weight:700;padding:0.25rem 0.8rem;border-radius:30px;border:1.5px solid #ef9a9a;text-transform:uppercase;}
+.client-header-rate{background:#eef4f0;padding:0.35rem 0.9rem;border-radius:30px;font-weight:600;color:#1f4e3d;font-size:0.82rem;display:flex;align-items:center;gap:0.4rem;flex-wrap:wrap;}
+.rate-input{width:80px;padding:0.28rem 0.5rem;font-size:0.82rem;border-radius:0.6rem;border:1.5px solid #bdd9cb;background:#fff;text-align:center;font-weight:600;}
+.closed-client-banner{background:#ffebee;border:2px solid #ef5350;border-radius:1rem;padding:0.9rem 1rem;margin-bottom:1.1rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.7rem;}
+.closed-client-banner-text{font-weight:700;color:#b71c1c;font-size:0.9rem;}
+.closed-client-banner-sub{font-size:0.78rem;color:#c62828;margin-top:0.2rem;}
+
+/* ============ TABS ============ */
+.tabs-bar{display:flex;gap:0.25rem;background:#f0f5fa;padding:0.35rem;border-radius:0.8rem;margin-bottom:1.1rem;flex-wrap:wrap;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.tab-btn{padding:0.5rem 0.9rem;border-radius:0.55rem;font-size:0.78rem;font-weight:700;cursor:pointer;background:transparent;border:none;color:#4c6d84;white-space:nowrap;min-height:auto;flex-shrink:0;}
+.tab-btn.active{background:#fff;color:#1f4e3d;box-shadow:0 2px 5px rgba(0,0,0,0.07);}
 .tab-content.hidden{display:none;}
-.reminder-section{background:linear-gradient(135deg,#e8f5e9,#e0f2f1);border-radius:1.4rem;padding:1.4rem 1.5rem;border:2px solid #a5d6a7;margin-bottom:1.5rem;}
-.reminder-section h4{font-size:1.05rem;font-weight:700;color:#1f4e3d;margin-bottom:1rem;}
-.reminder-preview{background:#fff;border-radius:1rem;padding:1.1rem 1.3rem;border:1.5px dashed #81c784;font-size:0.88rem;color:#1a3a4e;line-height:1.6;margin:1rem 0;white-space:pre-wrap;font-family:'SF Mono',monospace;max-height:250px;overflow-y:auto;}
-.action-buttons{display:flex;gap:0.8rem;flex-wrap:wrap;}
-.small-note{font-size:0.72rem;color:#4d6b5a;margin-top:0.7rem;}
-::-webkit-scrollbar{width:6px;height:6px;}
-::-webkit-scrollbar-thumb{background:#b6cfde;border-radius:20px;}
-.client-dash-card{background:#f5f9ff;padding:1.2rem;border-radius:1.2rem;margin-top:0.5rem;}
-.dash-row{display:flex;justify-content:space-between;padding:0.3rem 0;border-bottom:1px solid #dbe8f2;}
+
+/* ============ REMINDER SECTION ============ */
+.reminder-section{background:linear-gradient(135deg,#e8f5e9,#e0f2f1);border-radius:1.1rem;padding:1.1rem 1.2rem;border:2px solid #a5d6a7;margin-bottom:1.2rem;}
+.reminder-section h4{font-size:0.95rem;font-weight:700;color:#1f4e3d;margin-bottom:0.8rem;line-height:1.3;}
+.reminder-preview{background:#fff;border-radius:0.8rem;padding:0.9rem 1rem;border:1.5px dashed #81c784;font-size:0.82rem;color:#1a3a4e;line-height:1.6;margin:0.8rem 0;white-space:pre-wrap;font-family:'SF Mono','Fira Code',monospace;max-height:260px;overflow-y:auto;word-break:break-word;}
+.action-buttons{display:flex;gap:0.6rem;flex-wrap:wrap;}
+.action-buttons button{flex:1 1 140px;}
+.small-note{font-size:0.7rem;color:#4d6b5a;margin-top:0.6rem;line-height:1.4;}
+
+/* ============ CREDENTIALS BOX ============ */
+.credentials-box{background:linear-gradient(135deg,#e8f5e9,#e0f2f1);border:2px solid #a5d6a7;border-radius:0.9rem;padding:0.9rem 1rem;margin:0.9rem 0;}
+.credentials-box .label{font-size:0.68rem;color:#1f4e3d;text-transform:uppercase;font-weight:700;letter-spacing:0.3px;margin-bottom:0.3rem;}
+.credentials-box .value{font-family:monospace;font-size:1rem;font-weight:800;color:#0b1e2b;user-select:all;-webkit-user-select:all;padding:0.3rem 0;word-break:break-all;}
+.credentials-box .row{display:flex;justify-content:space-between;align-items:center;gap:0.5rem;padding:0.4rem 0;border-bottom:1px dashed #a5d6a7;flex-wrap:wrap;}
+.credentials-box .row:last-child{border-bottom:none;}
+
+/* ============ CLIENT DASHBOARD ============ */
+.client-dash-card{background:#f5f9ff;padding:1rem;border-radius:1rem;margin-top:0.4rem;}
+.dash-row{display:flex;justify-content:space-between;padding:0.3rem 0;border-bottom:1px solid #dbe8f2;font-size:0.9rem;gap:0.5rem;flex-wrap:wrap;}
 .dash-row:last-child{border-bottom:none;}
-.client-upcoming{margin-top:1rem;background:linear-gradient(135deg,#e8f5e9,#e0f2f1);padding:1rem 1.1rem;border-radius:1rem;border-left:4px solid #1f4e3d;}
-.client-upcoming-title{font-weight:700;color:#1f4e3d;font-size:0.9rem;margin-bottom:0.5rem;}
-.client-upcoming-item{display:flex;align-items:flex-start;gap:0.6rem;padding:0.5rem 0;border-bottom:1px dashed #a5d6a7;font-size:0.85rem;color:#1a3a4e;}
+.client-upcoming{margin-top:1rem;background:linear-gradient(135deg,#e8f5e9,#e0f2f1);padding:0.9rem 1rem;border-radius:0.9rem;border-left:4px solid #1f4e3d;}
+.client-upcoming-title{font-weight:700;color:#1f4e3d;font-size:0.85rem;margin-bottom:0.5rem;}
+.client-upcoming-item{display:flex;align-items:flex-start;gap:0.5rem;padding:0.5rem 0;border-bottom:1px dashed #a5d6a7;font-size:0.82rem;color:#1a3a4e;flex-wrap:wrap;}
 .client-upcoming-item:last-child{border-bottom:none;}
-.client-upcoming-icon{font-size:1rem;}
+.client-upcoming-icon{font-size:0.95rem;flex-shrink:0;}
 .client-upcoming-time{font-weight:700;color:#1f4e3d;}
 .client-upcoming-time.custom{color:#c62828;}
-.client-upcoming-time-custom-badge{font-size:0.65rem;background:#ffebee;color:#c62828;padding:0.1rem 0.5rem;border-radius:20px;font-weight:700;margin-left:0.4rem;}
-.client-upcoming-note{font-size:0.78rem;color:#4d6b5a;font-style:italic;margin-top:0.4rem;padding:0.4rem 0.7rem;background:#ffffffaa;border-radius:0.6rem;}
-.client-times-summary{background:#f4f9fd;border-radius:1rem;padding:1rem 1.2rem;border:1px solid #d3e3f0;margin-top:0.8rem;font-size:0.85rem;}
-.client-times-summary-title{font-weight:700;color:#1f4e3d;margin-bottom:0.5rem;font-size:0.85rem;}
-.client-times-row{display:flex;justify-content:space-between;padding:0.35rem 0;border-bottom:1px dashed #cbdae7;align-items:center;}
+.client-upcoming-time-custom-badge{font-size:0.62rem;background:#ffebee;color:#c62828;padding:0.1rem 0.45rem;border-radius:20px;font-weight:700;margin-left:0.3rem;}
+.client-upcoming-note{font-size:0.75rem;color:#4d6b5a;font-style:italic;margin-top:0.4rem;padding:0.4rem 0.6rem;background:#ffffffaa;border-radius:0.5rem;line-height:1.4;}
+.client-pending-banner{background:#fff3e0;border:2px solid #ffb74d;border-radius:0.9rem;padding:0.8rem 1rem;margin-bottom:1rem;font-size:0.82rem;color:#7a4400;line-height:1.5;}
+.client-pending-banner strong{color:#e65100;}
+
+/* ============ CLIENT TIMES SUMMARY ============ */
+.client-times-summary{background:#f4f9fd;border-radius:0.9rem;padding:0.9rem 1rem;border:1px solid #d3e3f0;margin-top:0.7rem;font-size:0.82rem;}
+.client-times-summary-title{font-weight:700;color:#1f4e3d;margin-bottom:0.5rem;font-size:0.82rem;}
+.client-times-row{display:flex;justify-content:space-between;padding:0.35rem 0;border-bottom:1px dashed #cbdae7;align-items:center;gap:0.5rem;flex-wrap:wrap;}
 .client-times-row:last-child{border-bottom:none;}
-.client-times-name{color:#12344d;font-weight:600;}
-.client-times-value{color:#e65100;font-weight:700;font-family:monospace;}
-.client-times-status{font-size:0.7rem;padding:0.15rem 0.6rem;border-radius:20px;font-weight:700;}
+.client-times-name{color:#12344d;font-weight:600;flex:1 1 100px;}
+.client-times-value{color:#e65100;font-weight:700;font-family:monospace;font-size:0.8rem;}
+.client-times-status{font-size:0.65rem;padding:0.15rem 0.5rem;border-radius:20px;font-weight:700;}
 .status-active-pill{background:#e2f0e9;color:#1f4e3d;border:1px solid #a5d6a7;}
 .status-closed-pill{background:#ffebee;color:#c62828;border:1px solid #ef9a9a;text-transform:uppercase;}
-.month-selector{display:flex;gap:0.6rem;align-items:center;margin-bottom:1rem;flex-wrap:wrap;}
-.month-selector label{margin-bottom:0;font-size:0.75rem;}
-.month-selector select{width:auto;padding:0.5rem 1.2rem;font-size:0.85rem;}
-.sessions-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:0.7rem;margin-top:0.8rem;}
-.session-card{background:#fff;border-radius:1rem;padding:0.7rem 0.7rem 0.6rem;border:1.5px solid #e2edf7;cursor:pointer;position:relative;}
+
+/* ============ SESSIONS GRID ============ */
+.month-selector{display:flex;gap:0.5rem;align-items:center;margin-bottom:0.8rem;flex-wrap:wrap;}
+.month-selector label{margin-bottom:0;font-size:0.72rem;}
+.month-selector select{width:auto;padding:0.45rem 0.9rem;font-size:0.82rem;}
+.sessions-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:0.6rem;margin-top:0.7rem;}
+.session-card{background:#fff;border-radius:0.85rem;padding:0.65rem 0.65rem 0.55rem;border:1.5px solid #e2edf7;cursor:pointer;position:relative;transition:0.1s;}
 .session-card:hover{border-color:#90caf9;}
 .session-card.done{background:#e2f0e9;border-color:#1f4e3d;}
 .session-card.selected-day{border:2.5px solid #2b6e9e;box-shadow:0 4px 10px rgba(43,110,158,0.15);}
 .session-card.has-custom-time{border-left:4px solid #ff9800;}
-.session-card label{display:flex;align-items:center;gap:0.5rem;cursor:pointer;font-size:0.85rem;font-weight:600;color:#1f3a4e;text-transform:none;letter-spacing:0;margin-bottom:0.3rem;}
-.session-card input[type="checkbox"]{width:18px;height:18px;accent-color:#1f4e3d;cursor:pointer;}
-.session-date{font-size:0.7rem;color:#4c6d84;margin-left:1.7rem;}
-.session-time-custom{font-size:0.7rem;color:#e65100;font-weight:700;margin-left:1.7rem;margin-top:0.15rem;}
-.session-checked-time{font-size:0.68rem;color:#1f4e3d;font-weight:700;margin-left:1.7rem;margin-top:0.15rem;}
-.session-amount{font-size:0.75rem;font-weight:700;color:#1f4e3d;margin-top:0.2rem;margin-left:1.7rem;}
-.summary-box{margin-top:1.5rem;background:#f3f9f6;padding:1rem 1.4rem;border-radius:1.2rem;border-left:5px solid #1f4e3d;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.6rem;}
-.summary-text{font-weight:600;color:#1f3a2e;}
-.summary-amount{font-size:1.8rem;font-weight:800;color:#1f4e3d;}
-.note-admin{font-size:0.75rem;color:#5d7a6b;margin-top:0.4rem;text-align:right;}
-.locked-msg{font-size:0.75rem;color:#9b6b4b;background:#fff3e6;padding:0.2rem 0.7rem;border-radius:30px;font-weight:600;}
-.daily-workout-panel{background:#fffde7;border:2px solid #ffd54f;border-radius:1.4rem;padding:1.4rem;margin-top:1.5rem;}
-.daily-workout-panel h4{font-size:1.05rem;color:#e65100;margin-bottom:0.8rem;font-weight:700;}
-.daily-workout-panel .subtitle{font-size:0.85rem;color:#8d6e00;margin-bottom:1rem;}
-.exercise-entry{background:#fff;border-radius:1rem;padding:1rem 1.2rem;margin-bottom:0.8rem;border:1.5px solid #ffe082;}
-.exercise-entry-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.6rem;}
-.exercise-entry-name{font-weight:700;color:#0d47a1;font-size:0.95rem;}
-.exercise-entry-meta{font-size:0.75rem;color:#4c6d84;}
-.exercise-entry-fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:0.6rem;}
+.session-card label{display:flex;align-items:center;gap:0.5rem;cursor:pointer;font-size:0.8rem;font-weight:600;color:#1f3a4e;text-transform:none;letter-spacing:0;margin-bottom:0.25rem;}
+.session-card input[type="checkbox"]{width:17px;height:17px;accent-color:#1f4e3d;cursor:pointer;min-height:auto;flex-shrink:0;}
+.session-date{font-size:0.68rem;color:#4c6d84;margin-left:1.6rem;}
+.session-time-custom{font-size:0.68rem;color:#e65100;font-weight:700;margin-left:1.6rem;margin-top:0.15rem;}
+.session-checked-time{font-size:0.65rem;color:#1f4e3d;font-weight:700;margin-left:1.6rem;margin-top:0.15rem;}
+.session-amount{font-size:0.72rem;font-weight:700;color:#1f4e3d;margin-top:0.2rem;margin-left:1.6rem;}
+.summary-box{margin-top:1.2rem;background:#f3f9f6;padding:0.9rem 1.1rem;border-radius:1rem;border-left:5px solid #1f4e3d;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.6rem;}
+.summary-text{font-weight:600;color:#1f3a2e;font-size:0.85rem;}
+.summary-amount{font-size:1.4rem;font-weight:800;color:#1f4e3d;}
+.note-admin{font-size:0.7rem;color:#5d7a6b;margin-top:0.3rem;text-align:right;}
+.locked-msg{font-size:0.7rem;color:#9b6b4b;background:#fff3e6;padding:0.18rem 0.6rem;border-radius:30px;font-weight:600;}
+
+/* ============ DAILY WORKOUT ============ */
+.daily-workout-panel{background:#fffde7;border:2px solid #ffd54f;border-radius:1.1rem;padding:1.1rem;margin-top:1.2rem;}
+.daily-workout-panel h4{font-size:0.95rem;color:#e65100;margin-bottom:0.7rem;font-weight:700;}
+.daily-workout-panel .subtitle{font-size:0.8rem;color:#8d6e00;margin-bottom:0.8rem;}
+.exercise-entry{background:#fff;border-radius:0.85rem;padding:0.9rem 1rem;margin-bottom:0.7rem;border:1.5px solid #ffe082;}
+.exercise-entry-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.5rem;}
+.exercise-entry-name{font-weight:700;color:#0d47a1;font-size:0.88rem;}
+.exercise-entry-meta{font-size:0.7rem;color:#4c6d84;}
+.exercise-entry-fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(80px,1fr));gap:0.5rem;}
 .exercise-entry-fields .field{display:flex;flex-direction:column;}
-.exercise-entry-fields label{font-size:0.65rem;margin-bottom:0.2rem;color:#7a8f9e;}
-.exercise-entry-fields input{padding:0.5rem 0.7rem;font-size:0.85rem;border-radius:0.6rem;}
-.exercise-notes-row{margin-top:0.6rem;}
-.exercise-notes-row input{padding:0.5rem 0.8rem;font-size:0.85rem;border-radius:0.6rem;}
-.library-list{display:flex;flex-direction:column;gap:0.5rem;max-height:400px;overflow-y:auto;padding:0.3rem;}
-.library-row{display:flex;justify-content:space-between;align-items:center;padding:0.7rem 1rem;background:#fff;border-radius:0.9rem;border:1px solid #e2edf7;gap:0.5rem;flex-wrap:wrap;}
-.library-row-name{font-weight:700;color:#0d47a1;font-size:0.9rem;}
-.library-row-meta{font-size:0.72rem;color:#4c6d84;margin-top:0.15rem;}
+.exercise-entry-fields label{font-size:0.62rem;margin-bottom:0.2rem;color:#7a8f9e;}
+.exercise-entry-fields input{padding:0.45rem 0.6rem;font-size:0.82rem;border-radius:0.5rem;min-height:38px;}
+.exercise-notes-row{margin-top:0.5rem;}
+.exercise-notes-row input{padding:0.45rem 0.7rem;font-size:0.82rem;border-radius:0.5rem;min-height:38px;}
+
+/* ============ EXERCISE LIBRARY / ASSIGN ============ */
+.library-list{display:flex;flex-direction:column;gap:0.5rem;max-height:420px;overflow-y:auto;padding:0.3rem;}
+.library-row{display:flex;justify-content:space-between;align-items:center;padding:0.65rem 0.9rem;background:#fff;border-radius:0.8rem;border:1px solid #e2edf7;gap:0.5rem;flex-wrap:wrap;}
+.library-row-name{font-weight:700;color:#0d47a1;font-size:0.85rem;}
+.library-row-meta{font-size:0.68rem;color:#4c6d84;margin-top:0.15rem;}
 .library-row-actions{display:flex;gap:0.3rem;}
-.assign-list{display:flex;flex-direction:column;gap:0.5rem;max-height:500px;overflow-y:auto;padding:0.3rem;}
-.assign-row{background:#fff;border-radius:1rem;padding:0.9rem 1rem;border:1.5px solid #e2edf7;}
+.assign-list{display:flex;flex-direction:column;gap:0.5rem;max-height:520px;overflow-y:auto;padding:0.3rem;}
+.assign-row{background:#fff;border-radius:0.85rem;padding:0.8rem 0.9rem;border:1.5px solid #e2edf7;}
 .assign-row.selected{border-color:#64b5f6;background:#f5fbff;}
-.assign-row-header{display:flex;align-items:center;gap:0.7rem;}
-.assign-row-header input[type="checkbox"]{width:20px;height:20px;accent-color:#1976d2;cursor:pointer;}
-.assign-row-name{font-weight:700;color:#0d47a1;font-size:0.92rem;flex:1;}
-.assign-row-meta{font-size:0.72rem;color:#4c6d84;}
-.assign-custom-fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:0.5rem;margin-top:0.7rem;}
-.assign-custom-fields .field label{font-size:0.62rem;}
-.assign-custom-fields input{padding:0.45rem 0.65rem;font-size:0.82rem;border-radius:0.5rem;}
-.progress-list{display:flex;flex-direction:column;gap:0.6rem;max-height:400px;overflow-y:auto;padding:0.3rem;}
-.progress-entry{background:#fff;border-radius:1rem;padding:0.8rem 1rem;border:1.5px solid #e2edf7;}
+.assign-row-header{display:flex;align-items:center;gap:0.6rem;}
+.assign-row-header input[type="checkbox"]{width:19px;height:19px;accent-color:#1976d2;cursor:pointer;min-height:auto;flex-shrink:0;}
+.assign-row-name{font-weight:700;color:#0d47a1;font-size:0.85rem;flex:1;}
+.assign-row-meta{font-size:0.68rem;color:#4c6d84;}
+.assign-custom-fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(80px,1fr));gap:0.5rem;margin-top:0.6rem;}
+.assign-custom-fields .field label{font-size:0.6rem;}
+.assign-custom-fields input{padding:0.4rem 0.55rem;font-size:0.78rem;border-radius:0.45rem;min-height:36px;}
+
+/* ============ PROGRESS ============ */
+.progress-list{display:flex;flex-direction:column;gap:0.6rem;max-height:420px;overflow-y:auto;padding:0.3rem;}
+.progress-entry{background:#fff;border-radius:0.85rem;padding:0.75rem 0.9rem;border:1.5px solid #e2edf7;}
 .progress-entry-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.5rem;}
-.progress-entry-date{font-weight:700;color:#0d47a1;font-size:0.9rem;}
-.progress-entry-by{font-size:0.7rem;color:#6a1b9a;background:#f3e5f5;padding:0.15rem 0.6rem;border-radius:20px;font-weight:700;}
-.progress-entry-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:0.6rem;font-size:0.82rem;}
-.progress-entry-grid .item{background:#f5f9ff;padding:0.4rem 0.6rem;border-radius:0.6rem;}
-.progress-entry-grid .item .label{font-size:0.62rem;color:#7a8f9e;text-transform:uppercase;font-weight:700;letter-spacing:0.3px;}
+.progress-entry-date{font-weight:700;color:#0d47a1;font-size:0.85rem;}
+.progress-entry-by{font-size:0.65rem;color:#6a1b9a;background:#f3e5f5;padding:0.15rem 0.5rem;border-radius:20px;font-weight:700;}
+.progress-entry-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:0.5rem;font-size:0.78rem;}
+.progress-entry-grid .item{background:#f5f9ff;padding:0.35rem 0.5rem;border-radius:0.5rem;}
+.progress-entry-grid .item .label{font-size:0.6rem;color:#7a8f9e;text-transform:uppercase;font-weight:700;letter-spacing:0.3px;}
 .progress-entry-grid .item .value{font-weight:700;color:#0b1e2b;}
-.progress-entry-note{margin-top:0.5rem;font-size:0.8rem;color:#4c6d84;font-style:italic;padding:0.4rem 0.6rem;background:#f8f9fa;border-radius:0.6rem;}
-.profile-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;}
-.profile-field{background:#fff;padding:0.9rem 1rem;border-radius:1rem;border:1px solid #e2edf7;}
-.profile-field .label{font-size:0.68rem;color:#7a8f9e;text-transform:uppercase;font-weight:700;letter-spacing:0.3px;margin-bottom:0.2rem;}
-.profile-field .value{font-weight:700;color:#0b1e2b;font-size:1rem;}
-.daily-times-panel{background:linear-gradient(135deg,#fff3e0,#ffe0b2);border:2px solid #ffb74d;border-radius:1.4rem;padding:1.4rem 1.5rem;margin-bottom:1.5rem;}
-.daily-times-panel h4{font-size:1.05rem;font-weight:700;color:#e65100;margin-bottom:0.8rem;}
-.daily-times-panel .subtitle{font-size:0.82rem;color:#8d6e00;margin-bottom:1rem;}
-.daily-times-list{display:flex;flex-direction:column;gap:0.5rem;max-height:280px;overflow-y:auto;padding:0.3rem;}
-.daily-time-row{display:flex;justify-content:space-between;align-items:center;background:#fff;padding:0.6rem 1rem;border-radius:0.9rem;border:1px solid #ffe082;gap:0.6rem;flex-wrap:wrap;}
-.daily-time-row .info{flex:1;font-size:0.85rem;}
+.progress-entry-note{margin-top:0.4rem;font-size:0.76rem;color:#4c6d84;font-style:italic;padding:0.35rem 0.55rem;background:#f8f9fa;border-radius:0.5rem;line-height:1.4;}
+
+/* ============ PROFILE ============ */
+.profile-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:0.7rem;}
+.profile-field{background:#fff;padding:0.75rem 0.9rem;border-radius:0.85rem;border:1px solid #e2edf7;}
+.profile-field .label{font-size:0.65rem;color:#7a8f9e;text-transform:uppercase;font-weight:700;letter-spacing:0.3px;margin-bottom:0.15rem;}
+.profile-field .value{font-weight:700;color:#0b1e2b;font-size:0.9rem;word-break:break-word;}
+
+/* ============ DAILY TIMES ============ */
+.daily-times-panel{background:linear-gradient(135deg,#fff3e0,#ffe0b2);border:2px solid #ffb74d;border-radius:1.1rem;padding:1.1rem 1.2rem;margin-bottom:1.2rem;}
+.daily-times-panel h4{font-size:0.95rem;font-weight:700;color:#e65100;margin-bottom:0.7rem;}
+.daily-times-panel .subtitle{font-size:0.78rem;color:#8d6e00;margin-bottom:0.9rem;line-height:1.4;}
+.daily-times-list{display:flex;flex-direction:column;gap:0.5rem;max-height:300px;overflow-y:auto;padding:0.3rem;}
+.daily-time-row{display:flex;justify-content:space-between;align-items:center;background:#fff;padding:0.55rem 0.9rem;border-radius:0.8rem;border:1px solid #ffe082;gap:0.5rem;flex-wrap:wrap;}
+.daily-time-row .info{flex:1;font-size:0.82rem;min-width:0;}
 .daily-time-row .date-label{font-weight:700;color:#e65100;}
-.daily-time-row .time-label{font-family:monospace;color:#0b1e2b;font-weight:700;font-size:0.9rem;}
-.daily-time-row .note-label{font-size:0.72rem;color:#6a1b9a;font-style:italic;}
+.daily-time-row .time-label{font-family:monospace;color:#0b1e2b;font-weight:700;font-size:0.85rem;}
+.daily-time-row .note-label{font-size:0.7rem;color:#6a1b9a;font-style:italic;}
 .daily-time-row .actions{display:flex;gap:0.3rem;}
 
-/* APPROVAL CARDS */
-.approval-card{background:#fff;border-radius:1rem;padding:1rem 1.2rem;border:2px solid #ffb74d;margin-bottom:0.8rem;}
+/* ============ APPROVALS ============ */
+.approval-card{background:#fff;border-radius:0.85rem;padding:0.9rem 1rem;border:2px solid #ffb74d;margin-bottom:0.7rem;}
 .approval-card.completed{border-color:#a5d6a7;background:#f8fdf9;}
 .approval-card.rejected{border-color:#ef9a9a;background:#fef5f5;}
-.approval-card-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.6rem;margin-bottom:0.7rem;padding-bottom:0.5rem;border-bottom:1px dashed #e0e0e0;}
-.approval-card-title{font-weight:700;color:#e65100;font-size:0.95rem;}
+.approval-card-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.6rem;padding-bottom:0.4rem;border-bottom:1px dashed #e0e0e0;}
+.approval-card-title{font-weight:700;color:#e65100;font-size:0.85rem;}
 .approval-card-title.completed{color:#1f4e3d;}
 .approval-card-title.rejected{color:#b71c1c;}
-.approval-card-date{font-size:0.72rem;color:#4c6d84;}
-.approval-diff-table{width:100%;border-collapse:collapse;font-size:0.82rem;margin-bottom:0.7rem;}
-.approval-diff-table th,.approval-diff-table td{padding:0.4rem 0.6rem;text-align:left;border-bottom:1px solid #f0f0f0;}
-.approval-diff-table th{background:#f9f9f9;font-size:0.7rem;text-transform:uppercase;color:#7a8f9e;font-weight:700;}
+.approval-card-date{font-size:0.68rem;color:#4c6d84;}
+.approval-diff-table{width:100%;border-collapse:collapse;font-size:0.78rem;margin-bottom:0.6rem;}
+.approval-diff-table th,.approval-diff-table td{padding:0.35rem 0.4rem;text-align:left;border-bottom:1px solid #f0f0f0;}
+.approval-diff-table th{background:#f9f9f9;font-size:0.65rem;text-transform:uppercase;color:#7a8f9e;font-weight:700;}
 .approval-diff-table td.field{font-weight:700;color:#12344d;width:30%;}
-.approval-diff-table td.old{color:#c62828;text-decoration:line-through;font-size:0.78rem;}
+.approval-diff-table td.old{color:#c62828;text-decoration:line-through;font-size:0.75rem;}
 .approval-diff-table td.new{color:#2e7d32;font-weight:700;}
 .approval-diff-table td.arrow{width:20px;text-align:center;color:#7a8f9e;}
-.approval-actions{display:flex;gap:0.6rem;flex-wrap:wrap;}
-.approval-note-input{flex:1 1 200px;padding:0.5rem 0.8rem;font-size:0.82rem;border-radius:0.6rem;border:1.5px solid #cdddee;}
+.approval-actions{display:flex;gap:0.5rem;flex-wrap:wrap;}
+.approval-note-input{flex:1 1 180px;padding:0.45rem 0.7rem;font-size:0.78rem;border-radius:0.5rem;border:1.5px solid #cdddee;min-height:38px;}
 
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:9999;padding:1rem;backdrop-filter:blur(4px);}
+/* ============ MODALS ============ */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:9999;padding:0.8rem;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);overflow-y:auto;}
 .modal-overlay.hidden{display:none !important;}
-.modal-box{background:#fff;border-radius:1.8rem;max-width:720px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 30px 60px -12px rgba(0,0,0,0.4);}
-.modal-header{background:linear-gradient(135deg,#ff9800,#f57c00);padding:1.6rem 2rem;color:#fff;border-radius:1.8rem 1.8rem 0 0;}
-.modal-header h3{font-size:1.4rem;font-weight:800;}
-.modal-header p{font-size:0.9rem;margin-top:0.4rem;opacity:0.95;}
+.modal-box{background:#fff;border-radius:1.3rem;max-width:640px;width:100%;max-height:94vh;overflow-y:auto;box-shadow:0 30px 60px -12px rgba(0,0,0,0.4);}
+.modal-header{padding:1.2rem 1.4rem;color:#fff;border-radius:1.3rem 1.3rem 0 0;}
+.modal-header h3{font-size:1.15rem;font-weight:800;line-height:1.2;}
+.modal-header p{font-size:0.82rem;margin-top:0.3rem;opacity:0.95;}
 .modal-header.purple{background:linear-gradient(135deg,#6a1b9a,#8e24aa);}
 .modal-header.red{background:linear-gradient(135deg,#c62828,#b71c1c);}
 .modal-header.green{background:linear-gradient(135deg,#2e7d32,#1b5e20);}
 .modal-header.orange{background:linear-gradient(135deg,#e65100,#ef6c00);}
-.modal-body{padding:1.8rem 2rem;}
-.modal-warning{background:#fff3e0;border-left:5px solid #ff9800;padding:1rem 1.2rem;border-radius:0.8rem;margin-bottom:1.4rem;color:#7a4400;font-size:0.9rem;line-height:1.5;}
-.modal-data-list{background:#f5f9fc;border-radius:1rem;padding:1rem 1.3rem;margin-bottom:1.4rem;font-size:0.88rem;border:1px solid #d3e3f0;max-height:200px;overflow-y:auto;}
-.modal-data-row{display:flex;justify-content:space-between;padding:0.4rem 0;border-bottom:1px dashed #cbdae7;}
+.modal-header:not(.purple):not(.red):not(.green):not(.orange){background:linear-gradient(135deg,#ff9800,#f57c00);}
+.modal-body{padding:1.2rem 1.4rem;}
+.modal-warning{background:#fff3e0;border-left:5px solid #ff9800;padding:0.8rem 1rem;border-radius:0.7rem;margin-bottom:1rem;color:#7a4400;font-size:0.85rem;line-height:1.5;}
+.modal-data-list{background:#f5f9fc;border-radius:0.8rem;padding:0.8rem 1rem;margin-bottom:1.1rem;font-size:0.82rem;border:1px solid #d3e3f0;max-height:200px;overflow-y:auto;}
+.modal-data-row{display:flex;justify-content:space-between;padding:0.35rem 0;border-bottom:1px dashed #cbdae7;gap:0.5rem;flex-wrap:wrap;}
 .modal-data-row:last-child{border-bottom:none;}
 .modal-data-row .label{color:#4c6d84;}
 .modal-data-row .value{font-weight:700;color:#12344d;}
-.modal-actions{display:flex;gap:0.8rem;flex-wrap:wrap;margin-top:1.2rem;}
-.modal-email-preview{background:#fafafa;border-radius:1rem;padding:1rem 1.3rem;margin-top:1rem;font-family:'SF Mono',monospace;font-size:0.75rem;color:#444;max-height:220px;overflow-y:auto;border:1px solid #e0e0e0;white-space:pre-wrap;line-height:1.5;}
-.credentials-box{background:linear-gradient(135deg,#e8f5e9,#e0f2f1);border:2px solid #a5d6a7;border-radius:1rem;padding:1rem 1.2rem;margin:1rem 0;}
-.credentials-box .label{font-size:0.72rem;color:#1f4e3d;text-transform:uppercase;font-weight:700;letter-spacing:0.3px;margin-bottom:0.3rem;}
-.credentials-box .value{font-family:monospace;font-size:1.1rem;font-weight:800;color:#0b1e2b;user-select:all;padding:0.3rem 0;}
-.credentials-box .row{display:flex;justify-content:space-between;align-items:center;gap:0.5rem;padding:0.4rem 0;border-bottom:1px dashed #a5d6a7;}
-.credentials-box .row:last-child{border-bottom:none;}
+.modal-actions{display:flex;gap:0.6rem;flex-wrap:wrap;margin-top:1rem;}
+.modal-actions button{flex:1 1 160px;}
+.modal-email-preview{background:#fafafa;border-radius:0.8rem;padding:0.9rem 1rem;margin-top:0.8rem;font-family:'SF Mono',monospace;font-size:0.72rem;color:#444;max-height:240px;overflow-y:auto;border:1px solid #e0e0e0;white-space:pre-wrap;line-height:1.5;word-break:break-word;}
 
-/* client pending banner */
-.client-pending-banner{background:#fff3e0;border:2px solid #ffb74d;border-radius:1rem;padding:0.9rem 1.1rem;margin-bottom:1rem;font-size:0.85rem;color:#7a4400;}
-.client-pending-banner strong{color:#e65100;}
+/* ============ SCROLLBAR ============ */
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-thumb{background:#b6cfde;border-radius:20px;}
 
-@media (max-width:700px){.card{padding:1.5rem;}.sessions-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));}}
+/* ==================================================
+   RESPONSIVE — TABLET
+   ================================================== */
+@media (max-width:1100px){
+  .client-panel{max-width:100%;flex:1 1 100%;}
+  .admin-panel{max-width:100%;flex:1 1 100%;}
+}
+
+/* ==================================================
+   RESPONSIVE — MOBILE PHONE
+   ================================================== */
+@media (max-width:700px){
+  body{padding:0.7rem 0.5rem;font-size:14px;}
+  .app-container{gap:1rem;}
+  .card{padding:1rem;border-radius:1.1rem;}
+  .badge{font-size:0.65rem;padding:0.2rem 0.75rem;}
+  h2{font-size:1.35rem;}
+  .subhead{font-size:0.82rem;margin-bottom:1rem;}
+  .cloud-status{font-size:0.7rem;padding:0.4rem 0.8rem;}
+  .input-group{margin-bottom:0.9rem;}
+  input,select,textarea{padding:0.7rem 0.9rem;font-size:0.9rem;min-height:44px;}
+  label{font-size:0.7rem;}
+  button{padding:0.65rem 1.1rem;font-size:0.85rem;min-height:42px;}
+  .btn-small{padding:0.4rem 0.65rem;font-size:0.7rem;min-height:34px;}
+  .btn-whatsapp,.btn-email{padding:0.7rem 1.1rem;font-size:0.85rem;}
+
+  /* Stack tabs */
+  .tabs-bar{padding:0.3rem;gap:0.2rem;}
+  .tab-btn{padding:0.45rem 0.75rem;font-size:0.72rem;}
+
+  /* Client list */
+  .client-item{padding:0.6rem 0.8rem;}
+  .client-name{font-size:0.85rem;}
+  .client-login-badge,.client-time-badge,.client-phone-badge,.client-pass-badge,.client-pending-badge{font-size:0.62rem;padding:0.18rem 0.5rem;}
+
+  /* Grid stacking */
+  .sessions-grid{grid-template-columns:repeat(auto-fill,minmax(115px,1fr));gap:0.5rem;}
+  .session-card{padding:0.55rem 0.55rem 0.45rem;}
+  .session-card label{font-size:0.75rem;}
+  .session-date,.session-time-custom,.session-checked-time{font-size:0.62rem;margin-left:1.4rem;}
+  .session-amount{font-size:0.68rem;margin-left:1.4rem;}
+
+  /* Summary */
+  .summary-box{padding:0.8rem 1rem;flex-direction:column;align-items:flex-start;}
+  .summary-amount{font-size:1.2rem;}
+
+  /* Grid layouts */
+  .exercise-entry-fields{grid-template-columns:repeat(2,1fr);}
+  .assign-custom-fields{grid-template-columns:repeat(2,1fr);}
+  .progress-entry-grid{grid-template-columns:repeat(2,1fr);}
+  .profile-grid{grid-template-columns:1fr;}
+
+  /* Modal */
+  .modal-overlay{padding:0.5rem;align-items:flex-start;padding-top:1rem;}
+  .modal-box{max-height:none;border-radius:1rem;}
+  .modal-header{padding:1rem 1.1rem;border-radius:1rem 1rem 0 0;}
+  .modal-header h3{font-size:1.05rem;}
+  .modal-body{padding:1rem 1.1rem;}
+  .modal-actions button{flex:1 1 100%;}
+
+  /* Settings panels */
+  .settings-panel{padding:1rem;border-radius:1rem;}
+  .danger-panel{padding:1rem;border-radius:1rem;}
+  .global-settings{padding:0.9rem 1rem;gap:0.6rem;}
+  .global-settings-title{font-size:0.82rem;}
+
+  /* Buttons action bar */
+  .action-buttons button{flex:1 1 100%;}
+  .library-row{padding:0.6rem 0.8rem;}
+  .assign-row{padding:0.7rem 0.8rem;}
+  .progress-entry{padding:0.7rem 0.85rem;}
+  .credentials-box{padding:0.85rem 0.95rem;}
+  .credentials-box .value{font-size:0.9rem;}
+  .daily-times-panel{padding:1rem;}
+  .daily-time-row{padding:0.5rem 0.8rem;}
+  .approval-card{padding:0.8rem 0.9rem;}
+  .approval-diff-table{font-size:0.72rem;}
+  .approval-diff-table th,.approval-diff-table td{padding:0.3rem 0.35rem;}
+
+  /* Tabs scroll */
+  .tabs-bar{overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch;}
+  .tabs-bar::-webkit-scrollbar{height:3px;}
+}
+
+/* Small phones */
+@media (max-width:400px){
+  body{padding:0.5rem 0.4rem;}
+  .card{padding:0.9rem;}
+  h2{font-size:1.2rem;}
+  .session-card label{font-size:0.72rem;}
+  .session-card input[type="checkbox"]{width:15px;height:15px;}
+  .exercise-entry-fields{grid-template-columns:1fr;}
+  .assign-custom-fields{grid-template-columns:1fr;}
+  .progress-entry-grid{grid-template-columns:1fr;}
+}
 </style>
 </head>
 <body>
@@ -259,20 +407,20 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
 <!-- ARCHIVE MODAL -->
 <div id="archiveModal" class="modal-overlay hidden">
   <div class="modal-box">
-    <div class="modal-header"><h3>📦 Time to Archive Old Data</h3><p>Data before <span id="archiveCutoffLabel">—</span> is ready to archive.</p></div>
+    <div class="modal-header"><h3>📦 Time to Archive Old Data</h3><p>Data before <span id="archiveCutoffLabel">—</span> is ready.</p></div>
     <div class="modal-body">
       <div class="modal-warning"><strong>⚠️ Important:</strong> Draft the email, send it, then confirm to wipe old data.</div>
       <div class="modal-data-list" id="archiveDataList"></div>
       <div class="modal-actions">
-        <button class="btn-archive" id="draftEmailBtn">📧 Draft Email With All Data</button>
-        <button class="btn-wipe" id="wipeDataBtn" disabled>🗑️ Email Sent → Wipe Data</button>
+        <button class="btn-archive" id="draftEmailBtn">📧 Draft Email</button>
+        <button class="btn-wipe" id="wipeDataBtn" disabled>🗑️ Email Sent → Wipe</button>
       </div>
       <div id="archiveStatus" class="status-msg"></div>
-      <div id="emailPreviewContainer" class="hidden" style="margin-top:1rem;">
-        <div style="font-size:0.85rem;font-weight:700;color:#1f4e3d;margin-bottom:0.4rem;">📧 Email Preview:</div>
+      <div id="emailPreviewContainer" class="hidden" style="margin-top:0.8rem;">
+        <div style="font-size:0.82rem;font-weight:700;color:#1f4e3d;margin-bottom:0.4rem;">📧 Email Preview:</div>
         <div class="modal-email-preview" id="emailPreview"></div>
       </div>
-      <button class="btn-secondary" id="archiveLaterBtn" style="margin-top:1rem;width:100%;">⏰ Remind Me Later</button>
+      <button class="btn-secondary" id="archiveLaterBtn" style="margin-top:0.8rem;width:100%;">⏰ Remind Me Later</button>
     </div>
   </div>
 </div>
@@ -285,14 +433,14 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
       <input type="hidden" id="editExerciseId">
       <div class="flex-row">
         <div class="input-group" style="flex:2 1 200px;"><label for="exName">Name *</label><input type="text" id="exName"></div>
-        <div class="input-group" style="flex:1 1 140px;"><label for="exCategory">Category</label><input type="text" id="exCategory"></div>
-        <div class="input-group" style="flex:1 1 140px;"><label for="exMuscle">Muscle</label><input type="text" id="exMuscle"></div>
+        <div class="input-group" style="flex:1 1 120px;"><label for="exCategory">Category</label><input type="text" id="exCategory"></div>
+        <div class="input-group" style="flex:1 1 120px;"><label for="exMuscle">Muscle</label><input type="text" id="exMuscle"></div>
       </div>
       <div class="flex-row">
-        <div class="input-group" style="flex:1;"><label for="exSets">Sets</label><input type="number" id="exSets" min="1"></div>
-        <div class="input-group" style="flex:1;"><label for="exReps">Reps</label><input type="text" id="exReps"></div>
-        <div class="input-group" style="flex:1;"><label for="exWeight">Weight</label><input type="text" id="exWeight"></div>
-        <div class="input-group" style="flex:1;"><label for="exRest">Rest</label><input type="text" id="exRest"></div>
+        <div class="input-group" style="flex:1 1 100px;"><label for="exSets">Sets</label><input type="number" id="exSets" min="1"></div>
+        <div class="input-group" style="flex:1 1 100px;"><label for="exReps">Reps</label><input type="text" id="exReps"></div>
+        <div class="input-group" style="flex:1 1 100px;"><label for="exWeight">Weight</label><input type="text" id="exWeight"></div>
+        <div class="input-group" style="flex:1 1 100px;"><label for="exRest">Rest</label><input type="text" id="exRest"></div>
       </div>
       <div class="input-group"><label for="exNotes">Notes</label><input type="text" id="exNotes"></div>
       <div class="input-group"><label for="exVideo">Video URL</label><input type="text" id="exVideo"></div>
@@ -305,11 +453,11 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
 <!-- CLEAR ALL MODAL -->
 <div id="clearAllModal" class="modal-overlay hidden">
   <div class="modal-box">
-    <div class="modal-header red"><h3>⚠️ Clear ALL Data From Cloud</h3><p>Permanently delete everything.</p></div>
+    <div class="modal-header red"><h3>⚠️ Clear ALL Data</h3><p>Permanently delete everything.</p></div>
     <div class="modal-body">
-      <div class="modal-warning" style="background:#ffebee;border-left-color:#c62828;color:#7f1d1d;"><strong>🚨 Cannot be undone.</strong><br>Type <strong>DELETE</strong>.</div>
+      <div class="modal-warning" style="background:#ffebee;border-left-color:#c62828;color:#7f1d1d;"><strong>🚨 Cannot be undone.</strong> Type <strong>DELETE</strong>.</div>
       <div class="input-group"><label for="clearConfirmInput">Type DELETE</label><input type="text" id="clearConfirmInput" autocomplete="off"></div>
-      <div class="modal-actions"><button class="btn-danger" id="confirmClearAllBtn" disabled>🗑️ Yes, Clear All</button><button class="btn-secondary" id="cancelClearAllBtn">Cancel</button></div>
+      <div class="modal-actions"><button class="btn-danger" id="confirmClearAllBtn" disabled>🗑️ Clear All</button><button class="btn-secondary" id="cancelClearAllBtn">Cancel</button></div>
       <div id="clearAllStatus" class="status-msg"></div>
     </div>
   </div>
@@ -318,9 +466,9 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
 <!-- DELETE CLIENT MODAL -->
 <div id="deleteClientModal" class="modal-overlay hidden">
   <div class="modal-box">
-    <div class="modal-header red"><h3>🗑️ Delete Client Permanently</h3></div>
+    <div class="modal-header red"><h3>🗑️ Delete Client</h3></div>
     <div class="modal-body">
-      <div class="modal-warning" style="background:#ffebee;border-left-color:#c62828;color:#7f1d1d;"><strong>🚨 Permanent:</strong> Client + all data gone forever.</div>
+      <div class="modal-warning" style="background:#ffebee;border-left-color:#c62828;color:#7f1d1d;"><strong>🚨 Permanent:</strong> All data gone forever.</div>
       <div class="input-group"><label for="deleteConfirmInput">Type DELETE</label><input type="text" id="deleteConfirmInput"></div>
       <div class="modal-actions"><button class="btn-danger" id="confirmDeleteClientBtn" disabled>🗑️ Delete</button><button class="btn-secondary" id="cancelDeleteClientBtn">Cancel</button></div>
       <div id="deleteClientStatus" class="status-msg"></div>
@@ -331,23 +479,23 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
 <!-- PROGRESS MODAL -->
 <div id="progressModal" class="modal-overlay hidden">
   <div class="modal-box">
-    <div class="modal-header green"><h3 id="progressModalTitle">➕ Add Progress Entry</h3></div>
+    <div class="modal-header green"><h3 id="progressModalTitle">➕ Add Progress</h3></div>
     <div class="modal-body">
       <input type="hidden" id="editProgressId">
       <div class="flex-row">
-        <div class="input-group"><label for="pgDate">Date</label><input type="date" id="pgDate"></div>
-        <div class="input-group"><label for="pgWeight">Weight (kg)</label><input type="number" id="pgWeight" step="0.1"></div>
-        <div class="input-group"><label for="pgBodyFat">Body fat %</label><input type="number" id="pgBodyFat" step="0.1"></div>
+        <div class="input-group" style="flex:1 1 140px;"><label for="pgDate">Date</label><input type="date" id="pgDate"></div>
+        <div class="input-group" style="flex:1 1 110px;"><label for="pgWeight">Weight (kg)</label><input type="number" id="pgWeight" step="0.1"></div>
+        <div class="input-group" style="flex:1 1 110px;"><label for="pgBodyFat">Body fat %</label><input type="number" id="pgBodyFat" step="0.1"></div>
       </div>
       <div class="flex-row">
-        <div class="input-group"><label for="pgChest">Chest</label><input type="number" id="pgChest" step="0.1"></div>
-        <div class="input-group"><label for="pgWaist">Waist</label><input type="number" id="pgWaist" step="0.1"></div>
-        <div class="input-group"><label for="pgHips">Hips</label><input type="number" id="pgHips" step="0.1"></div>
+        <div class="input-group" style="flex:1 1 100px;"><label for="pgChest">Chest</label><input type="number" id="pgChest" step="0.1"></div>
+        <div class="input-group" style="flex:1 1 100px;"><label for="pgWaist">Waist</label><input type="number" id="pgWaist" step="0.1"></div>
+        <div class="input-group" style="flex:1 1 100px;"><label for="pgHips">Hips</label><input type="number" id="pgHips" step="0.1"></div>
       </div>
       <div class="flex-row">
-        <div class="input-group"><label for="pgArms">Arms</label><input type="number" id="pgArms" step="0.1"></div>
-        <div class="input-group"><label for="pgThighs">Thighs</label><input type="number" id="pgThighs" step="0.1"></div>
-        <div class="input-group"><label for="pgPhoto">Photo URL</label><input type="text" id="pgPhoto"></div>
+        <div class="input-group" style="flex:1 1 100px;"><label for="pgArms">Arms</label><input type="number" id="pgArms" step="0.1"></div>
+        <div class="input-group" style="flex:1 1 100px;"><label for="pgThighs">Thighs</label><input type="number" id="pgThighs" step="0.1"></div>
+        <div class="input-group" style="flex:1 1 180px;"><label for="pgPhoto">Photo URL</label><input type="text" id="pgPhoto"></div>
       </div>
       <div class="input-group"><label for="pgNotes">Notes</label><input type="text" id="pgNotes"></div>
       <div class="modal-actions"><button class="btn-admin" id="saveProgressBtn">💾 Save</button><button class="btn-secondary" id="cancelProgressBtn">Cancel</button></div>
@@ -359,15 +507,15 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
 <!-- CLIENT PROFILE EDIT MODAL -->
 <div id="profileEditModal" class="modal-overlay hidden">
   <div class="modal-box">
-    <div class="modal-header green"><h3>✏️ Edit My Profile</h3><p style="font-size:0.85rem;">Changes require admin approval before going live</p></div>
+    <div class="modal-header green"><h3>✏️ Edit My Profile</h3><p style="font-size:0.8rem;">Changes require admin approval</p></div>
     <div class="modal-body">
       <div class="modal-warning" style="background:#e4eef9;border-left-color:#2b6e9e;color:#1a4b6e;">
         📩 Your changes will be reviewed by your trainer before they're applied.
       </div>
       <div class="flex-row">
-        <div class="input-group"><label for="peHeight">Height (cm)</label><input type="number" id="peHeight" step="0.1"></div>
-        <div class="input-group"><label for="peGender">Gender</label><input type="text" id="peGender"></div>
-        <div class="input-group"><label for="peBirth">Birth date</label><input type="date" id="peBirth"></div>
+        <div class="input-group" style="flex:1 1 110px;"><label for="peHeight">Height (cm)</label><input type="number" id="peHeight" step="0.1"></div>
+        <div class="input-group" style="flex:1 1 110px;"><label for="peGender">Gender</label><input type="text" id="peGender"></div>
+        <div class="input-group" style="flex:1 1 150px;"><label for="peBirth">Birth date</label><input type="date" id="peBirth"></div>
       </div>
       <div class="input-group"><label for="peGoal">Goal</label><input type="text" id="peGoal" placeholder="Lose 5kg, gain muscle, etc."></div>
       <div class="input-group"><label for="peMedical">Medical notes</label><input type="text" id="peMedical" placeholder="Any injuries or conditions"></div>
@@ -384,7 +532,7 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
 <!-- DAILY TIME MODAL -->
 <div id="dailyTimeModal" class="modal-overlay hidden">
   <div class="modal-box">
-    <div class="modal-header orange"><h3>⏰ Set Time for a Specific Day</h3></div>
+    <div class="modal-header orange"><h3>⏰ Set Time for a Day</h3></div>
     <div class="modal-body">
       <input type="hidden" id="dtDayDate">
       <div class="input-group"><label for="dtDateLabel">Date</label><input type="text" id="dtDateLabel" readonly></div>
@@ -405,8 +553,8 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
     <span class="badge">🔐 client access</span>
     <h2>Personal training</h2>
     <div class="subhead">Log in to view your plan, sessions & progress</div>
-    <div id="cloudStatusClient" class="cloud-status"><div class="dot"></div><span id="cloudStatusClientText">Checking cloud...</span></div>
-    <div class="input-group"><label for="clientLoginId">Login ID</label><input type="text" id="clientLoginId" placeholder="Your login ID" autocomplete="off"></div>
+    <div id="cloudStatusClient" class="cloud-status"><div class="dot"></div><span id="cloudStatusClientText">Checking...</span></div>
+    <div class="input-group"><label for="clientLoginId">Login ID</label><input type="text" id="clientLoginId" placeholder="Your login ID" autocomplete="off" autocapitalize="characters"></div>
     <div class="input-group"><label for="clientPassword">Password</label><input type="password" id="clientPassword" placeholder="Password" autocomplete="off"></div>
     <button class="btn-primary" id="clientLoginBtn">Log in</button>
     <div id="clientStatus" class="status-msg"></div>
@@ -416,7 +564,7 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
         <strong>⏳ Pending approval:</strong> Your profile changes are waiting for your trainer's approval.
       </div>
       <div class="client-dash-card">
-        <div style="font-weight:700;color:#1f4e3d;font-size:1.1rem;">💪 Welcome, <span id="welcomeClientName">Client</span>!</div>
+        <div style="font-weight:700;color:#1f4e3d;font-size:1rem;">💪 Welcome, <span id="welcomeClientName">Client</span>!</div>
         <div style="margin-top:0.7rem;color:#1e3b5c;">
           <div class="dash-row"><span>Month:</span> <strong id="clientDashMonth">—</strong></div>
           <div class="dash-row"><span>Sessions done:</span> <strong id="clientDashDone">0</strong></div>
@@ -429,29 +577,29 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
         </div>
       </div>
 
-      <div class="tabs-bar" style="margin-top:1.2rem;">
+      <div class="tabs-bar" style="margin-top:1rem;">
         <button class="tab-btn active" data-ctab="plan">🏋️ My Plan</button>
         <button class="tab-btn" data-ctab="progress">📈 Progress</button>
         <button class="tab-btn" data-ctab="profile">👤 My Profile</button>
       </div>
 
       <div class="tab-content" id="ctab-plan">
-        <div id="clientPlanBlock" style="background:#f5fbff;padding:1rem;border-radius:1rem;border-left:4px solid #1976d2;">
-          <div style="font-weight:700;color:#0d47a1;font-size:0.9rem;margin-bottom:0.5rem;">🏋️ Your Exercise Plan</div>
+        <div id="clientPlanBlock" style="background:#f5fbff;padding:0.9rem;border-radius:0.9rem;border-left:4px solid #1976d2;">
+          <div style="font-weight:700;color:#0d47a1;font-size:0.85rem;margin-bottom:0.5rem;">🏋️ Your Exercise Plan</div>
           <div id="clientPlanList"></div>
         </div>
       </div>
 
       <div class="tab-content hidden" id="ctab-progress">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.8rem;flex-wrap:wrap;gap:0.5rem;">
-          <span style="font-weight:700;color:#1f4e3d;font-size:0.9rem;">📈 Your Progress</span>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.7rem;flex-wrap:wrap;gap:0.5rem;">
+          <span style="font-weight:700;color:#1f4e3d;font-size:0.85rem;">📈 Your Progress</span>
           <button class="btn-green-small btn-small" id="clientAddProgressBtn">➕ Add Entry</button>
         </div>
         <div id="clientProgressList" class="progress-list"></div>
       </div>
 
       <div class="tab-content hidden" id="ctab-profile">
-        <div style="display:flex;justify-content:flex-end;margin-bottom:0.6rem;">
+        <div style="display:flex;justify-content:flex-end;margin-bottom:0.5rem;">
           <button class="btn-green-small btn-small" id="clientEditProfileBtn">✏️ Edit Profile</button>
         </div>
         <div id="clientProfileView"></div>
@@ -464,19 +612,19 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
     <span class="badge admin-badge">⚙️ admin portal</span>
     <h2>Trainer dashboard</h2>
     <div class="subhead admin-subhead">Manage clients, exercises, sessions & progress</div>
-    <div id="cloudStatusAdmin" class="cloud-status"><div class="dot"></div><span id="cloudStatusAdminText">Checking cloud...</span></div>
+    <div id="cloudStatusAdmin" class="cloud-status"><div class="dot"></div><span id="cloudStatusAdminText">Checking...</span></div>
 
     <div id="adminLoginBlock">
-      <div class="input-group"><label for="adminLoginId">Admin Login ID</label><input type="text" id="adminLoginId" autocomplete="off"></div>
+      <div class="input-group"><label for="adminLoginId">Admin Login ID</label><input type="text" id="adminLoginId" autocomplete="off" autocapitalize="off"></div>
       <div class="input-group"><label for="adminMasterPassword">Admin Password</label><input type="password" id="adminMasterPassword" autocomplete="off"></div>
       <button class="btn-admin" id="adminLoginBtn" style="width:100%;">Unlock</button>
       <div id="adminAuthStatus" class="status-msg"></div>
     </div>
 
     <div id="adminContent" class="hidden">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.8rem;flex-wrap:wrap;gap:0.5rem;">
-        <span style="font-weight:600;color:#1f4e3d;">✔️ Admin (<span id="adminDisplayId">—</span>)</span>
-        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.7rem;flex-wrap:wrap;gap:0.5rem;">
+        <span style="font-weight:600;color:#1f4e3d;font-size:0.9rem;">✔️ Admin (<span id="adminDisplayId">—</span>)</span>
+        <div style="display:flex;gap:0.4rem;flex-wrap:wrap;">
           <button class="btn-approvals" id="approvalsBtn">✅ Approvals <span id="approvalsCountBadge" class="badge-count hidden">0</span></button>
           <button class="btn-exercise" id="exerciseLibraryBtn">🏋️ Library</button>
           <button class="btn-settings" id="openSettingsBtn">⚙️ Settings</button>
@@ -484,10 +632,9 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
         </div>
       </div>
 
-      <!-- APPROVALS PANEL -->
       <div id="approvalsPanel" class="settings-panel hidden" style="background:linear-gradient(135deg,#fff3e0,#ffe0b2);border-color:#ffb74d;">
         <h4 style="color:#e65100;">📋 Profile Change Approvals</h4>
-        <div style="display:flex;gap:0.5rem;margin-bottom:1rem;flex-wrap:wrap;">
+        <div style="display:flex;gap:0.5rem;margin-bottom:0.9rem;flex-wrap:wrap;">
           <button class="btn-orange-small btn-small tab-approval active" data-atab="pending">⏳ Pending</button>
           <button class="btn-secondary btn-small tab-approval" data-atab="completed">✅ Completed Log</button>
         </div>
@@ -498,18 +645,18 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
       <div id="settingsPanel" class="settings-panel hidden">
         <h4>⚙️ Admin Settings</h4>
         <div class="flex-row">
-          <div class="input-group"><label for="settingsLoginId">Admin Login ID</label><input type="text" id="settingsLoginId"></div>
-          <div class="input-group">
+          <div class="input-group" style="flex:1 1 180px;"><label for="settingsLoginId">Admin Login ID</label><input type="text" id="settingsLoginId"></div>
+          <div class="input-group" style="flex:1 1 180px;">
             <label for="settingsCurrentPassword">Current password</label>
             <div class="password-input-wrapper"><input type="password" id="settingsCurrentPassword"><button class="password-toggle" data-target="settingsCurrentPassword">👁️</button></div>
           </div>
         </div>
         <div class="flex-row">
-          <div class="input-group">
+          <div class="input-group" style="flex:1 1 180px;">
             <label for="settingsNewPassword">New password</label>
             <div class="password-input-wrapper"><input type="password" id="settingsNewPassword"><button class="password-toggle" data-target="settingsNewPassword">👁️</button></div>
           </div>
-          <div class="input-group">
+          <div class="input-group" style="flex:1 1 180px;">
             <label for="settingsConfirmPassword">Confirm password</label>
             <div class="password-input-wrapper"><input type="password" id="settingsConfirmPassword"><button class="password-toggle" data-target="settingsConfirmPassword">👁️</button></div>
           </div>
@@ -519,20 +666,20 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
         <div id="settingsStatus" class="status-msg"></div>
         <div class="danger-panel">
           <h4>🚨 Danger Zone — Clear All Data</h4>
-          <p>Permanently delete ALL clients, sessions, exercises, and logs. Cannot be undone.</p>
-          <button class="btn-clear-all" id="clearAllBtn">🗑️ Clear All Data From Cloud</button>
+          <p>Permanently delete ALL clients, sessions, exercises, and logs.</p>
+          <button class="btn-clear-all" id="clearAllBtn">🗑️ Clear All Data</button>
         </div>
       </div>
 
       <div id="libraryPanel" class="settings-panel hidden" style="background:linear-gradient(135deg,#e3f2fd,#bbdefb);border-color:#64b5f6;">
         <h4 style="color:#0d47a1;">🏋️ Exercise Library</h4>
         <button class="btn-exercise" id="addExerciseBtn">➕ Add New Exercise</button>
-        <div id="libraryList" class="library-list" style="margin-top:1rem;"></div>
+        <div id="libraryList" class="library-list" style="margin-top:0.9rem;"></div>
         <div id="libraryStatus" class="status-msg"></div>
       </div>
 
       <div class="global-settings">
-        <div class="global-settings-title">📢 Send broadcast (includes login ID + password)</div>
+        <div class="global-settings-title">📢 Send broadcast (includes login URL + credentials)</div>
         <button class="btn-send-all" id="sendAllBtn">Send to All Active Clients</button>
       </div>
       <div id="sendAllStatus" class="status-msg"></div>
@@ -544,20 +691,18 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
 
       <div class="admin-section-title">➕ Create new client</div>
       <div class="flex-row">
-        <div class="input-group" style="flex:2;"><label for="newClientName">Full name</label><input type="text" id="newClientName" placeholder="Alex Rivera"></div>
-        <div class="input-group" style="flex:2;"><label for="newClientPhone">WhatsApp (country code, no +)</label><input type="text" id="newClientPhone" placeholder="919876543210"></div>
+        <div class="input-group" style="flex:2 1 200px;"><label for="newClientName">Full name</label><input type="text" id="newClientName" placeholder="Alex Rivera"></div>
+        <div class="input-group" style="flex:2 1 180px;"><label for="newClientPhone">WhatsApp (no +)</label><input type="text" id="newClientPhone" placeholder="919876543210" inputmode="numeric"></div>
       </div>
       <div class="flex-row">
-        <div class="input-group" style="flex:2;"><label for="newClientEmail">Email (optional)</label><input type="email" id="newClientEmail"></div>
-        <div class="input-group" style="flex:2;"><label for="newClientTime">Default class time</label><input type="time" id="newClientTime" value="07:00"></div>
-        <div class="input-group" style="flex:2;"><label for="newClientRate">Rate (AED)</label><input type="number" id="newClientRate" value="200" min="1"></div>
-        <div class="input-group" style="flex:1;display:flex;align-items:flex-end;margin-bottom:1.2rem;">
-          <button class="btn-admin" id="createClientBtn" style="width:100%;">Create</button>
-        </div>
+        <div class="input-group" style="flex:2 1 200px;"><label for="newClientEmail">Email (optional)</label><input type="email" id="newClientEmail"></div>
+        <div class="input-group" style="flex:1 1 130px;"><label for="newClientTime">Default time</label><input type="time" id="newClientTime" value="07:00"></div>
+        <div class="input-group" style="flex:1 1 110px;"><label for="newClientRate">Rate (AED)</label><input type="number" id="newClientRate" value="200" min="1" inputmode="numeric"></div>
       </div>
+      <button class="btn-admin" id="createClientBtn" style="width:100%;">➕ Create Client</button>
       <div id="createClientStatus" class="status-msg"></div>
       <div id="newClientCredsBox" class="credentials-box hidden">
-        <div style="font-weight:700;color:#1f4e3d;font-size:0.9rem;margin-bottom:0.5rem;">✅ Client Created — Share Credentials</div>
+        <div style="font-weight:700;color:#1f4e3d;font-size:0.85rem;margin-bottom:0.5rem;">✅ Client Created — Share Credentials</div>
         <div class="row"><span class="label">Login ID</span><span class="value" id="newClientCredsLogin">—</span></div>
         <div class="row"><span class="label">Password</span><span class="value" id="newClientCredsPass">—</span></div>
       </div>
@@ -571,11 +716,11 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
             <span class="client-header-name" id="detailClientName">—</span>
             <span id="detailClientStatusPill" class="hidden client-header-status-closed">● CLOSED</span>
           </div>
-          <div class="client-header-rate">💵 Rate (AED): <input type="number" id="ratePerSession" class="rate-input" value="200" min="1"></div>
+          <div class="client-header-rate">💵 AED <input type="number" id="ratePerSession" class="rate-input" value="200" min="1" inputmode="numeric"></div>
         </div>
 
         <div class="credentials-box">
-          <div style="font-weight:700;color:#1f4e3d;font-size:0.9rem;margin-bottom:0.5rem;">🔑 Client Credentials</div>
+          <div style="font-weight:700;color:#1f4e3d;font-size:0.85rem;margin-bottom:0.5rem;">🔑 Client Credentials</div>
           <div class="row"><span class="label">Login ID</span><span class="value" id="detailClientLogin">—</span></div>
           <div class="row"><span class="label">Password</span><span class="value" id="detailClientPass">—</span></div>
         </div>
@@ -588,9 +733,9 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
           <button class="btn-reopen" id="reopenClientBtn">🔓 Reopen</button>
         </div>
 
-        <div id="closeClientBar" style="margin-bottom:1.4rem;display:flex;justify-content:flex-end;gap:0.5rem;flex-wrap:wrap;">
-          <button class="btn-secondary" id="deleteClientBtn">🗑️ Delete</button>
-          <button class="btn-danger" id="closeClientBtn">🔒 Close</button>
+        <div id="closeClientBar" style="margin-bottom:1.1rem;display:flex;justify-content:flex-end;gap:0.5rem;flex-wrap:wrap;">
+          <button class="btn-secondary btn-small" id="deleteClientBtn">🗑️ Delete</button>
+          <button class="btn-danger btn-small" id="closeClientBtn">🔒 Close</button>
         </div>
 
         <div class="tabs-bar">
@@ -604,7 +749,7 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
         <div class="tab-content" id="tab-reminder">
           <div class="reminder-section">
             <h4>📨 Personal message to <span id="reminderClientNameInline">—</span></h4>
-            <div style="font-size:0.78rem;color:#1f4e3d;margin-bottom:0.6rem;background:#ffffffaa;padding:0.4rem 0.8rem;border-radius:0.7rem;display:inline-block;">
+            <div style="font-size:0.75rem;color:#1f4e3d;margin-bottom:0.5rem;background:#ffffffaa;padding:0.35rem 0.7rem;border-radius:0.6rem;display:inline-block;">
               📱 To: <span id="reminderPhoneDisplay" style="font-family:monospace;font-weight:700;">—</span>
             </div>
             <div class="input-group"><label for="reminderNote">Personal note (optional)</label><input type="text" id="reminderNote" placeholder="Optional" value=""></div>
@@ -614,7 +759,7 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
               <button class="btn-email" id="sendEmailBtn">✉️ Email</button>
             </div>
             <div id="reminderStatus" class="status-msg"></div>
-            <div class="small-note">💡 Includes this client's login ID & password. Not saved to cloud.</div>
+            <div class="small-note">💡 Includes login URL, ID & password. Not saved to cloud.</div>
           </div>
         </div>
 
@@ -627,13 +772,13 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
               <option value="6">July</option><option value="7">August</option><option value="8">September</option>
               <option value="9">October</option><option value="10">November</option><option value="11">December</option>
             </select>
-            <span class="locked-msg">🔒 only admin can uncheck</span>
+            <span class="locked-msg">🔒 admin unchecks only</span>
           </div>
           <div id="sessionsGridContainer"></div>
           <div class="summary-box">
             <div>
               <div class="summary-text">✅ Completed: <span id="summaryDoneCount">0</span></div>
-              <div class="summary-text" style="font-size:0.85rem;">Rate: <strong>AED <span id="summaryRate">200</span></strong></div>
+              <div class="summary-text" style="font-size:0.82rem;">Rate: <strong>AED <span id="summaryRate">200</span></strong></div>
             </div>
             <div>
               <div class="summary-amount">AED <span id="summaryTotalAmount">0</span></div>
@@ -660,28 +805,27 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
         <div class="tab-content hidden" id="tab-progress">
           <div class="reminder-section" style="background:linear-gradient(135deg,#f3e5f5,#ede7f6);border-color:#ce93d8;">
             <h4 style="color:#6a1b9a;">📈 Client Progress</h4>
-            <button class="btn-green-small btn-small" id="adminAddProgressBtn" style="margin-bottom:0.8rem;">➕ Add Entry (as Admin)</button>
+            <button class="btn-green-small btn-small" id="adminAddProgressBtn" style="margin-bottom:0.7rem;">➕ Add Entry (as Admin)</button>
             <div id="adminProgressList" class="progress-list"></div>
           </div>
         </div>
 
-        <!-- DAILY TIMES TAB -->
         <div class="tab-content hidden" id="tab-daily">
           <div class="daily-times-panel">
             <h4>⏰ Daily time overrides</h4>
-            <div class="subtitle">Override this client's default class time for specific days. Custom times show on their dashboard.</div>
+            <div class="subtitle">Override this client's default class time for specific days.</div>
             <div class="input-group">
               <label for="dtNewDate">Pick a date</label>
               <input type="date" id="dtNewDate">
             </div>
-            <button class="btn-orange-small btn-small" id="addDailyTimeBtn" style="margin-bottom:1rem;">➕ Add / Update Time for This Day</button>
+            <button class="btn-orange-small btn-small" id="addDailyTimeBtn" style="margin-bottom:0.9rem;">➕ Add / Update Time</button>
             <div id="dailyTimesList" class="daily-times-list"></div>
             <div id="dailyTimesStatus" class="status-msg"></div>
           </div>
         </div>
       </div>
 
-      <div id="noClientSelectedMsg" style="margin-top:1.5rem;color:#7893a8;font-style:italic;text-align:center;padding:1rem;">
+      <div id="noClientSelectedMsg" style="margin-top:1.2rem;color:#7893a8;font-style:italic;text-align:center;padding:0.9rem;font-size:0.85rem;">
         👆 Select a client above to manage.
       </div>
     </div>
@@ -689,14 +833,16 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
 </div>
 
 <script>
-// ============ SUPABASE ============
+// ============ CONFIG ============
 const SUPABASE_URL = 'https://tacgfjxutmdpcatztcpu.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRhY2dmanh1dG1kcGNhdHp0Y3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk4OTEwOTYsImV4cCI6MjEwNTQ2NzA5Nn0.FpqZOgvf6ATllwPPMFLAkz_3HvexD4aztFQTY-FgQZw';
 const CURRENCY = 'AED';
 const CURRENT_YEAR = new Date().getFullYear();
 const DEFAULT_ADMIN_ID = 'TAS-Abhi';
 const DEFAULT_ADMIN_PW = 'Abhu@1818';
+const LOGIN_URL = 'https://tas-personal-training.netlify.app/';
 
+// ============ STATE ============
 let adminConfig = { admin_login_id: DEFAULT_ADMIN_ID, admin_password: DEFAULT_ADMIN_PW, archive_email: 'trainer@example.com' };
 let supabaseClient = null;
 let clients = [];
@@ -707,8 +853,8 @@ let sessionCache = {};
 let exercises = [];
 let clientExercisesCache = {};
 let workoutLogsCache = {};
-let dailyTimesCache = {};   // clientId -> [{day_date, class_time, note}]
-let profileApprovals = [];  // all approvals
+let dailyTimesCache = {};
+let profileApprovals = [];
 let selectedClientId = null;
 let selectedClientForProgress = null;
 let selectedMonth = new Date().getMonth();
@@ -746,7 +892,7 @@ function setCloudStatus(online) {
 const getMonthName = (i) => ['January','February','March','April','May','June','July','August','September','October','November','December'][i];
 function formatClassTime12(t) { if (!t) return ''; const [h,m]=t.split(':'); const hr=parseInt(h,10); const ap=hr>=12?'PM':'AM'; return `${hr%12||12}:${m} ${ap}`; }
 const formatTime12 = (iso) => iso ? new Date(iso).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true}) : '';
-const formatDateReadable = (y,m,d) => new Date(y,m,d).toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'});
+const formatDateReadable = (y,m,d) => new Date(y,m,d).toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
 const formatDateISO = (y,m,d) => `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
 const getDaysInMonth = (y,m) => new Date(y,m+1,0).getDate();
 const getSessionCacheKey = (cid,y,m) => `${cid}-${y}-${m}`;
@@ -756,7 +902,6 @@ const getClientTime = (id) => clientSettings[id]?.class_time || '07:00';
 const getSessions = (cid,y,m) => sessionCache[getSessionCacheKey(cid,y,m)] || [];
 const getExercise = (id) => exercises.find(e => e.id === id);
 
-// Get daily-time override if any; else default
 function getClientTimeForDate(clientId, year, month, day) {
   const dateStr = formatDateISO(year, month, day);
   const override = (dailyTimesCache[clientId] || []).find(d => d.day_date === dateStr);
@@ -774,7 +919,6 @@ function generateLoginId(name, phone) {
   while (clients.some(c => c.login_id === candidate)) candidate = `${base}-${n++}`;
   return candidate;
 }
-
 function generatePassword(name) {
   const first = (name || 'X').trim()[0].toUpperCase();
   const last = (name || 'X').trim().split(' ').pop()[0].toUpperCase() || 'Z';
@@ -891,7 +1035,7 @@ function renderClientTimesSummary() {
     const isClosed = !c.active;
     html += `<div class="client-times-row">
       <span class="client-times-name">${escapeHtml(c.name)}</span>
-      <span style="display:flex;gap:0.5rem;align-items:center;">
+      <span style="display:flex;gap:0.4rem;align-items:center;flex-wrap:wrap;">
         <span class="client-times-value">⏰ ${formatClassTime12(getClientTime(c.id))}</span>
         <span class="client-times-status ${isClosed ? 'status-closed-pill' : 'status-active-pill'}">${isClosed ? 'Closed' : 'Active'}</span>
       </span>
@@ -981,12 +1125,12 @@ function renderSessions() {
     const td = checkedTimes[day] ? formatTime12(checkedTimes[day]) : '';
     const isSel = selectedDay === day;
     const dayTime = getClientTimeForDate(selectedClientId, y, m, day);
-    const customTimeHtml = dayTime.isCustom ? `<div class="session-time-custom">⏰ ${formatClassTime12(dayTime.time)} (custom)</div>` : '';
+    const customTimeHtml = dayTime.isCustom ? `<div class="session-time-custom">⏰ ${formatClassTime12(dayTime.time)}</div>` : '';
     html += `<div class="session-card ${isDone ? 'done' : ''} ${isSel ? 'selected-day' : ''} ${dayTime.isCustom ? 'has-custom-time' : ''}" data-day="${day}">
       <label><input type="checkbox" class="session-checkbox" data-day="${day}" ${isDone ? 'checked' : ''}> Day ${day}</label>
       <div class="session-date">${dow}, ${getMonthName(m).slice(0,3)} ${day}</div>
       ${customTimeHtml}
-      ${isDone && td ? `<div class="session-checked-time">🕐 Checked at ${td}</div>` : ''}
+      ${isDone && td ? `<div class="session-checked-time">🕐 ${td}</div>` : ''}
       <div class="session-amount">${isDone ? CURRENCY + ' ' + amount : '—'}</div>
     </div>`;
   }
@@ -1049,7 +1193,7 @@ function openDailyWorkout(day) {
 function renderDailyEntries(dateStr, assigned) {
   const logs = workoutLogsCache[`${selectedClientId}-${dateStr}`] || [];
   if (logs.length === 0) {
-    $('dailyExerciseEntries').innerHTML = `<div style="padding:1rem;text-align:center;color:#8d6e00;font-size:0.85rem;font-style:italic;">No exercises logged yet.</div>`;
+    $('dailyExerciseEntries').innerHTML = `<div style="padding:0.9rem;text-align:center;color:#8d6e00;font-size:0.8rem;font-style:italic;">No exercises logged yet.</div>`;
     return;
   }
   let html = '';
@@ -1061,12 +1205,12 @@ function renderDailyEntries(dateStr, assigned) {
       <div class="exercise-entry-header">
         <div>
           <div class="exercise-entry-name">${escapeHtml(ex.name)}</div>
-          <div class="exercise-entry-meta">Plan: ${a.custom_sets||ex.default_sets||'-'} × ${a.custom_reps||ex.default_reps||'-'}</div>
+          <div class="exercise-entry-meta">${a.custom_sets||ex.default_sets||'-'} × ${a.custom_reps||ex.default_reps||'-'}</div>
         </div>
         <button class="btn-danger-small btn-small remove-log-btn" data-exercise-id="${ex.id}">✖</button>
       </div>
       <div class="exercise-entry-fields">
-        <div class="field"><label>Sets</label><input type="number" class="log-field" data-field="sets_done" value="${log.sets_done||''}"></div>
+        <div class="field"><label>Sets</label><input type="number" class="log-field" data-field="sets_done" value="${log.sets_done||''}" inputmode="numeric"></div>
         <div class="field"><label>Reps</label><input type="text" class="log-field" data-field="reps_done" value="${escapeHtml(log.reps_done||'')}"></div>
         <div class="field"><label>Weight</label><input type="text" class="log-field" data-field="weight_done" value="${escapeHtml(log.weight_done||'')}"></div>
         <div class="field"><label>Rest</label><input type="text" class="log-field" data-field="rest_done" value="${escapeHtml(log.rest_done||'')}"></div>
@@ -1149,18 +1293,18 @@ function renderAssignList() {
     html += `<div class="assign-row ${sel ? 'selected' : ''}" data-ex-id="${ex.id}">
       <div class="assign-row-header">
         <input type="checkbox" class="assign-checkbox" data-ex-id="${ex.id}" ${sel ? 'checked' : ''}>
-        <div style="flex:1;">
+        <div style="flex:1;min-width:0;">
           <div class="assign-row-name">${escapeHtml(ex.name)}</div>
           <div class="assign-row-meta">${ex.category?escapeHtml(ex.category)+' · ':''}${ex.default_sets||'-'} × ${ex.default_reps||'-'}</div>
         </div>
       </div>
       ${sel ? `<div class="assign-custom-fields">
-        <div class="field"><label>Sets</label><input type="number" class="assign-field" data-ex-id="${ex.id}" data-field="custom_sets" value="${a.custom_sets ?? ''}"></div>
+        <div class="field"><label>Sets</label><input type="number" class="assign-field" data-ex-id="${ex.id}" data-field="custom_sets" value="${a.custom_sets ?? ''}" inputmode="numeric"></div>
         <div class="field"><label>Reps</label><input type="text" class="assign-field" data-ex-id="${ex.id}" data-field="custom_reps" value="${escapeHtml(a.custom_reps||'')}"></div>
         <div class="field"><label>Weight</label><input type="text" class="assign-field" data-ex-id="${ex.id}" data-field="custom_weight" value="${escapeHtml(a.custom_weight||'')}"></div>
         <div class="field"><label>Rest</label><input type="text" class="assign-field" data-ex-id="${ex.id}" data-field="custom_rest" value="${escapeHtml(a.custom_rest||'')}"></div>
       </div>
-      <div class="exercise-notes-row" style="margin-top:0.5rem;"><input type="text" class="assign-field" data-ex-id="${ex.id}" data-field="custom_notes" value="${escapeHtml(a.custom_notes||'')}" placeholder="Notes" style="padding:0.5rem 0.8rem;font-size:0.82rem;border-radius:0.6rem;"></div>` : ''}
+      <div class="exercise-notes-row" style="margin-top:0.5rem;"><input type="text" class="assign-field" data-ex-id="${ex.id}" data-field="custom_notes" value="${escapeHtml(a.custom_notes||'')}" placeholder="Notes"></div>` : ''}
     </div>`;
   });
   $('assignList').innerHTML = html;
@@ -1230,7 +1374,7 @@ function renderProgressEntries(containerId, clientId, adminMode) {
       </div>
       <div class="progress-entry-grid">${parts.join('')}</div>
       ${e.notes ? `<div class="progress-entry-note">📝 ${escapeHtml(e.notes)}</div>` : ''}
-      ${e.photo_url ? `<div style="margin-top:0.4rem;font-size:0.78rem;"><a href="${escapeHtml(e.photo_url)}" target="_blank" style="color:#1976d2;">📷 View photo</a></div>` : ''}
+      ${e.photo_url ? `<div style="margin-top:0.4rem;font-size:0.75rem;"><a href="${escapeHtml(e.photo_url)}" target="_blank" style="color:#1976d2;">📷 View photo</a></div>` : ''}
       ${adminMode ? `<div style="margin-top:0.5rem;text-align:right;"><button class="btn-danger-small btn-small delete-progress-btn" data-id="${e.id}" data-client="${clientId}">🗑️</button></div>` : ''}
     </div>`;
   });
@@ -1270,7 +1414,7 @@ function openProgressModal(entry, clientId, addedBy) {
     $('pgPhoto').value = entry.photo_url || '';
   } else {
     $('editProgressId').value = '';
-    $('progressModalTitle').textContent = addedBy === 'admin' ? '➕ Add Entry (as Admin)' : '➕ Add My Progress';
+    $('progressModalTitle').textContent = addedBy === 'admin' ? '➕ Add (as Admin)' : '➕ Add My Progress';
     $('pgDate').value = new Date().toISOString().split('T')[0];
     ['pgWeight','pgBodyFat','pgChest','pgWaist','pgHips','pgArms','pgThighs','pgNotes','pgPhoto'].forEach(i => $(i).value = '');
   }
@@ -1325,7 +1469,7 @@ function renderDailyTimes() {
   const list = (dailyTimesCache[selectedClientId] || []).slice().sort((a,b) => a.day_date.localeCompare(b.day_date));
   const container = $('dailyTimesList');
   if (!container) return;
-  if (list.length === 0) { container.innerHTML = `<div class="empty-message" style="padding:1rem;text-align:center;color:#8d6e00;font-style:italic;">No custom daily times set for this client. Default time applies: <strong>${formatClassTime12(getClientTime(selectedClientId))}</strong></div>`; return; }
+  if (list.length === 0) { container.innerHTML = `<div style="padding:0.9rem;text-align:center;color:#8d6e00;font-style:italic;font-size:0.8rem;">No custom times. Default: <strong>${formatClassTime12(getClientTime(selectedClientId))}</strong></div>`; return; }
   let html = '';
   list.forEach(d => {
     html += `<div class="daily-time-row">
@@ -1341,20 +1485,15 @@ function renderDailyTimes() {
     </div>`;
   });
   container.innerHTML = html;
-  container.querySelectorAll('.dt-edit-btn').forEach(b => {
-    b.addEventListener('click', () => openDailyTimeModal(b.dataset.date));
-  });
-  container.querySelectorAll('.dt-del-btn').forEach(b => {
-    b.addEventListener('click', async () => {
-      if (!confirm('Remove this custom time?')) return;
-      try {
-        await supabaseClient.from('daily_times').delete().eq('client_id', selectedClientId).eq('day_date', b.dataset.date);
-        dailyTimesCache[selectedClientId] = (dailyTimesCache[selectedClientId]||[]).filter(x => x.day_date !== b.dataset.date);
-        renderDailyTimes();
-        renderSessions();
-      } catch (err) { console.error(err); }
-    });
-  });
+  container.querySelectorAll('.dt-edit-btn').forEach(b => b.addEventListener('click', () => openDailyTimeModal(b.dataset.date)));
+  container.querySelectorAll('.dt-del-btn').forEach(b => b.addEventListener('click', async () => {
+    if (!confirm('Remove?')) return;
+    try {
+      await supabaseClient.from('daily_times').delete().eq('client_id', selectedClientId).eq('day_date', b.dataset.date);
+      dailyTimesCache[selectedClientId] = (dailyTimesCache[selectedClientId]||[]).filter(x => x.day_date !== b.dataset.date);
+      renderDailyTimes(); renderSessions();
+    } catch (err) { console.error(err); }
+  }));
 }
 
 function openDailyTimeModal(dateStr) {
@@ -1390,9 +1529,8 @@ $('saveDailyTimeBtn').addEventListener('click', async () => {
     dailyTimesCache[selectedClientId] = dailyTimesCache[selectedClientId].filter(d => d.day_date !== dateStr);
     dailyTimesCache[selectedClientId].push({ day_date: dateStr, class_time: timeVal, note: noteVal || null });
     $('dailyTimeModal').classList.add('hidden');
-    renderDailyTimes();
-    renderSessions();
-    showStatus($('dailyTimesStatus'), '✅ Daily time saved!', 'success');
+    renderDailyTimes(); renderSessions();
+    showStatus($('dailyTimesStatus'), '✅ Saved!', 'success');
     setTimeout(() => clearStatus($('dailyTimesStatus')), 3000);
   } catch (err) { showStatus($('dailyTimeStatus'), '❌ '+err.message, 'error'); }
   finally { $('saveDailyTimeBtn').disabled = false; }
@@ -1410,15 +1548,12 @@ function renderApprovals() {
     container.innerHTML = `<div class="empty-message">No ${currentApprovalTab} approvals.</div>`;
     return;
   }
-
   let html = '';
   list.forEach(a => {
     const c = getClient(a.client_id);
     const clientName = c ? c.name : 'Unknown';
     const proposed = a.proposed_data || {};
     const current = a.current_data || {};
-
-    // Build diff table
     const fields = ['height_cm','gender','birth_date','goal','medical_notes','emergency_contact'];
     let diffRows = '';
     fields.forEach(f => {
@@ -1433,26 +1568,24 @@ function renderApprovals() {
         </tr>`;
       }
     });
-
     const statusClass = a.status === 'pending' ? '' : (a.status === 'approved' ? 'completed' : 'rejected');
     const statusColor = a.status === 'pending' ? '' : (a.status === 'approved' ? 'completed' : 'rejected');
     const submitted = new Date(a.submitted_at).toLocaleString();
     const decided = a.decided_at ? new Date(a.decided_at).toLocaleString() : '';
-
     html += `<div class="approval-card ${statusClass}">
       <div class="approval-card-header">
-        <div>
+        <div style="min-width:0;">
           <div class="approval-card-title ${statusColor}">
             ${a.status === 'pending' ? '⏳ Pending' : (a.status === 'approved' ? '✅ Approved' : '❌ Rejected')} — ${escapeHtml(clientName)}
           </div>
           <div class="approval-card-date">Submitted: ${submitted}${decided ? ' · Decided: ' + decided : ''}</div>
         </div>
-        ${a.admin_note ? `<span style="font-size:0.72rem;background:#f3e5f5;color:#6a1b9a;padding:0.2rem 0.6rem;border-radius:20px;font-weight:700;">💬 ${escapeHtml(a.admin_note)}</span>` : ''}
+        ${a.admin_note ? `<span style="font-size:0.68rem;background:#f3e5f5;color:#6a1b9a;padding:0.2rem 0.5rem;border-radius:20px;font-weight:700;">💬 ${escapeHtml(a.admin_note)}</span>` : ''}
       </div>
-      ${diffRows ? `<table class="approval-diff-table"><thead><tr><th>Field</th><th>Old</th><th></th><th>New</th></tr></thead><tbody>${diffRows}</tbody></table>` : '<div style="font-size:0.82rem;color:#7893a8;font-style:italic;">No visible differences.</div>'}
+      ${diffRows ? `<table class="approval-diff-table"><thead><tr><th>Field</th><th>Old</th><th></th><th>New</th></tr></thead><tbody>${diffRows}</tbody></table>` : '<div style="font-size:0.78rem;color:#7893a8;font-style:italic;">No visible differences.</div>'}
       ${a.status === 'pending' ? `
         <div class="approval-actions">
-          <input type="text" class="approval-note-input" id="approvalNote-${a.id}" placeholder="Optional note (reason)">
+          <input type="text" class="approval-note-input" id="approvalNote-${a.id}" placeholder="Optional note">
           <button class="btn-approve" data-id="${a.id}">✅ Approve</button>
           <button class="btn-reject" data-id="${a.id}">❌ Reject</button>
         </div>
@@ -1460,13 +1593,8 @@ function renderApprovals() {
     </div>`;
   });
   container.innerHTML = html;
-
-  container.querySelectorAll('.btn-approve').forEach(b => {
-    b.addEventListener('click', () => decideApproval(b.dataset.id, 'approved'));
-  });
-  container.querySelectorAll('.btn-reject').forEach(b => {
-    b.addEventListener('click', () => decideApproval(b.dataset.id, 'rejected'));
-  });
+  container.querySelectorAll('.btn-approve').forEach(b => b.addEventListener('click', () => decideApproval(b.dataset.id, 'approved')));
+  container.querySelectorAll('.btn-reject').forEach(b => b.addEventListener('click', () => decideApproval(b.dataset.id, 'rejected')));
 }
 
 async function decideApproval(id, decision) {
@@ -1474,19 +1602,11 @@ async function decideApproval(id, decision) {
   if (!a) return;
   const noteEl = $(`approvalNote-${id}`);
   const note = noteEl ? noteEl.value.trim() : '';
-
   if (!confirm(`${decision === 'approved' ? 'Approve' : 'Reject'} this change?`)) return;
-
   try {
-    const updates = {
-      status: decision,
-      decided_at: new Date().toISOString(),
-      admin_note: note || null
-    };
+    const updates = { status: decision, decided_at: new Date().toISOString(), admin_note: note || null };
     const { error: e1 } = await supabaseClient.from('profile_approvals').update(updates).eq('id', id);
     if (e1) throw e1;
-
-    // If approved, apply to client_profiles
     if (decision === 'approved') {
       const payload = {
         client_id: a.client_id,
@@ -1504,17 +1624,13 @@ async function decideApproval(id, decision) {
       if (e2) throw e2;
       clientProfiles[a.client_id] = { ...(clientProfiles[a.client_id]||{}), ...payload };
     }
-
     Object.assign(a, updates);
     renderApprovals();
     updateApprovalsBadge();
     renderClientList();
-    showStatus($('approvalsStatus'), `✅ ${decision === 'approved' ? 'Approved' : 'Rejected'} successfully.`, 'success');
+    showStatus($('approvalsStatus'), `✅ ${decision === 'approved' ? 'Approved' : 'Rejected'}.`, 'success');
     setTimeout(() => clearStatus($('approvalsStatus')), 3000);
-  } catch (err) {
-    console.error(err);
-    showStatus($('approvalsStatus'), `❌ ${err.message}`, 'error');
-  }
+  } catch (err) { showStatus($('approvalsStatus'), `❌ ${err.message}`, 'error'); }
 }
 
 function updateApprovalsBadge() {
@@ -1524,14 +1640,14 @@ function updateApprovalsBadge() {
   else badge.classList.add('hidden');
 }
 
-// ============ REMINDER PREVIEW ============
+// ============ REMINDER PREVIEW (WITH LOGIN URL) ============
 async function updateReminderPreview() {
   if (!selectedClientId) return;
   const c = getClient(selectedClientId); if (!c) return;
   const note = $('reminderNote').value.trim();
   const noteStr = note ? `\n\n📝 Note: ${note}` : '';
-  const creds = `\n\n🔑 Your login details:\nLogin ID: ${c.login_id}\nPassword: ${c.password_hint}`;
-  $('reminderPreviewText').textContent = `Hi ${c.name},\n\nYour schedule has been updated. Please check.${noteStr}${creds}\n\nSee you there! 💪`;
+  const creds = `\n\n🔑 Your login details:\n🌐 ${LOGIN_URL}\nLogin ID: ${c.login_id}\nPassword: ${c.password_hint}`;
+  $('reminderPreviewText').textContent = `Hi ${c.name},\n\nYour schedule has been updated. Please check the app for your class time and progress.${noteStr}${creds}\n\nSee you there! 💪`;
 }
 
 $('reminderNote').addEventListener('input', async () => {
@@ -1549,8 +1665,8 @@ function buildBroadcastMessage(c) {
   const rs = clientSettings[c.id] || {};
   const note = rs.note || '';
   const noteStr = note ? `\n\n📝 Note: ${note}` : '';
-  const creds = `\n\n🔑 Your login details:\nLogin ID: ${c.login_id}\nPassword: ${c.password_hint}`;
-  return `Hi ${c.name},\n\nYour schedule has been updated. Please check.${noteStr}${creds}\n\nSee you there! 💪`;
+  const creds = `\n\n🔑 Your login details:\n🌐 ${LOGIN_URL}\nLogin ID: ${c.login_id}\nPassword: ${c.password_hint}`;
+  return `Hi ${c.name},\n\nYour schedule has been updated. Please check the app for your class time and progress.${noteStr}${creds}\n\nSee you there! 💪`;
 }
 
 function sendReminder(method) {
@@ -1585,8 +1701,7 @@ function sendToAllClients() {
     setTimeout(() => { window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank'); }, i * 400);
     opened++;
   });
-  let m = `✅ Opening ${opened} WhatsApp tab(s) with credentials`;
-  showStatus($('sendAllStatus'), m, 'success');
+  showStatus($('sendAllStatus'), `✅ Opening ${opened} WhatsApp tab(s) with login URL`, 'success');
   setTimeout(() => clearStatus($('sendAllStatus')), 8000);
 }
 
@@ -1634,10 +1749,8 @@ $('confirmDeleteClientBtn').addEventListener('click', async () => {
   try {
     await supabaseClient.from('clients').delete().eq('id', pendingDeleteClientId);
     clients = clients.filter(x => x.id !== pendingDeleteClientId);
-    delete clientSettings[pendingDeleteClientId];
-    delete clientProfiles[pendingDeleteClientId];
-    delete progressEntries[pendingDeleteClientId];
-    delete clientExercisesCache[pendingDeleteClientId];
+    delete clientSettings[pendingDeleteClientId]; delete clientProfiles[pendingDeleteClientId];
+    delete progressEntries[pendingDeleteClientId]; delete clientExercisesCache[pendingDeleteClientId];
     delete dailyTimesCache[pendingDeleteClientId];
     profileApprovals = profileApprovals.filter(a => a.client_id !== pendingDeleteClientId);
     Object.keys(sessionCache).forEach(k => { if (k.startsWith(pendingDeleteClientId)) delete sessionCache[k]; });
@@ -1678,11 +1791,8 @@ async function handleClientLogin() {
   renderClientPlan(c);
   renderClientProgress(c);
   renderClientProfile(c);
-
-  // Pending approval banner
   const hasPending = profileApprovals.some(a => a.client_id === c.id && a.status === 'pending');
   $('clientPendingBanner').classList.toggle('hidden', !hasPending);
-
   document.querySelectorAll('.tab-btn[data-ctab]').forEach(b => b.classList.toggle('active', b.dataset.ctab === 'plan'));
   document.querySelectorAll('.tab-content[id^="ctab-"]').forEach(t => t.classList.toggle('hidden', t.id !== 'ctab-plan'));
   setTimeout(() => clearStatus($('clientStatus')), 3000);
@@ -1693,20 +1803,16 @@ function renderClientUpcoming(c) {
   const tY = today.getFullYear(), tM = today.getMonth(), tD = today.getDate();
   const tmr = new Date(today); tmr.setDate(tmr.getDate() + 1);
   const mY = tmr.getFullYear(), mM = tmr.getMonth(), mD = tmr.getDate();
-
   const todayTime = getClientTimeForDate(c.id, tY, tM, tD);
   const tmrTime = getClientTimeForDate(c.id, mY, mM, mD);
-
   const tTimeHtml = `<span class="client-upcoming-time ${todayTime.isCustom ? 'custom' : ''}">${formatClassTime12(todayTime.time)}</span>${todayTime.isCustom ? `<span class="client-upcoming-time-custom-badge">CUSTOM</span>` : ''}`;
   const mTimeHtml = `<span class="client-upcoming-time ${tmrTime.isCustom ? 'custom' : ''}">${formatClassTime12(tmrTime.time)}</span>${tmrTime.isCustom ? `<span class="client-upcoming-time-custom-badge">CUSTOM</span>` : ''}`;
-
   let html = '';
   const tDone = getSessions(c.id, tY, tM).some(s => s.day === tD);
-  html += `<div class="client-upcoming-item"><span class="client-upcoming-icon">📅</span><div><div><strong>Today</strong> · ${tTimeHtml}</div><div style="font-size:0.78rem;color:#4c6d84;">${formatDateReadable(tY,tM,tD)} — ${tDone?'✅ Completed':'⏳ Upcoming'}</div></div></div>`;
+  html += `<div class="client-upcoming-item"><span class="client-upcoming-icon">📅</span><div><div><strong>Today</strong> · ${tTimeHtml}</div><div style="font-size:0.75rem;color:#4c6d84;">${formatDateReadable(tY,tM,tD)} — ${tDone?'✅ Completed':'⏳ Upcoming'}</div></div></div>`;
   const mDone = getSessions(c.id, mY, mM).some(s => s.day === mD);
-  html += `<div class="client-upcoming-item"><span class="client-upcoming-icon">📅</span><div><div><strong>Tomorrow</strong> · ${mTimeHtml}</div><div style="font-size:0.78rem;color:#4c6d84;">${formatDateReadable(mY,mM,mD)} — ${mDone?'✅ Completed':'⏳ Upcoming'}</div></div></div>`;
+  html += `<div class="client-upcoming-item"><span class="client-upcoming-icon">📅</span><div><div><strong>Tomorrow</strong> · ${mTimeHtml}</div><div style="font-size:0.75rem;color:#4c6d84;">${formatDateReadable(mY,mM,mD)} — ${mDone?'✅ Completed':'⏳ Upcoming'}</div></div></div>`;
   $('clientUpcomingList').innerHTML = html;
-
   const rs = clientSettings[c.id] || {};
   if (rs.note) { $('clientUpcomingNote').textContent = `📝 Note from trainer: ${rs.note}`; $('clientUpcomingNote').classList.remove('hidden'); }
   else $('clientUpcomingNote').classList.add('hidden');
@@ -1715,14 +1821,14 @@ function renderClientUpcoming(c) {
 
 function renderClientPlan(c) {
   const assigned = clientExercisesCache[c.id] || [];
-  if (assigned.length === 0) { $('clientPlanList').innerHTML = '<div style="font-size:0.85rem;color:#7893a8;font-style:italic;">No exercises assigned yet.</div>'; return; }
+  if (assigned.length === 0) { $('clientPlanList').innerHTML = '<div style="font-size:0.82rem;color:#7893a8;font-style:italic;">No exercises assigned yet.</div>'; return; }
   let html = '';
   assigned.forEach(a => {
     const ex = getExercise(a.exercise_id); if (!ex) return;
-    html += `<div style="padding:0.5rem 0;border-bottom:1px dashed #b3e5fc;font-size:0.83rem;">
+    html += `<div style="padding:0.5rem 0;border-bottom:1px dashed #b3e5fc;font-size:0.8rem;">
       <div style="font-weight:700;color:#0d47a1;">${escapeHtml(ex.name)}</div>
-      <div style="font-size:0.72rem;color:#4c6d84;">${a.custom_sets||ex.default_sets||'-'} × ${a.custom_reps||ex.default_reps||'-'}${(a.custom_weight||ex.default_weight)?' · '+escapeHtml(a.custom_weight||ex.default_weight):''}</div>
-      ${a.custom_notes ? `<div style="font-size:0.72rem;color:#6a1b9a;font-style:italic;">📝 ${escapeHtml(a.custom_notes)}</div>` : ''}
+      <div style="font-size:0.7rem;color:#4c6d84;">${a.custom_sets||ex.default_sets||'-'} × ${a.custom_reps||ex.default_reps||'-'}${(a.custom_weight||ex.default_weight)?' · '+escapeHtml(a.custom_weight||ex.default_weight):''}</div>
+      ${a.custom_notes ? `<div style="font-size:0.7rem;color:#6a1b9a;font-style:italic;">📝 ${escapeHtml(a.custom_notes)}</div>` : ''}
     </div>`;
   });
   $('clientPlanList').innerHTML = html;
@@ -1793,8 +1899,7 @@ $('submitProfileBtn').addEventListener('click', async () => {
     profileApprovals.unshift(data);
     $('profileEditModal').classList.add('hidden');
     $('clientPendingBanner').classList.remove('hidden');
-    updateApprovalsBadge();
-    renderClientList();
+    updateApprovalsBadge(); renderClientList();
     showStatus($('profileEditStatus'), '✅ Submitted for approval!', 'success');
   } catch (err) { showStatus($('profileEditStatus'), '❌ '+err.message, 'error'); }
   finally { $('submitProfileBtn').disabled = false; }
@@ -1816,9 +1921,7 @@ function handleAdminLogin() {
     $('settingsPanel').classList.add('hidden');
     $('libraryPanel').classList.add('hidden');
     $('approvalsPanel').classList.add('hidden');
-  } else {
-    showStatus($('adminAuthStatus'), '⛔ Incorrect login.', 'error');
-  }
+  } else { showStatus($('adminAuthStatus'), '⛔ Incorrect login.', 'error'); }
 }
 
 function lockAdmin() {
@@ -1918,12 +2021,10 @@ $('confirmClearAllBtn').addEventListener('click', async () => {
       admin_login_id: DEFAULT_ADMIN_ID, admin_password: DEFAULT_ADMIN_PW,
       archive_email: 'trainer@example.com', updated_at: new Date().toISOString()
     }).eq('id', 1);
-
     clients = []; clientSettings = {}; clientProfiles = {}; progressEntries = {};
     sessionCache = {}; exercises = []; clientExercisesCache = {}; workoutLogsCache = {};
     dailyTimesCache = {}; profileApprovals = []; selectedClientId = null;
     adminConfig = { admin_login_id: DEFAULT_ADMIN_ID, admin_password: DEFAULT_ADMIN_PW, archive_email: 'trainer@example.com' };
-
     renderClientList(); renderClientTimesSummary(); updateApprovalsBadge();
     $('adminDisplayId').textContent = adminConfig.admin_login_id;
     $('clientDetailPanel').classList.add('hidden');
@@ -1931,13 +2032,12 @@ $('confirmClearAllBtn').addEventListener('click', async () => {
     $('settingsPanel').classList.add('hidden');
     $('libraryPanel').classList.add('hidden');
     $('approvalsPanel').classList.add('hidden');
-
     showStatus($('clearAllStatus'), '✅ All data cleared!', 'success');
     setTimeout(() => { $('clearAllModal').classList.add('hidden'); lockAdmin(); }, 2000);
   } catch (err) {
     showStatus($('clearAllStatus'), `❌ ${err.message}`, 'error');
     btn.disabled = false;
-  } finally { btn.textContent = '🗑️ Yes, Clear All'; }
+  } finally { btn.textContent = '🗑️ Clear All'; }
 });
 
 // ============ EXERCISE LIBRARY ============
@@ -1953,7 +2053,7 @@ function renderLibrary() {
   let html = '';
   exercises.forEach(ex => {
     html += `<div class="library-row">
-      <div style="flex:1;"><div class="library-row-name">${escapeHtml(ex.name)}</div>
+      <div style="flex:1;min-width:0;"><div class="library-row-name">${escapeHtml(ex.name)}</div>
         <div class="library-row-meta">${ex.category?escapeHtml(ex.category)+' · ':''}${ex.default_sets||'-'} × ${ex.default_reps||'-'}</div>
       </div>
       <div class="library-row-actions">
