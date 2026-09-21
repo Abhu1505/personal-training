@@ -6,14 +6,13 @@
 <title>Personal Training · Cloud</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<!-- ============================================================
+<!-- ═══════════════════════════════════════════════════════════
      GOOGLE DRIVE IMAGE LOADER — 3-pattern fallback system
-     ============================================================ -->
+     ═══════════════════════════════════════════════════════════ -->
 <script>
 (function (window) {
   'use strict';
 
-  // ─── Build the 3 fallback URL patterns ───────────────────────
   function buildImageUrls(id) {
     if (!id) return [];
     return [
@@ -23,12 +22,10 @@
     ];
   }
 
-  // ─── Attach fallback chain to any <img> ──────────────────────
   function attachDriveFallback(img, id, opts) {
     opts = opts || {};
     const urls = buildImageUrls(id);
     if (!urls.length) return;
-
     let ui = 0;
     const parent = img.parentNode;
     const hideFallback = opts.hideFallback === true;
@@ -45,29 +42,17 @@
         fb.href = `https://drive.google.com/file/d/${id}/view`;
         fb.target = '_blank';
         fb.rel = 'noopener noreferrer';
-        fb.innerHTML = `
-          <div style="font-size:2.2rem;line-height:1;">📷</div>
-          <div style="font-size:0.75rem;font-weight:700;margin-top:0.3rem;">Open Photo</div>
-        `;
-        fb.style.cssText = `
-          display:flex;flex-direction:column;align-items:center;justify-content:center;
-          width:100%;height:100%;min-height:80px;padding:0.6rem;
-          background:linear-gradient(135deg,#e3f2fd,#bbdefb);
-          color:#0d47a1;text-decoration:none;border-radius:0.8rem;
-          border:2px dashed #64b5f6;
-        `;
+        fb.innerHTML = `<div style="font-size:2.2rem;line-height:1;">📷</div><div style="font-size:0.75rem;font-weight:700;margin-top:0.3rem;">Open Photo</div>`;
+        fb.style.cssText = `display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;min-height:80px;padding:0.6rem;background:linear-gradient(135deg,#e3f2fd,#bbdefb);color:#0d47a1;text-decoration:none;border-radius:0.8rem;border:2px dashed #64b5f6;`;
         if (parent) parent.appendChild(fb);
       }
     }
 
     img.addEventListener('error', tryNext);
-    img.addEventListener('load', function () {
-      img.removeEventListener('error', tryNext);
-    });
+    img.addEventListener('load', function () { img.removeEventListener('error', tryNext); });
     img.src = urls[0];
   }
 
-  // ─── Auto-scan the DOM for elements with data-gdrive-id ──────
   function initDriveImages(root) {
     root = root || document;
     const imgs = root.querySelectorAll('img[data-gdrive-id]');
@@ -80,45 +65,31 @@
     });
   }
 
-  // ─── Create an <img> from scratch with the chain attached ────
   function createDriveImage(id, extraAttrs) {
     extraAttrs = extraAttrs || {};
     const img = document.createElement('img');
     img.dataset.gdriveId = id;
     Object.keys(extraAttrs).forEach(function (k) {
-      if (k === 'style' && typeof extraAttrs[k] === 'object') {
-        Object.assign(img.style, extraAttrs[k]);
-      } else {
-        img.setAttribute(k, extraAttrs[k]);
-      }
+      if (k === 'style' && typeof extraAttrs[k] === 'object') Object.assign(img.style, extraAttrs[k]);
+      else img.setAttribute(k, extraAttrs[k]);
     });
     attachDriveFallback(img, id);
     return img;
   }
 
-  window.DriveImages = {
-    buildImageUrls: buildImageUrls,
-    attachDriveFallback: attachDriveFallback,
-    init: initDriveImages,
-    create: createDriveImage
-  };
+  window.DriveImages = { buildImageUrls, attachDriveFallback, init: initDriveImages, create: createDriveImage };
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function () { initDriveImages(); });
+    document.addEventListener('DOMContentLoaded', () => initDriveImages());
   } else {
     initDriveImages();
   }
 })(window);
 </script>
 
-<!-- ============================================================
-     APP CONFIG — Logo File ID
-     ============================================================ -->
 <script>
   const LOGO_FILE_ID = '1N651kHeVrz6HEhAc1cRRKGx2DtS-IdX0';
   const LOGO_OPACITY = 0.10;
-  const LOGO_SIZE_HEADER = 60;
-  const LOGO_SIZE_LOGIN = 100;
 </script>
 
 <style>
@@ -128,76 +99,37 @@ body{background:linear-gradient(145deg,#f0f5fa,#e2eaf2);min-height:100vh;padding
 img{max-width:100%;height:auto;display:block;}
 input,select,textarea,button{font-family:inherit;}
 
-/* ─── Google Drive Background Watermark ─── */
-#bgWatermark {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-#bgWatermark img {
-  width: 60%;
-  max-width: 700px;
-  height: auto;
-  object-fit: contain;
-  opacity: 0.10;
-  filter: grayscale(20%);
-  user-select: none;
-  -webkit-user-drag: none;
-}
-#bgWatermark .gdrive-fallback { display: none !important; }
+#bgWatermark{position:fixed;inset:0;z-index:-1;pointer-events:none;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+#bgWatermark img{width:60%;max-width:700px;height:auto;object-fit:contain;opacity:0.10;filter:grayscale(20%);user-select:none;-webkit-user-drag:none;}
+#bgWatermark .gdrive-fallback{display:none !important;}
 
-/* ─── Panel Logos ─── */
-.panel-logo {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 0 auto 1rem;
-}
-.panel-logo img {
-  height: 100px;
-  width: auto;
-  max-width: 200px;
-  object-fit: contain;
-  border-radius: 0.5rem;
-}
-.panel-logo .gdrive-fallback {
-  min-height: 100px !important;
-  max-width: 200px;
-}
+.panel-logo{display:flex;justify-content:center;align-items:center;margin:0 auto 1rem;}
+.panel-logo img{height:100px;width:auto;max-width:200px;object-fit:contain;border-radius:0.5rem;}
+.panel-logo .gdrive-fallback{min-height:100px !important;max-width:200px;}
 
-/* LAYOUT */
 .app-container{max-width:1600px;margin:0 auto;display:flex;flex-wrap:wrap;gap:1.5rem;justify-content:center;align-items:flex-start;width:100%;}
 .card{background:rgba(255,255,255,0.92);border-radius:1.5rem;box-shadow:0 12px 28px -8px rgba(0,20,40,0.2);padding:1.6rem;border:1px solid rgba(255,255,255,0.7);width:100%;}
 .client-panel{flex:1 1 380px;max-width:480px;background:#fff;border-top:5px solid #2b6e9e;}
 .admin-panel{flex:1 1 850px;max-width:1150px;background:#fff;border-top:5px solid #1f4e3d;}
 
-/* HEADINGS */
 .badge{display:inline-block;background:#d9e7f5;color:#1e3b5c;font-size:0.7rem;font-weight:700;padding:0.25rem 0.9rem;border-radius:50px;text-transform:uppercase;margin-bottom:0.8rem;letter-spacing:0.5px;}
 .admin-badge{background:#d0e6db;color:#0e3829;}
 h2{font-size:clamp(1.4rem,3.5vw,1.85rem);font-weight:700;margin-bottom:0.3rem;color:#0b1e2b;line-height:1.2;}
 .subhead{color:#4a5d6b;font-size:0.88rem;margin-bottom:1.2rem;border-left:3px solid #2b6e9e;padding-left:0.8rem;line-height:1.5;}
 .admin-subhead{border-left-color:#1f4e3d;}
 
-/* CLOUD STATUS */
 .cloud-status{display:flex;align-items:center;gap:0.5rem;padding:0.5rem 0.9rem;border-radius:30px;font-size:0.75rem;font-weight:700;margin-bottom:1rem;background:#fff3e0;color:#e65100;border:1.5px solid #ffb74d;width:fit-content;}
 .cloud-status.online{background:#e8f5e9;color:#1b5e20;border-color:#a5d6a7;}
 .cloud-status .dot{width:9px;height:9px;border-radius:50%;background:#ff9800;flex-shrink:0;}
 .cloud-status.online .dot{background:#4caf50;animation:pulse 2s infinite;}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
 
-/* INPUTS */
 .input-group{margin-bottom:1rem;}
 label{display:block;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.3px;color:#2b4b62;margin-bottom:0.3rem;}
 input,select,textarea{width:100%;padding:0.75rem 1rem;font-size:0.95rem;background:#f9fcff;border:1.5px solid #cdddee;border-radius:0.8rem;outline:none;color:#0b1e2b;font-weight:500;-webkit-appearance:none;appearance:none;min-height:44px;}
 input:focus,select:focus,textarea:focus{border-color:#2b6e9e;box-shadow:0 0 0 3px rgba(43,110,158,0.12);background:#fff;}
 .admin-panel input:focus,.admin-panel select:focus{border-color:#1f4e3d;box-shadow:0 0 0 3px rgba(31,78,61,0.12);}
 
-/* BUTTONS */
 button{border:none;border-radius:0.8rem;font-weight:600;font-size:0.9rem;padding:0.75rem 1.3rem;cursor:pointer;transition:0.15s;display:inline-flex;align-items:center;justify-content:center;gap:0.4rem;background:#fff;color:#0b1e2b;border:1.5px solid #cdddee;min-height:42px;text-align:center;line-height:1.2;}
 button:disabled{opacity:0.5;cursor:not-allowed;}
 .btn-primary{background:#2b6e9e;color:#fff;border-color:#2b6e9e;width:100%;}
@@ -229,7 +161,6 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
 .btn-copy-last{background:linear-gradient(135deg,#6a1b9a,#8e24aa);color:#fff;border:none;padding:0.6rem 1.1rem;font-weight:700;font-size:0.82rem;}
 .btn-set-time{background:#e8f5e9;border:1.5px solid #a5d6a7;color:#1f4e3d;padding:0.35rem 0.6rem;font-size:0.7rem;font-weight:700;border-radius:0.5rem;min-height:30px;}
 
-/* STATUS */
 .status-msg{margin-top:0.8rem;font-size:0.85rem;padding:0.7rem 0.9rem;border-radius:0.8rem;display:none;font-weight:500;line-height:1.4;}
 .status-success{background:#e2f0e9;color:#1b4b37;border-left:4px solid #1f4e3d;display:block;}
 .status-error{background:#ffe9e9;color:#a12b2b;border-left:4px solid #c0392b;display:block;}
@@ -237,14 +168,11 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
 .status-warning{background:#fff3e0;color:#7a4400;border-left:4px solid #ff9800;display:block;}
 .hidden{display:none !important;}
 
-/* SECTION TITLES */
 .admin-section-title{font-size:0.85rem;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;color:#1f4e3d;margin:1.3rem 0 0.7rem;}
 
-/* GRID / FLEX */
 .flex-row{display:flex;gap:0.7rem;flex-wrap:wrap;}
 .flex-row .input-group{flex:1 1 160px;min-width:0;}
 
-/* SETTINGS */
 .global-settings{background:linear-gradient(135deg,#fff8e1,#ffecb3);padding:1rem 1.1rem;border-radius:1rem;border:2px solid #ffd54f;margin-bottom:1.2rem;display:flex;align-items:center;flex-wrap:wrap;gap:0.8rem;justify-content:space-between;}
 .global-settings-title{font-weight:700;color:#8d6e00;font-size:0.85rem;flex:1 1 200px;}
 .settings-panel{background:linear-gradient(135deg,#f3e5f5,#ede7f6);border:2px solid #ce93d8;border-radius:1.1rem;padding:1.1rem 1.2rem;margin-bottom:1.2rem;}
@@ -255,7 +183,6 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
 .password-input-wrapper{position:relative;}
 .password-toggle{position:absolute;right:0.6rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:1rem;padding:0.3rem;color:#6a1b9a;width:auto;min-height:auto;}
 
-/* CLIENT LIST */
 .client-list{margin-top:0.8rem;background:#f7fafd;border-radius:1.1rem;padding:0.6rem;max-height:320px;overflow-y:auto;border:1px solid #dbe8f2;}
 .client-item{display:flex;justify-content:space-between;align-items:center;padding:0.7rem 0.9rem;background:#fff;border-radius:0.9rem;margin-bottom:0.4rem;border:1px solid #e2edf7;cursor:pointer;gap:0.5rem;flex-wrap:wrap;transition:0.1s;}
 .client-item:hover{background:#f0f8ff;}
@@ -275,7 +202,6 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
 .client-badges{display:flex;gap:0.3rem;flex-wrap:wrap;justify-content:flex-end;align-items:center;}
 .empty-message{padding:1.2rem 1rem;text-align:center;color:#7893a8;font-style:italic;font-size:0.85rem;}
 
-/* CLIENT DETAIL */
 .client-detail-panel{margin-top:1.4rem;background:#fbfdff;border-radius:1.2rem;padding:1.1rem;border:1px solid #dbe8f2;}
 .client-header-info{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.7rem;margin-bottom:1rem;padding-bottom:0.7rem;border-bottom:1px dashed #cbdae7;}
 .client-header-left{display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;}
@@ -287,13 +213,11 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
 .closed-client-banner-text{font-weight:700;color:#b71c1c;font-size:0.9rem;}
 .closed-client-banner-sub{font-size:0.78rem;color:#c62828;margin-top:0.2rem;}
 
-/* TABS */
 .tabs-bar{display:flex;gap:0.25rem;background:#f0f5fa;padding:0.35rem;border-radius:0.8rem;margin-bottom:1.1rem;flex-wrap:wrap;overflow-x:auto;-webkit-overflow-scrolling:touch;}
 .tab-btn{padding:0.5rem 0.9rem;border-radius:0.55rem;font-size:0.78rem;font-weight:700;cursor:pointer;background:transparent;border:none;color:#4c6d84;white-space:nowrap;min-height:auto;flex-shrink:0;}
 .tab-btn.active{background:#fff;color:#1f4e3d;box-shadow:0 2px 5px rgba(0,0,0,0.07);}
 .tab-content.hidden{display:none;}
 
-/* REMINDER */
 .reminder-section{background:linear-gradient(135deg,#e8f5e9,#e0f2f1);border-radius:1.1rem;padding:1.1rem 1.2rem;border:2px solid #a5d6a7;margin-bottom:1.2rem;}
 .reminder-section h4{font-size:0.95rem;font-weight:700;color:#1f4e3d;margin-bottom:0.8rem;line-height:1.3;}
 .reminder-preview{background:#fff;border-radius:0.8rem;padding:0.9rem 1rem;border:1.5px dashed #81c784;font-size:0.82rem;color:#1a3a4e;line-height:1.6;margin:0.8rem 0;white-space:pre-wrap;font-family:'SF Mono','Fira Code',monospace;max-height:260px;overflow-y:auto;word-break:break-word;}
@@ -301,14 +225,12 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
 .action-buttons button{flex:1 1 140px;}
 .small-note{font-size:0.7rem;color:#4d6b5a;margin-top:0.6rem;line-height:1.4;}
 
-/* CREDENTIALS */
 .credentials-box{background:linear-gradient(135deg,#e8f5e9,#e0f2f1);border:2px solid #a5d6a7;border-radius:0.9rem;padding:0.9rem 1rem;margin:0.9rem 0;}
 .credentials-box .label{font-size:0.68rem;color:#1f4e3d;text-transform:uppercase;font-weight:700;letter-spacing:0.3px;margin-bottom:0.3rem;}
 .credentials-box .value{font-family:monospace;font-size:1rem;font-weight:800;color:#0b1e2b;user-select:all;-webkit-user-select:all;padding:0.3rem 0;word-break:break-all;}
 .credentials-box .row{display:flex;justify-content:space-between;align-items:center;gap:0.5rem;padding:0.4rem 0;border-bottom:1px dashed #a5d6a7;flex-wrap:wrap;}
 .credentials-box .row:last-child{border-bottom:none;}
 
-/* CLIENT DASH */
 .client-dash-card{background:#f5f9ff;padding:1rem;border-radius:1rem;margin-top:0.4rem;}
 .dash-row{display:flex;justify-content:space-between;padding:0.3rem 0;border-bottom:1px solid #dbe8f2;font-size:0.9rem;gap:0.5rem;flex-wrap:wrap;}
 .dash-row:last-child{border-bottom:none;}
@@ -323,7 +245,6 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
 .client-pending-banner{background:#fff3e0;border:2px solid #ffb74d;border-radius:0.9rem;padding:0.8rem 1rem;margin-bottom:1rem;font-size:0.82rem;color:#7a4400;line-height:1.5;}
 .client-pending-banner strong{color:#e65100;}
 
-/* SESSIONS GRID */
 .month-selector{display:flex;gap:0.5rem;align-items:center;margin-bottom:0.8rem;flex-wrap:wrap;}
 .month-selector label{margin-bottom:0;font-size:0.72rem;}
 .month-selector select{width:auto;padding:0.45rem 0.9rem;font-size:0.82rem;}
@@ -345,7 +266,6 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
 .session-amount{font-size:0.72rem;font-weight:700;color:#1f4e3d;margin-top:0.2rem;margin-left:1.6rem;}
 .session-card-footer{display:flex;justify-content:space-between;align-items:center;gap:0.3rem;margin-top:0.5rem;padding-top:0.4rem;border-top:1px dashed #e2edf7;flex-wrap:wrap;}
 .session-workout-info{font-size:0.68rem;color:#0d47a1;font-weight:700;display:flex;align-items:center;gap:0.2rem;}
-.day-add-select{width:100%;margin-top:0.4rem;padding:0.35rem 0.5rem;font-size:0.72rem;border-radius:0.5rem;border:1.5px solid #64b5f6;background:#f5fbff;min-height:34px;}
 
 .summary-box{margin-top:1.2rem;background:#f3f9f6;padding:0.9rem 1.1rem;border-radius:1rem;border-left:5px solid #1f4e3d;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.6rem;}
 .summary-text{font-weight:600;color:#1f3a2e;font-size:0.85rem;}
@@ -353,13 +273,30 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
 .note-admin{font-size:0.7rem;color:#5d7a6b;margin-top:0.3rem;text-align:right;}
 .locked-msg{font-size:0.7rem;color:#9b6b4b;background:#fff3e6;padding:0.18rem 0.6rem;border-radius:30px;font-weight:600;}
 
-/* DAILY WORKOUT */
+/* ═══════════════════════════════════════════════════════════════
+   DAILY WORKOUT PANEL — FREE ENTRY
+   ═══════════════════════════════════════════════════════════════ */
 .daily-workout-panel{background:#fffde7;border:2px solid #ffd54f;border-radius:1.1rem;padding:1.1rem;margin-top:1.2rem;}
-.daily-workout-panel h4{font-size:0.95rem;color:#e65100;margin-bottom:0.7rem;font-weight:700;}
-.daily-workout-panel .subtitle{font-size:0.8rem;color:#8d6e00;margin-bottom:0.8rem;}
+.daily-workout-panel h4{font-size:0.95rem;color:#e65100;margin-bottom:0.3rem;font-weight:700;}
+.daily-workout-panel .subtitle{font-size:0.78rem;color:#8d6e00;margin-bottom:0.9rem;line-height:1.4;}
+
+/* Free add row */
+.free-add-row{display:flex;gap:0.5rem;flex-wrap:wrap;align-items:flex-end;margin-bottom:0.9rem;background:#fff;padding:0.8rem 0.9rem;border-radius:0.9rem;border:1.5px dashed #ffb74d;}
+.free-add-row .field{flex:1 1 140px;min-width:0;}
+.free-add-row .field label{font-size:0.62rem;color:#e65100;margin-bottom:0.15rem;}
+.free-add-row .field input,
+.free-add-row .field select{min-height:38px;font-size:0.85rem;padding:0.5rem 0.7rem;border-radius:0.55rem;}
+.free-add-row .btn-add-custom{flex:0 0 auto;background:#ff9800;color:#fff;border-color:#ff9800;padding:0.5rem 1rem;font-size:0.82rem;font-weight:700;min-height:44px;}
+
+/* Quick-pick chips from the library */
+.library-quick-chips{display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.9rem;}
+.library-chip{background:#fff3e0;border:1.5px solid #ffb74d;color:#e65100;padding:0.4rem 0.75rem;border-radius:0.6rem;font-size:0.78rem;font-weight:700;cursor:pointer;min-height:34px;}
+.library-chip:hover{background:#ffe0b2;}
+
+/* The logged exercise entry */
 .exercise-entry{background:#fff;border-radius:0.85rem;padding:0.9rem 1rem;margin-bottom:0.7rem;border:1.5px solid #ffe082;}
 .exercise-entry-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.5rem;}
-.exercise-entry-name{font-weight:700;color:#0d47a1;font-size:0.88rem;}
+.exercise-entry-name{font-weight:700;color:#0d47a1;font-size:0.9rem;}
 .exercise-entry-meta{font-size:0.7rem;color:#4c6d84;}
 .exercise-entry-fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(80px,1fr));gap:0.5rem;}
 .exercise-entry-fields .field{display:flex;flex-direction:column;}
@@ -368,7 +305,7 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
 .exercise-notes-row{margin-top:0.5rem;}
 .exercise-notes-row input{padding:0.45rem 0.7rem;font-size:0.82rem;border-radius:0.5rem;min-height:38px;}
 
-/* LIBRARY */
+/* Library + assign (still available as an OPTIONAL template) */
 .library-list{display:flex;flex-direction:column;gap:0.5rem;max-height:420px;overflow-y:auto;padding:0.3rem;}
 .library-row{display:flex;justify-content:space-between;align-items:center;padding:0.65rem 0.9rem;background:#fff;border-radius:0.8rem;border:1px solid #e2edf7;gap:0.5rem;flex-wrap:wrap;}
 .library-row-name{font-weight:700;color:#0d47a1;font-size:0.85rem;}
@@ -385,7 +322,6 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
 .assign-custom-fields .field label{font-size:0.6rem;}
 .assign-custom-fields input{padding:0.4rem 0.55rem;font-size:0.78rem;border-radius:0.45rem;min-height:36px;}
 
-/* PROGRESS */
 .progress-list{display:flex;flex-direction:column;gap:0.6rem;max-height:420px;overflow-y:auto;padding:0.3rem;}
 .progress-entry{background:#fff;border-radius:0.85rem;padding:0.75rem 0.9rem;border:1.5px solid #e2edf7;}
 .progress-entry-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.5rem;}
@@ -397,13 +333,11 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
 .progress-entry-grid .item .value{font-weight:700;color:#0b1e2b;}
 .progress-entry-note{margin-top:0.4rem;font-size:0.76rem;color:#4c6d84;font-style:italic;padding:0.35rem 0.55rem;background:#f8f9fa;border-radius:0.5rem;line-height:1.4;}
 
-/* PROFILE */
 .profile-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:0.7rem;}
 .profile-field{background:#fff;padding:0.75rem 0.9rem;border-radius:0.85rem;border:1px solid #e2edf7;}
 .profile-field .label{font-size:0.65rem;color:#7a8f9e;text-transform:uppercase;font-weight:700;letter-spacing:0.3px;margin-bottom:0.15rem;}
 .profile-field .value{font-weight:700;color:#0b1e2b;font-size:0.9rem;word-break:break-word;}
 
-/* APPROVALS */
 .approval-card{background:#fff;border-radius:0.85rem;padding:0.9rem 1rem;border:2px solid #ffb74d;margin-bottom:0.7rem;}
 .approval-card.completed{border-color:#a5d6a7;background:#f8fdf9;}
 .approval-card.rejected{border-color:#ef9a9a;background:#fef5f5;}
@@ -422,13 +356,11 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
 .approval-actions{display:flex;gap:0.5rem;flex-wrap:wrap;}
 .approval-note-input{flex:1 1 180px;padding:0.45rem 0.7rem;font-size:0.78rem;border-radius:0.5rem;border:1.5px solid #cdddee;min-height:38px;}
 
-/* LAST SESSION */
 .last-session-meta{font-size:0.78rem;color:#0277bd;margin-bottom:0.9rem;background:#ffffffaa;padding:0.4rem 0.7rem;border-radius:0.6rem;}
 .last-session-exercise{background:#fff;border-radius:0.7rem;padding:0.65rem 0.9rem;margin-bottom:0.5rem;border:1.5px solid #81d4fa;font-size:0.82rem;}
 .last-session-exercise-name{font-weight:700;color:#01579b;}
 .last-session-exercise-meta{font-size:0.72rem;color:#4c6d84;margin-top:0.2rem;}
 
-/* HISTORY */
 .history-item{background:#fff;border-radius:0.85rem;padding:0.85rem 1rem;border:1.5px solid #e2edf7;margin-bottom:0.6rem;cursor:pointer;transition:0.1s;}
 .history-item:hover{border-color:#90caf9;background:#f5fbff;}
 .history-item.expanded{border-color:#1976d2;background:#f5fbff;}
@@ -440,12 +372,10 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
 .history-exercise-name{font-weight:700;color:#0b1e2b;flex:1 1 100px;}
 .history-exercise-details{font-family:monospace;font-size:0.72rem;color:#0d47a1;font-weight:700;}
 
-/* CONTACT */
 .contact-picker-row{display:flex;gap:0.5rem;align-items:flex-end;margin-bottom:0.9rem;flex-wrap:wrap;}
 .contact-picker-row .input-group{flex:1 1 200px;margin-bottom:0;}
 .contact-hint{font-size:0.72rem;color:#7a8f9e;margin-top:0.4rem;line-height:1.4;}
 
-/* MODALS */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:9999;padding:0.8rem;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);overflow-y:auto;}
 .modal-overlay.hidden{display:none !important;}
 .modal-box{background:#fff;border-radius:1.3rem;max-width:640px;width:100%;max-height:94vh;overflow-y:auto;box-shadow:0 30px 60px -12px rgba(0,0,0,0.4);}
@@ -507,11 +437,12 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
   .action-buttons button{flex:1 1 100%;}
   .tabs-bar{overflow-x:auto;flex-wrap:nowrap;}
   .tabs-bar::-webkit-scrollbar{height:3px;}
-  .day-add-select{font-size:0.7rem;padding:0.35rem 0.45rem;}
   .contact-picker-row .input-group{flex:1 1 100%;}
   .contact-picker-row .btn-contact{width:100%;}
   .panel-logo img{height:80px;max-width:160px;}
   #bgWatermark img{width:85%;}
+  .free-add-row .field{flex:1 1 100%;}
+  .free-add-row .btn-add-custom{flex:1 1 100%;}
 }
 @media (max-width:400px){
   body{padding:0.5rem 0.4rem;}
@@ -527,9 +458,6 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
 </head>
 <body>
 
-<!-- ════════════════════════════════════════════════════════════
-     FAINT BACKGROUND WATERMARK
-     ════════════════════════════════════════════════════════════ -->
 <div id="bgWatermark" aria-hidden="true">
   <img data-gdrive-id="1N651kHeVrz6HEhAc1cRRKGx2DtS-IdX0"
        data-gdrive-hide-fallback="1"
@@ -557,7 +485,7 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
   </div>
 </div>
 
-<!-- EXERCISE MODAL -->
+<!-- EXERCISE LIBRARY MODAL -->
 <div id="exerciseModal" class="modal-overlay hidden">
   <div class="modal-box">
     <div class="modal-header purple"><h3 id="exerciseModalTitle">➕ Add Exercise</h3></div>
@@ -698,17 +626,12 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
 </div>
 
 <div class="app-container">
-  <!-- ═══════════════════════════════════════════════════════════
-       CLIENT PANEL
-       ═══════════════════════════════════════════════════════════ -->
+  <!-- CLIENT PANEL -->
   <div class="card client-panel">
     <span class="badge">🔐 client access</span>
-
-    <!-- ══ LOGO ══ -->
     <div class="panel-logo">
       <img data-gdrive-id="1N651kHeVrz6HEhAc1cRRKGx2DtS-IdX0" alt="Logo">
     </div>
-
     <h2>Personal training</h2>
     <div class="subhead">Log in to view your plan, sessions & progress</div>
     <div id="cloudStatusClient" class="cloud-status"><div class="dot"></div><span id="cloudStatusClientText">Checking...</span></div>
@@ -742,7 +665,7 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
 
       <div class="tab-content" id="ctab-plan">
         <div id="clientPlanBlock" style="background:#f5fbff;padding:0.9rem;border-radius:0.9rem;border-left:4px solid #1976d2;">
-          <div style="font-weight:700;color:#0d47a1;font-size:0.85rem;margin-bottom:0.5rem;">🏋️ Your Exercise Plan</div>
+          <div style="font-weight:700;color:#0d47a1;font-size:0.85rem;margin-bottom:0.5rem;">🏋️ Your Exercise Plan (Template)</div>
           <div id="clientPlanList"></div>
         </div>
       </div>
@@ -766,17 +689,12 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════════════════════════
-       ADMIN PANEL
-       ═══════════════════════════════════════════════════════════ -->
+  <!-- ADMIN PANEL -->
   <div class="card admin-panel">
     <span class="badge admin-badge">⚙️ admin portal</span>
-
-    <!-- ══ LOGO ══ -->
     <div class="panel-logo">
       <img data-gdrive-id="1N651kHeVrz6HEhAc1cRRKGx2DtS-IdX0" alt="Logo">
     </div>
-
     <h2>Trainer dashboard</h2>
     <div class="subhead admin-subhead">Manage clients, exercises, sessions & progress</div>
     <div id="cloudStatusAdmin" class="cloud-status"><div class="dot"></div><span id="cloudStatusAdminText">Checking...</span></div>
@@ -922,7 +840,7 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
         <div class="tabs-bar">
           <button class="tab-btn active" data-tab="reminder">📨 Message</button>
           <button class="tab-btn" data-tab="tracker">📊 Sessions</button>
-          <button class="tab-btn" data-tab="plan">🏋️ Exercises</button>
+          <button class="tab-btn" data-tab="plan">🏋️ Exercises (Template)</button>
           <button class="tab-btn" data-tab="progress">📈 Progress</button>
         </div>
 
@@ -967,16 +885,32 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
           </div>
           <div id="dailyWorkoutPanel" class="daily-workout-panel hidden">
             <h4>📝 Workout Log — <span id="dailyWorkoutDate">—</span></h4>
-            <div class="input-group"><label for="dailyExerciseSelect">🏋️ Add exercise</label>
-              <select id="dailyExerciseSelect"><option value="">— Select —</option></select>
+            <div class="subtitle">
+              Every day is different. Type the exercises you did on this specific day. Nothing is pre-filled.
             </div>
+
+            <!-- Free-entry add row -->
+            <div class="free-add-row">
+              <div class="field" style="flex:2 1 200px;">
+                <label for="freeExName">Exercise name</label>
+                <input type="text" id="freeExName" placeholder="e.g. Bench Press, Squat, Run 5km" autocomplete="off">
+              </div>
+              <button class="btn-add-custom" id="freeAddBtn">➕ Add to this day</button>
+            </div>
+
+            <!-- Quick-pick from library (optional) -->
+            <div id="libraryQuickChips" class="library-quick-chips"></div>
+
             <div id="dailyExerciseEntries"></div>
           </div>
         </div>
 
         <div class="tab-content hidden" id="tab-plan">
           <div class="reminder-section" style="background:linear-gradient(135deg,#e3f2fd,#bbdefb);border-color:#64b5f6;">
-            <h4 style="color:#0d47a1;">🏋️ Assign exercises</h4>
+            <h4 style="color:#0d47a1;">🏋️ Exercise Template (optional)</h4>
+            <div style="font-size:0.78rem;color:#0d47a1;margin-bottom:0.9rem;background:#ffffffaa;padding:0.5rem 0.8rem;border-radius:0.7rem;line-height:1.5;">
+              ⚠️ This is only a starting point for quick reference. What you actually log per day is completely independent.
+            </div>
             <div id="assignList" class="assign-list"><div class="empty-message">Loading...</div></div>
             <div id="assignStatus" class="status-msg"></div>
           </div>
@@ -1008,7 +942,6 @@ const DEFAULT_ADMIN_ID = 'TAS-Abhi';
 const DEFAULT_ADMIN_PW = 'Abhu@1818';
 const LOGIN_URL = 'https://tas-personal-training.netlify.app/';
 
-// ============ STATE ============
 let adminConfig = { admin_login_id: DEFAULT_ADMIN_ID, admin_password: DEFAULT_ADMIN_PW, archive_email: 'trainer@example.com' };
 let supabaseClient = null;
 let clients = [];
@@ -1094,15 +1027,10 @@ function generatePassword(name) {
 }
 
 // ============ CONTACT PICKER ============
-function supportsContactPicker() {
-  return 'contacts' in navigator && 'ContactsManager' in window;
-}
+function supportsContactPicker() { return 'contacts' in navigator && 'ContactsManager' in window; }
 
 async function pickFromContacts() {
-  if (!supportsContactPicker()) {
-    showStatus($('createClientStatus'), '⚠️ Contact picker not supported.', 'error');
-    return;
-  }
+  if (!supportsContactPicker()) { showStatus($('createClientStatus'), '⚠️ Contact picker not supported.', 'error'); return; }
   try {
     const contacts = await navigator.contacts.select(['name', 'tel'], { multiple: false });
     if (!contacts || contacts.length === 0) return;
@@ -1116,10 +1044,7 @@ async function pickFromContacts() {
     setTimeout(() => clearStatus($('createClientStatus')), 3000);
   } catch (err) {
     if (err && err.name === 'AbortError') return;
-    if (err && err.name === 'SecurityError') {
-      showStatus($('createClientStatus'), '⚠️ Contacts permission denied.', 'error');
-      return;
-    }
+    if (err && err.name === 'SecurityError') { showStatus($('createClientStatus'), '⚠️ Contacts permission denied.', 'error'); return; }
     showStatus($('createClientStatus'), '⚠️ Could not open contacts: ' + err.message, 'error');
   }
 }
@@ -1127,10 +1052,8 @@ async function pickFromContacts() {
 (function initContactPicker() {
   const btn = $('pickContactBtn');
   const hint = $('contactHint');
-  if (supportsContactPicker()) {
-    btn.classList.remove('hidden');
-    hint.classList.add('hidden');
-  } else {
+  if (supportsContactPicker()) { btn.classList.remove('hidden'); hint.classList.add('hidden'); }
+  else {
     btn.classList.add('hidden');
     const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     if (isMobile) hint.classList.remove('hidden');
@@ -1222,22 +1145,28 @@ function getLastWorkoutDate(clientId) {
   const dates = getAllWorkoutDates(clientId);
   return dates.length > 0 ? dates[0] : null;
 }
-
 function getOrderedDaysForMonth(year, month) {
   const daysInMonth = getDaysInMonth(year, month);
   const today = new Date();
   const isCurrentMonth = today.getFullYear() === year && today.getMonth() === month;
   const currentDay = isCurrentMonth ? today.getDate() : null;
-
   const days = [];
   for (let d = 1; d <= daysInMonth; d++) days.push(d);
-
   if (currentDay === null) return days;
-
   const idx = days.indexOf(currentDay);
   if (idx <= 0) return days;
   const [cd] = days.splice(idx, 1);
   return [cd, ...days];
+}
+
+// Display name for a workout log entry (library name OR custom name)
+function getWorkoutDisplayName(log) {
+  if (log.exercise_name && log.exercise_name.trim()) return log.exercise_name.trim();
+  if (log.exercise_id) {
+    const ex = getExercise(log.exercise_id);
+    if (ex) return ex.name;
+  }
+  return 'Exercise';
 }
 
 // ============ CLIENT LIST ============
@@ -1338,11 +1267,9 @@ function renderSessions() {
   const rate = getRate(selectedClientId);
   $('summaryRate').textContent = rate;
   $('ratePerSession').value = rate;
-  const assigned = clientExercisesCache[selectedClientId] || [];
 
   const today = new Date();
   const todayStr = formatDateISO(today.getFullYear(), today.getMonth(), today.getDate());
-
   const orderedDays = getOrderedDaysForMonth(y, m);
 
   let html = '';
@@ -1358,23 +1285,9 @@ function renderSessions() {
     const logs = getWorkoutLogs(selectedClientId, dateStr);
     const hasWorkout = logs.length > 0;
 
-    let timeHtml = '';
-    if (dayTime.isSet) {
-      timeHtml = `<div class="session-time-custom">⏰ ${formatClassTime12(dayTime.time)}</div>`;
-    } else {
-      timeHtml = `<div class="session-no-time">⏰ No time set</div>`;
-    }
-
-    let exerciseOpts = '<option value="">➕ Add exercise...</option>';
-    if (assigned.length === 0) {
-      exerciseOpts = '<option value="">No exercises in plan</option>';
-    } else {
-      assigned.forEach(a => {
-        const ex = getExercise(a.exercise_id);
-        if (!ex) return;
-        exerciseOpts += `<option value="${ex.id}">${escapeHtml(ex.name)}</option>`;
-      });
-    }
+    let timeHtml = dayTime.isSet
+      ? `<div class="session-time-custom">⏰ ${formatClassTime12(dayTime.time)}</div>`
+      : `<div class="session-no-time">⏰ No time set</div>`;
 
     html += `<div class="session-card ${isDone ? 'done' : ''} ${isSel ? 'selected-day' : ''} ${dayTime.isSet ? 'has-custom-time' : ''} ${hasWorkout ? 'has-workout' : ''} ${isToday ? 'is-today' : ''}" data-day="${day}">
       <label><input type="checkbox" class="session-checkbox" data-day="${day}" ${isDone ? 'checked' : ''}> Day ${day}${isToday ? ' <span class="session-today-badge">TODAY</span>' : ''}</label>
@@ -1383,13 +1296,12 @@ function renderSessions() {
       ${isDone && td ? `<div class="session-checked-time">🕐 ${td}</div>` : ''}
       <div class="session-amount">${isDone ? CURRENCY + ' ' + amount : '—'}</div>
       <div class="session-card-footer">
-        <span class="session-workout-info">${hasWorkout ? `🏋️ ${logs.length}` : ''}</span>
+        <span class="session-workout-info">${hasWorkout ? `🏋️ ${logs.length} exercise${logs.length > 1 ? 's' : ''}` : ''}</span>
         <div style="display:flex;gap:0.3rem;">
           <button class="btn-set-time set-day-time-btn" data-day="${day}">⏰ Time</button>
           <button class="btn-add-day view-day-btn" data-day="${day}">📝 Log</button>
         </div>
       </div>
-      <select class="day-add-select inline-add-exercise" data-day="${day}">${exerciseOpts}</select>
     </div>`;
   }
   $('sessionsGridContainer').innerHTML = html;
@@ -1414,41 +1326,6 @@ function renderSessions() {
       openSetTimeModal(parseInt(btn.dataset.day, 10));
     });
   });
-  document.querySelectorAll('.inline-add-exercise').forEach(sel => {
-    sel.addEventListener('change', async (e) => {
-      e.stopPropagation();
-      const exId = sel.value;
-      const day = parseInt(sel.dataset.day, 10);
-      if (!exId) return;
-      await quickAddExerciseToDay(selectedClientId, y, m, day, exId);
-      sel.value = '';
-      renderSessions();
-      openDailyWorkout(day);
-    });
-    sel.addEventListener('click', (e) => e.stopPropagation());
-  });
-}
-
-async function quickAddExerciseToDay(cid, y, m, day, exId) {
-  const dateStr = formatDateISO(y, m, day);
-  const a = (clientExercisesCache[cid]||[]).find(x => x.exercise_id === exId);
-  const ex = getExercise(exId);
-  const payload = {
-    client_id: cid, session_date: dateStr, exercise_id: exId,
-    sets_done: a?.custom_sets || ex?.default_sets || null,
-    reps_done: a?.custom_reps || ex?.default_reps || null,
-    weight_done: a?.custom_weight || ex?.default_weight || null,
-    rest_done: a?.custom_rest || ex?.default_rest || null,
-    notes: null
-  };
-  try {
-    const { error } = await supabaseClient.from('workout_logs').upsert(payload,{onConflict:'client_id,session_date,exercise_id'});
-    if (error) throw error;
-    const k = `${cid}-${dateStr}`;
-    if (!workoutLogsCache[k]) workoutLogsCache[k] = [];
-    workoutLogsCache[k] = workoutLogsCache[k].filter(w => w.exercise_id !== exId);
-    workoutLogsCache[k].push(payload);
-  } catch (err) { alert('Failed: ' + err.message); }
 }
 
 async function toggleSession(cid, y, m, day, checked) {
@@ -1501,8 +1378,6 @@ $('saveSetTimeBtn').addEventListener('click', async () => {
     dailyTimesCache[selectedClientId].push({ day_date: dateStr, class_time: timeVal, note: noteVal || null });
     $('setTimeModal').classList.add('hidden');
     renderSessions();
-    showStatus($('reminderStatus'), '✅ Time saved!', 'success');
-    setTimeout(() => clearStatus($('reminderStatus')), 3000);
   } catch (err) { showStatus($('setTimeStatus'), '❌ '+err.message, 'error'); }
   finally { $('saveSetTimeBtn').disabled = false; }
 });
@@ -1519,7 +1394,7 @@ $('clearSetTimeBtn').addEventListener('click', async () => {
   } catch (err) { alert('Failed: ' + err.message); }
 });
 
-// ============ DAILY WORKOUT ============
+// ============ DAILY WORKOUT (free-entry) ============
 function openDailyWorkout(day) {
   selectedDay = day;
   const y = CURRENT_YEAR, m = selectedMonth;
@@ -1527,86 +1402,138 @@ function openDailyWorkout(day) {
   $('dailyWorkoutPanel').classList.remove('hidden');
   $('dailyWorkoutDate').textContent = formatDateReadable(y, m, day);
   renderSessions();
-  const assigned = clientExercisesCache[selectedClientId] || [];
-  const usedIds = new Set((workoutLogsCache[`${selectedClientId}-${dateStr}`]||[]).map(w => w.exercise_id));
-  let opts = '<option value="">— Select —</option>';
-  assigned.forEach(a => {
-    const ex = getExercise(a.exercise_id);
-    if (!ex || usedIds.has(a.exercise_id)) return;
-    opts += `<option value="${ex.id}">${escapeHtml(ex.name)}</option>`;
-  });
-  $('dailyExerciseSelect').innerHTML = opts;
-  renderDailyEntries(dateStr, assigned);
+
+  // Quick-pick chips from library
+  const chipsContainer = $('libraryQuickChips');
+  if (exercises.length === 0) {
+    chipsContainer.innerHTML = '';
+  } else {
+    chipsContainer.innerHTML = exercises.slice(0, 20).map(ex =>
+      `<div class="library-chip" data-ex-id="${ex.id}" data-ex-name="${escapeHtml(ex.name)}">+ ${escapeHtml(ex.name)}</div>`
+    ).join('');
+    chipsContainer.querySelectorAll('.library-chip').forEach(chip => {
+      chip.addEventListener('click', async () => {
+        await quickAddCustomToDay(selectedClientId, y, m, day, {
+          name: chip.dataset.exName,
+          exercise_id: chip.dataset.exId
+        });
+        openDailyWorkout(day);
+      });
+    });
+  }
+
+  renderDailyEntries(dateStr);
 }
 
-function renderDailyEntries(dateStr, assigned) {
+function renderDailyEntries(dateStr) {
   const logs = workoutLogsCache[`${selectedClientId}-${dateStr}`] || [];
+  const container = $('dailyExerciseEntries');
   if (logs.length === 0) {
-    $('dailyExerciseEntries').innerHTML = `<div style="padding:0.9rem;text-align:center;color:#8d6e00;font-size:0.8rem;font-style:italic;">No exercises logged yet.</div>`;
+    container.innerHTML = `<div style="padding:0.9rem;text-align:center;color:#8d6e00;font-size:0.8rem;font-style:italic;">No exercises logged yet for this day. Add one above.</div>`;
     return;
   }
   let html = '';
-  logs.forEach(log => {
-    const ex = getExercise(log.exercise_id);
-    if (!ex) return;
-    const a = assigned.find(x => x.exercise_id === log.exercise_id) || {};
-    html += `<div class="exercise-entry" data-exercise-id="${ex.id}">
+  logs.forEach((log, idx) => {
+    const name = getWorkoutDisplayName(log);
+    html += `<div class="exercise-entry" data-log-id="${log.id}">
       <div class="exercise-entry-header">
         <div>
-          <div class="exercise-entry-name">${escapeHtml(ex.name)}</div>
-          <div class="exercise-entry-meta">${a.custom_sets||ex.default_sets||'-'} × ${a.custom_reps||ex.default_reps||'-'}</div>
+          <div class="exercise-entry-name">${escapeHtml(name)}</div>
+          ${log.exercise_name ? `<div class="exercise-entry-meta">Custom entry</div>` : ''}
         </div>
-        <button class="btn-danger-small btn-small remove-log-btn" data-exercise-id="${ex.id}">✖</button>
+        <button class="btn-danger-small btn-small remove-log-btn" data-log-id="${log.id}">✖ Remove</button>
       </div>
       <div class="exercise-entry-fields">
-        <div class="field"><label>Sets</label><input type="number" class="log-field" data-field="sets_done" value="${log.sets_done||''}" inputmode="numeric"></div>
-        <div class="field"><label>Reps</label><input type="text" class="log-field" data-field="reps_done" value="${escapeHtml(log.reps_done||'')}"></div>
-        <div class="field"><label>Weight</label><input type="text" class="log-field" data-field="weight_done" value="${escapeHtml(log.weight_done||'')}"></div>
-        <div class="field"><label>Rest</label><input type="text" class="log-field" data-field="rest_done" value="${escapeHtml(log.rest_done||'')}"></div>
+        <div class="field"><label>Sets</label><input type="number" class="log-field" data-field="sets_done" value="${log.sets_done||''}" inputmode="numeric" placeholder="—"></div>
+        <div class="field"><label>Reps</label><input type="text" class="log-field" data-field="reps_done" value="${escapeHtml(log.reps_done||'')}" placeholder="—"></div>
+        <div class="field"><label>Weight</label><input type="text" class="log-field" data-field="weight_done" value="${escapeHtml(log.weight_done||'')}" placeholder="—"></div>
+        <div class="field"><label>Rest</label><input type="text" class="log-field" data-field="rest_done" value="${escapeHtml(log.rest_done||'')}" placeholder="—"></div>
       </div>
       <div class="exercise-notes-row"><input type="text" class="log-field" data-field="notes" value="${escapeHtml(log.notes||'')}" placeholder="Notes"></div>
     </div>`;
   });
-  $('dailyExerciseEntries').innerHTML = html;
+  container.innerHTML = html;
+
   document.querySelectorAll('.log-field').forEach(input => {
     input.addEventListener('change', async (e) => {
       const entry = e.target.closest('.exercise-entry');
-      await saveWorkoutLogField(dateStr, entry.dataset.exerciseId, e.target.dataset.field, e.target.value);
+      await saveWorkoutLogField(entry.dataset.logId, e.target.dataset.field, e.target.value);
     });
   });
   document.querySelectorAll('.remove-log-btn').forEach(btn => {
     btn.addEventListener('click', async () => {
-      if (!confirm('Remove?')) return;
-      await removeWorkoutLog(dateStr, btn.dataset.exerciseId);
+      if (!confirm('Remove this exercise from the log?')) return;
+      await removeWorkoutLogById(btn.dataset.logId);
     });
   });
 }
 
-$('dailyExerciseSelect').addEventListener('change', async (e) => {
-  const exId = e.target.value;
-  if (!exId || !selectedDay) return;
+// Add a custom entry to this day — no pre-fill, no defaults from plan
+async function quickAddCustomToDay(cid, y, m, day, opts) {
+  const dateStr = formatDateISO(y, m, day);
+  const payload = {
+    client_id: cid,
+    session_date: dateStr,
+    exercise_id: opts.exercise_id || null,
+    exercise_name: opts.name,
+    sets_done: null,
+    reps_done: null,
+    weight_done: null,
+    rest_done: null,
+    notes: null
+  };
+  try {
+    const { data, error } = await supabaseClient.from('workout_logs').insert(payload).select().single();
+    if (error) throw error;
+    const k = `${cid}-${dateStr}`;
+    if (!workoutLogsCache[k]) workoutLogsCache[k] = [];
+    workoutLogsCache[k].push(data);
+    renderSessions();
+  } catch (err) {
+    console.error(err);
+    alert('Failed to add: ' + err.message);
+  }
+}
+
+// Free-add button
+$('freeAddBtn').addEventListener('click', async () => {
+  const name = $('freeExName').value.trim();
+  if (!name) { $('freeExName').focus(); return; }
+  if (!selectedDay) return;
   const y = CURRENT_YEAR, m = selectedMonth;
-  await quickAddExerciseToDay(selectedClientId, y, m, selectedDay, exId);
-  $('dailyExerciseSelect').value = '';
+  // Try to match to a library exercise by name (case-insensitive)
+  const matched = exercises.find(e => e.name.toLowerCase() === name.toLowerCase());
+  await quickAddCustomToDay(selectedClientId, y, m, selectedDay, {
+    name: matched ? matched.name : name,
+    exercise_id: matched ? matched.id : null
+  });
+  $('freeExName').value = '';
   openDailyWorkout(selectedDay);
 });
 
-async function saveWorkoutLogField(dateStr, exId, field, val) {
+$('freeExName').addEventListener('keypress', e => {
+  if (e.key === 'Enter') { e.preventDefault(); $('freeAddBtn').click(); }
+});
+
+async function saveWorkoutLogField(logId, field, val) {
   try {
-    await supabaseClient.from('workout_logs').update({ [field]: val||null })
-      .eq('client_id', selectedClientId).eq('session_date', dateStr).eq('exercise_id', exId);
-    const k = `${selectedClientId}-${dateStr}`;
-    const log = (workoutLogsCache[k]||[]).find(w => w.exercise_id === exId);
-    if (log) log[field] = val || null;
+    const { error } = await supabaseClient.from('workout_logs').update({ [field]: val||null }).eq('id', logId);
+    if (error) throw error;
+    // Update cache
+    Object.keys(workoutLogsCache).forEach(k => {
+      const arr = workoutLogsCache[k];
+      const idx = arr.findIndex(w => String(w.id) === String(logId));
+      if (idx >= 0) arr[idx][field] = val || null;
+    });
   } catch (err) { console.error(err); }
 }
 
-async function removeWorkoutLog(dateStr, exId) {
+async function removeWorkoutLogById(logId) {
   try {
-    await supabaseClient.from('workout_logs').delete()
-      .eq('client_id', selectedClientId).eq('session_date', dateStr).eq('exercise_id', exId);
-    const k = `${selectedClientId}-${dateStr}`;
-    if (workoutLogsCache[k]) workoutLogsCache[k] = workoutLogsCache[k].filter(w => w.exercise_id !== exId);
+    await supabaseClient.from('workout_logs').delete().eq('id', logId);
+    Object.keys(workoutLogsCache).forEach(k => {
+      workoutLogsCache[k] = workoutLogsCache[k].filter(w => String(w.id) !== String(logId));
+    });
     openDailyWorkout(selectedDay);
     renderSessions();
   } catch (err) { console.error(err); }
@@ -1623,10 +1550,9 @@ $('viewLastSessionBtn').addEventListener('click', () => {
   $('lastSessionSubtitle').textContent = `${c.name} · ${lastDate}`;
   let html = `<div class="last-session-meta">📅 ${formatDateReadable(...lastDate.split('-').map((v,i) => i===1 ? parseInt(v)-1 : parseInt(v)))} · ${logs.length} exercise${logs.length > 1 ? 's' : ''}</div>`;
   logs.forEach(log => {
-    const ex = getExercise(log.exercise_id);
-    if (!ex) return;
+    const name = getWorkoutDisplayName(log);
     html += `<div class="last-session-exercise">
-      <div class="last-session-exercise-name">${escapeHtml(ex.name)}</div>
+      <div class="last-session-exercise-name">${escapeHtml(name)}</div>
       <div class="last-session-exercise-meta">
         ${log.sets_done ? `<strong>${log.sets_done}</strong> sets` : ''}${log.reps_done ? ` × ${escapeHtml(log.reps_done)} reps` : ''}${log.weight_done ? ` · ${escapeHtml(log.weight_done)}` : ''}${log.rest_done ? ` · rest ${escapeHtml(log.rest_done)}` : ''}
       </div>
@@ -1642,7 +1568,6 @@ $('applyLastSessionBtn').addEventListener('click', () => {
   $('applyTargetBox').classList.remove('hidden');
   $('applyTargetDate').value = new Date().toISOString().split('T')[0];
 });
-
 $('closeLastSessionBtn').addEventListener('click', () => $('lastSessionModal').classList.add('hidden'));
 
 $('confirmApplyBtn').addEventListener('click', async () => {
@@ -1652,37 +1577,40 @@ $('confirmApplyBtn').addEventListener('click', async () => {
   try {
     $('confirmApplyBtn').disabled = true;
     $('confirmApplyBtn').textContent = '⏳ Copying...';
-    const { data: existing } = await supabaseClient.from('workout_logs').select('*').eq('client_id', selectedClientId).eq('session_date', targetDate);
-    const existingIds = new Set((existing||[]).map(e => e.exercise_id));
     let added = 0;
     for (const log of lastSessionData.logs) {
-      if (existingIds.has(log.exercise_id)) continue;
       const { error } = await supabaseClient.from('workout_logs').insert({
-        client_id: selectedClientId, session_date: targetDate, exercise_id: log.exercise_id,
-        sets_done: log.sets_done, reps_done: log.reps_done, weight_done: log.weight_done,
-        rest_done: log.rest_done, notes: log.notes
+        client_id: selectedClientId,
+        session_date: targetDate,
+        exercise_id: log.exercise_id,
+        exercise_name: log.exercise_name,
+        sets_done: log.sets_done,
+        reps_done: log.reps_done,
+        weight_done: log.weight_done,
+        rest_done: log.rest_done,
+        notes: log.notes
       });
       if (error) console.error(error);
       else {
         added++;
         const k = `${selectedClientId}-${targetDate}`;
         if (!workoutLogsCache[k]) workoutLogsCache[k] = [];
-        workoutLogsCache[k].push({ ...log, session_date: targetDate });
+        workoutLogsCache[k].push({ ...log, id: Date.now() + Math.random(), session_date: targetDate });
       }
     }
-    showStatus($('lastSessionStatus'), `✅ Copied ${added} exercise(s) to ${targetDate}.`, 'success');
+    showStatus($('lastSessionStatus'), `✅ Copied ${added} exercise(s).`, 'success');
     renderSessions();
     setTimeout(() => { $('lastSessionModal').classList.add('hidden'); clearStatus($('lastSessionStatus')); }, 1500);
   } catch (err) { showStatus($('lastSessionStatus'), '❌ ' + err.message, 'error'); }
   finally { $('confirmApplyBtn').disabled = false; $('confirmApplyBtn').textContent = '✅ Copy to This Day'; }
 });
 
-// ============ ASSIGN ============
+// ============ ASSIGN (template only) ============
 function renderAssignList() {
   if (!selectedClientId) return;
   const assigned = clientExercisesCache[selectedClientId] || [];
   const map = {}; assigned.forEach(a => { map[a.exercise_id] = a; });
-  if (exercises.length === 0) { $('assignList').innerHTML = `<div class="empty-message">No exercises.</div>`; return; }
+  if (exercises.length === 0) { $('assignList').innerHTML = `<div class="empty-message">No exercises in library.</div>`; return; }
   let html = '';
   exercises.forEach(ex => {
     const sel = !!map[ex.id];
@@ -1696,12 +1624,12 @@ function renderAssignList() {
         </div>
       </div>
       ${sel ? `<div class="assign-custom-fields">
-        <div class="field"><label>Sets</label><input type="number" class="assign-field" data-ex-id="${ex.id}" data-field="custom_sets" value="${a.custom_sets ?? ''}" inputmode="numeric"></div>
-        <div class="field"><label>Reps</label><input type="text" class="assign-field" data-ex-id="${ex.id}" data-field="custom_reps" value="${escapeHtml(a.custom_reps||'')}"></div>
-        <div class="field"><label>Weight</label><input type="text" class="assign-field" data-ex-id="${ex.id}" data-field="custom_weight" value="${escapeHtml(a.custom_weight||'')}"></div>
-        <div class="field"><label>Rest</label><input type="text" class="assign-field" data-ex-id="${ex.id}" data-field="custom_rest" value="${escapeHtml(a.custom_rest||'')}"></div>
+        <div class="field"><label>Suggested sets</label><input type="number" class="assign-field" data-ex-id="${ex.id}" data-field="custom_sets" value="${a.custom_sets ?? ''}" inputmode="numeric"></div>
+        <div class="field"><label>Suggested reps</label><input type="text" class="assign-field" data-ex-id="${ex.id}" data-field="custom_reps" value="${escapeHtml(a.custom_reps||'')}"></div>
+        <div class="field"><label>Suggested weight</label><input type="text" class="assign-field" data-ex-id="${ex.id}" data-field="custom_weight" value="${escapeHtml(a.custom_weight||'')}"></div>
+        <div class="field"><label>Suggested rest</label><input type="text" class="assign-field" data-ex-id="${ex.id}" data-field="custom_rest" value="${escapeHtml(a.custom_rest||'')}"></div>
       </div>
-      <div class="exercise-notes-row" style="margin-top:0.5rem;"><input type="text" class="assign-field" data-ex-id="${ex.id}" data-field="custom_notes" value="${escapeHtml(a.custom_notes||'')}" placeholder="Notes"></div>` : ''}
+      <div class="exercise-notes-row" style="margin-top:0.5rem;"><input type="text" class="assign-field" data-ex-id="${ex.id}" data-field="custom_notes" value="${escapeHtml(a.custom_notes||'')}" placeholder="Suggested notes"></div>` : ''}
     </div>`;
   });
   $('assignList').innerHTML = html;
@@ -1728,7 +1656,6 @@ async function assignExercise(exId) {
       clientExercisesCache[selectedClientId].push({ client_id: selectedClientId, exercise_id: exId, sort_order: 0 });
     }
     renderAssignList();
-    renderSessions();
   } catch (err) { showStatus($('assignStatus'), '❌ '+err.message, 'error'); }
 }
 
@@ -1737,7 +1664,6 @@ async function unassignExercise(exId) {
     await supabaseClient.from('client_exercises').delete().eq('client_id', selectedClientId).eq('exercise_id', exId);
     if (clientExercisesCache[selectedClientId]) clientExercisesCache[selectedClientId] = clientExercisesCache[selectedClientId].filter(a => a.exercise_id !== exId);
     renderAssignList();
-    renderSessions();
   } catch (err) { console.error(err); }
 }
 
@@ -1766,16 +1692,13 @@ function renderProgressEntries(containerId, clientId, adminMode) {
     if (e.hips_cm) parts.push(`<div class="item"><div class="label">Hips</div><div class="value">${e.hips_cm} cm</div></div>`);
     if (e.arms_cm) parts.push(`<div class="item"><div class="label">Arms</div><div class="value">${e.arms_cm} cm</div></div>`);
     if (e.thighs_cm) parts.push(`<div class="item"><div class="label">Thighs</div><div class="value">${e.thighs_cm} cm</div></div>`);
-    // Photo — supports Drive ID or full URL
     let photoHtml = '';
     if (e.photo_url) {
       if (/^https?:\/\//.test(e.photo_url)) {
         photoHtml = `<div style="margin-top:0.4rem;font-size:0.75rem;"><a href="${escapeHtml(e.photo_url)}" target="_blank" style="color:#1976d2;">📷 View photo</a></div>`;
       } else {
-        // Treat as Drive File ID
-        const photoId = e.photo_url;
         photoHtml = `<div class="progress-photo" style="margin-top:0.5rem;max-width:200px;height:140px;border-radius:0.6rem;overflow:hidden;background:#f5f9fc;">
-          <img data-gdrive-id="${escapeHtml(photoId)}" alt="Progress photo" style="width:100%;height:100%;object-fit:cover;">
+          <img data-gdrive-id="${escapeHtml(e.photo_url)}" alt="Progress photo" style="width:100%;height:100%;object-fit:cover;">
         </div>`;
       }
     }
@@ -1791,10 +1714,7 @@ function renderProgressEntries(containerId, clientId, adminMode) {
     </div>`;
   });
   container.innerHTML = html;
-
-  // Wire up any Drive photos just added
   if (window.DriveImages) window.DriveImages.init(container);
-
   if (adminMode) {
     container.querySelectorAll('.delete-progress-btn').forEach(b => {
       b.addEventListener('click', async () => {
@@ -1806,7 +1726,6 @@ function renderProgressEntries(containerId, clientId, adminMode) {
     });
   }
 }
-
 function renderAdminProgress() {
   if (!selectedClientId) return;
   renderProgressEntries('adminProgressList', selectedClientId, true);
@@ -1817,10 +1736,7 @@ function renderClientHistory(c) {
   const container = $('clientHistoryList');
   if (!container) return;
   const dates = getAllWorkoutDates(c.id);
-  if (dates.length === 0) {
-    container.innerHTML = `<div class="empty-message">No workouts logged yet.</div>`;
-    return;
-  }
+  if (dates.length === 0) { container.innerHTML = `<div class="empty-message">No workouts logged yet.</div>`; return; }
   let html = '';
   dates.forEach(dateStr => {
     const logs = getWorkoutLogs(c.id, dateStr);
@@ -1829,14 +1745,13 @@ function renderClientHistory(c) {
     const dateLabel = formatDateReadable(parseInt(dParts[0]), parseInt(dParts[1])-1, parseInt(dParts[2]));
     let exercisesHtml = '';
     logs.forEach(log => {
-      const ex = getExercise(log.exercise_id);
-      if (!ex) return;
+      const name = getWorkoutDisplayName(log);
       const details = [];
       if (log.sets_done) details.push(`${log.sets_done}×`);
       if (log.reps_done) details.push(`${log.reps_done}`);
       if (log.weight_done) details.push(`@ ${log.weight_done}`);
       exercisesHtml += `<div class="history-exercise">
-        <span class="history-exercise-name">${escapeHtml(ex.name)}</span>
+        <span class="history-exercise-name">${escapeHtml(name)}</span>
         <span class="history-exercise-details">${escapeHtml(details.join(' ') || '—')}</span>
       </div>`;
     });
@@ -1931,11 +1846,7 @@ function renderApprovals() {
   let list = profileApprovals;
   if (currentApprovalTab === 'pending') list = list.filter(a => a.status === 'pending');
   else list = list.filter(a => a.status !== 'pending');
-
-  if (list.length === 0) {
-    container.innerHTML = `<div class="empty-message">No ${currentApprovalTab} approvals.</div>`;
-    return;
-  }
+  if (list.length === 0) { container.innerHTML = `<div class="empty-message">No ${currentApprovalTab} approvals.</div>`; return; }
   let html = '';
   list.forEach(a => {
     const c = getClient(a.client_id);
@@ -2013,9 +1924,7 @@ async function decideApproval(id, decision) {
       clientProfiles[a.client_id] = { ...(clientProfiles[a.client_id]||{}), ...payload };
     }
     Object.assign(a, updates);
-    renderApprovals();
-    updateApprovalsBadge();
-    renderClientList();
+    renderApprovals(); updateApprovalsBadge(); renderClientList();
     showStatus($('approvalsStatus'), `✅ ${decision === 'approved' ? 'Approved' : 'Rejected'}.`, 'success');
     setTimeout(() => clearStatus($('approvalsStatus')), 3000);
   } catch (err) { showStatus($('approvalsStatus'), `❌ ${err.message}`, 'error'); }
@@ -2089,7 +1998,7 @@ function sendToAllClients() {
     setTimeout(() => { window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank'); }, i * 400);
     opened++;
   });
-  showStatus($('sendAllStatus'), `✅ Opening ${opened} WhatsApp tab(s) with login URL`, 'success');
+  showStatus($('sendAllStatus'), `✅ Opening ${opened} WhatsApp tab(s)`, 'success');
   setTimeout(() => clearStatus($('sendAllStatus')), 8000);
 }
 
@@ -2190,19 +2099,12 @@ function renderClientUpcoming(c) {
   const tY = today.getFullYear(), tM = today.getMonth(), tD = today.getDate();
   const tmr = new Date(today); tmr.setDate(tmr.getDate() + 1);
   const mY = tmr.getFullYear(), mM = tmr.getMonth(), mD = tmr.getDate();
-
   const todayDateStr = formatDateISO(tY, tM, tD);
   const tmrDateStr = formatDateISO(mY, mM, mD);
   const todayTime = getTimeForDate(c.id, todayDateStr);
   const tmrTime = getTimeForDate(c.id, tmrDateStr);
-
-  const tTimeHtml = todayTime.isSet
-    ? `<span class="client-upcoming-time">${formatClassTime12(todayTime.time)}</span>`
-    : `<span class="client-upcoming-time-not-set">Time not set yet</span>`;
-  const mTimeHtml = tmrTime.isSet
-    ? `<span class="client-upcoming-time">${formatClassTime12(tmrTime.time)}</span>`
-    : `<span class="client-upcoming-time-not-set">Time not set yet</span>`;
-
+  const tTimeHtml = todayTime.isSet ? `<span class="client-upcoming-time">${formatClassTime12(todayTime.time)}</span>` : `<span class="client-upcoming-time-not-set">Time not set yet</span>`;
+  const mTimeHtml = tmrTime.isSet ? `<span class="client-upcoming-time">${formatClassTime12(tmrTime.time)}</span>` : `<span class="client-upcoming-time-not-set">Time not set yet</span>`;
   let html = '';
   const tDone = getSessions(c.id, tY, tM).some(s => s.day === tD);
   html += `<div class="client-upcoming-item"><span class="client-upcoming-icon">📅</span><div><div><strong>Today</strong> · ${tTimeHtml}</div><div style="font-size:0.75rem;color:#4c6d84;">${formatDateReadable(tY,tM,tD)} — ${tDone?'✅ Completed':'⏳ Upcoming'}</div></div></div>`;
@@ -2217,7 +2119,7 @@ function renderClientUpcoming(c) {
 
 function renderClientPlan(c) {
   const assigned = clientExercisesCache[c.id] || [];
-  if (assigned.length === 0) { $('clientPlanList').innerHTML = '<div style="font-size:0.82rem;color:#7893a8;font-style:italic;">No exercises assigned yet.</div>'; return; }
+  if (assigned.length === 0) { $('clientPlanList').innerHTML = '<div style="font-size:0.82rem;color:#7893a8;font-style:italic;">No template exercises assigned.</div>'; return; }
   let html = '';
   assigned.forEach(a => {
     const ex = getExercise(a.exercise_id); if (!ex) return;
@@ -2230,9 +2132,7 @@ function renderClientPlan(c) {
   $('clientPlanList').innerHTML = html;
 }
 
-function renderClientProgress(c) {
-  renderProgressEntries('clientProgressList', c.id, false);
-}
+function renderClientProgress(c) { renderProgressEntries('clientProgressList', c.id, false); }
 
 function renderClientProfile(c) {
   const p = clientProfiles[c.id] || {};
@@ -2442,7 +2342,7 @@ $('exerciseLibraryBtn').addEventListener('click', () => {
 });
 
 function renderLibrary() {
-  if (exercises.length === 0) { $('libraryList').innerHTML = `<div class="empty-message">No exercises.</div>`; return; }
+  if (exercises.length === 0) { $('libraryList').innerHTML = `<div class="empty-message">No exercises in the library yet.</div>`; return; }
   let html = '';
   exercises.forEach(ex => {
     html += `<div class="library-row">
@@ -2640,10 +2540,7 @@ $('monthSelect').value = new Date().getMonth();
 selectedMonth = new Date().getMonth();
 initSupabase();
 
-// Re-scan for any Drive images dynamically added later
-window.addEventListener('load', () => {
-  if (window.DriveImages) window.DriveImages.init();
-});
+window.addEventListener('load', () => { if (window.DriveImages) window.DriveImages.init(); });
 </script>
 </body>
 </html>
