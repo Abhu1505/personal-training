@@ -3,16 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-<title>Personal Training · Cloud</title>
+<title>Personal Training</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<!-- ═══════════════════════════════════════════════════════════
-     GOOGLE DRIVE IMAGE LOADER — 3-pattern fallback system
-     ═══════════════════════════════════════════════════════════ -->
 <script>
 (function (window) {
   'use strict';
-
   function buildImageUrls(id) {
     if (!id) return [];
     return [
@@ -21,7 +17,6 @@
       `https://drive.google.com/uc?export=view&id=${id}`
     ];
   }
-
   function attachDriveFallback(img, id, opts) {
     opts = opts || {};
     const urls = buildImageUrls(id);
@@ -29,7 +24,6 @@
     let ui = 0;
     const parent = img.parentNode;
     const hideFallback = opts.hideFallback === true;
-
     function tryNext() {
       ui++;
       if (ui < urls.length) {
@@ -42,21 +36,18 @@
         fb.href = `https://drive.google.com/file/d/${id}/view`;
         fb.target = '_blank';
         fb.rel = 'noopener noreferrer';
-        fb.innerHTML = `<div style="font-size:2.2rem;line-height:1;">📷</div><div style="font-size:0.75rem;font-weight:700;margin-top:0.3rem;">Open Photo</div>`;
+        fb.innerHTML = `<div style="font-size:2rem;line-height:1;">📷</div><div style="font-size:0.7rem;font-weight:700;margin-top:0.2rem;">Open Photo</div>`;
         fb.style.cssText = `display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;min-height:80px;padding:0.6rem;background:linear-gradient(135deg,#e3f2fd,#bbdefb);color:#0d47a1;text-decoration:none;border-radius:0.8rem;border:2px dashed #64b5f6;`;
         if (parent) parent.appendChild(fb);
       }
     }
-
     img.addEventListener('error', tryNext);
     img.addEventListener('load', function () { img.removeEventListener('error', tryNext); });
     img.src = urls[0];
   }
-
   function initDriveImages(root) {
     root = root || document;
-    const imgs = root.querySelectorAll('img[data-gdrive-id]');
-    imgs.forEach(function (img) {
+    root.querySelectorAll('img[data-gdrive-id]').forEach(function (img) {
       if (img.dataset.gdriveLoaded === '1') return;
       img.dataset.gdriveLoaded = '1';
       const id = img.dataset.gdriveId;
@@ -64,32 +55,15 @@
       if (id) attachDriveFallback(img, id, { hideFallback: hideFb });
     });
   }
-
-  function createDriveImage(id, extraAttrs) {
-    extraAttrs = extraAttrs || {};
-    const img = document.createElement('img');
-    img.dataset.gdriveId = id;
-    Object.keys(extraAttrs).forEach(function (k) {
-      if (k === 'style' && typeof extraAttrs[k] === 'object') Object.assign(img.style, extraAttrs[k]);
-      else img.setAttribute(k, extraAttrs[k]);
-    });
-    attachDriveFallback(img, id);
-    return img;
-  }
-
-  window.DriveImages = { buildImageUrls, attachDriveFallback, init: initDriveImages, create: createDriveImage };
-
+  window.DriveImages = { buildImageUrls, attachDriveFallback, init: initDriveImages };
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => initDriveImages());
-  } else {
-    initDriveImages();
-  }
+  } else { initDriveImages(); }
 })(window);
 </script>
 
 <script>
   const LOGO_FILE_ID = '1N651kHeVrz6HEhAc1cRRKGx2DtS-IdX0';
-  const LOGO_OPACITY = 0.10;
 </script>
 
 <style>
@@ -99,24 +73,27 @@ body{background:linear-gradient(145deg,#f0f5fa,#e2eaf2);min-height:100vh;padding
 img{max-width:100%;height:auto;display:block;}
 input,select,textarea,button{font-family:inherit;}
 
+/* ═══ BIGGER WATERMARK ═══ */
 #bgWatermark{position:fixed;inset:0;z-index:-1;pointer-events:none;display:flex;align-items:center;justify-content:center;overflow:hidden;}
-#bgWatermark img{width:60%;max-width:700px;height:auto;object-fit:contain;opacity:0.10;filter:grayscale(20%);user-select:none;-webkit-user-drag:none;}
+#bgWatermark img{width:110%;max-width:1500px;height:auto;object-fit:contain;opacity:0.10;filter:grayscale(20%);user-select:none;-webkit-user-drag:none;}
 #bgWatermark .gdrive-fallback{display:none !important;}
 
-.panel-logo{display:flex;justify-content:center;align-items:center;margin:0 auto 1rem;}
-.panel-logo img{height:100px;width:auto;max-width:200px;object-fit:contain;border-radius:0.5rem;}
-.panel-logo .gdrive-fallback{min-height:100px !important;max-width:200px;}
+.unified-wrap{max-width:560px;margin:0 auto;width:100%;}
+.card{background:rgba(255,255,255,0.94);border-radius:1.5rem;box-shadow:0 12px 28px -8px rgba(0,20,40,0.2);padding:1.6rem;border:1px solid rgba(255,255,255,0.7);width:100%;}
 
-.app-container{max-width:1600px;margin:0 auto;display:flex;flex-wrap:wrap;gap:1.5rem;justify-content:center;align-items:flex-start;width:100%;}
-.card{background:rgba(255,255,255,0.92);border-radius:1.5rem;box-shadow:0 12px 28px -8px rgba(0,20,40,0.2);padding:1.6rem;border:1px solid rgba(255,255,255,0.7);width:100%;}
-.client-panel{flex:1 1 380px;max-width:480px;background:#fff;border-top:5px solid #2b6e9e;}
-.admin-panel{flex:1 1 850px;max-width:1150px;background:#fff;border-top:5px solid #1f4e3d;}
+.login-card{position:relative;padding-top:1.6rem;border-top:5px solid #2b6e9e;transition:border-color 0.3s;}
+.login-card.admin-mode{border-top-color:#1f4e3d;}
 
-.badge{display:inline-block;background:#d9e7f5;color:#1e3b5c;font-size:0.7rem;font-weight:700;padding:0.25rem 0.9rem;border-radius:50px;text-transform:uppercase;margin-bottom:0.8rem;letter-spacing:0.5px;}
-.admin-badge{background:#d0e6db;color:#0e3829;}
+/* ═══ BIGGER LOGO CORNER ═══ */
+.login-logo-corner{position:absolute;top:0.8rem;right:0.8rem;width:200px;height:200px;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:1rem;}
+.login-logo-corner img{width:100%;height:100%;object-fit:contain;}
+.login-logo-corner .gdrive-fallback{min-height:80px !important;font-size:0.7rem;}
+
+.login-head{padding-right:210px;}
+
 h2{font-size:clamp(1.4rem,3.5vw,1.85rem);font-weight:700;margin-bottom:0.3rem;color:#0b1e2b;line-height:1.2;}
 .subhead{color:#4a5d6b;font-size:0.88rem;margin-bottom:1.2rem;border-left:3px solid #2b6e9e;padding-left:0.8rem;line-height:1.5;}
-.admin-subhead{border-left-color:#1f4e3d;}
+.login-card.admin-mode .subhead{border-left-color:#1f4e3d;}
 
 .cloud-status{display:flex;align-items:center;gap:0.5rem;padding:0.5rem 0.9rem;border-radius:30px;font-size:0.75rem;font-weight:700;margin-bottom:1rem;background:#fff3e0;color:#e65100;border:1.5px solid #ffb74d;width:fit-content;}
 .cloud-status.online{background:#e8f5e9;color:#1b5e20;border-color:#a5d6a7;}
@@ -124,11 +101,12 @@ h2{font-size:clamp(1.4rem,3.5vw,1.85rem);font-weight:700;margin-bottom:0.3rem;co
 .cloud-status.online .dot{background:#4caf50;animation:pulse 2s infinite;}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
 
+.badge{display:inline-block;background:#d9e7f5;color:#1e3b5c;font-size:0.7rem;font-weight:700;padding:0.25rem 0.9rem;border-radius:50px;text-transform:uppercase;margin-bottom:0.8rem;letter-spacing:0.5px;}
+
 .input-group{margin-bottom:1rem;}
 label{display:block;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.3px;color:#2b4b62;margin-bottom:0.3rem;}
 input,select,textarea{width:100%;padding:0.75rem 1rem;font-size:0.95rem;background:#f9fcff;border:1.5px solid #cdddee;border-radius:0.8rem;outline:none;color:#0b1e2b;font-weight:500;-webkit-appearance:none;appearance:none;min-height:44px;}
 input:focus,select:focus,textarea:focus{border-color:#2b6e9e;box-shadow:0 0 0 3px rgba(43,110,158,0.12);background:#fff;}
-.admin-panel input:focus,.admin-panel select:focus{border-color:#1f4e3d;box-shadow:0 0 0 3px rgba(31,78,61,0.12);}
 
 button{border:none;border-radius:0.8rem;font-weight:600;font-size:0.9rem;padding:0.75rem 1.3rem;cursor:pointer;transition:0.15s;display:inline-flex;align-items:center;justify-content:center;gap:0.4rem;background:#fff;color:#0b1e2b;border:1.5px solid #cdddee;min-height:42px;text-align:center;line-height:1.2;}
 button:disabled{opacity:0.5;cursor:not-allowed;}
@@ -145,20 +123,18 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
 .btn-reopen{background:#2e7d32;color:#fff;border-color:#2e7d32;font-weight:700;}
 .btn-whatsapp{background:#25D366;color:#fff;border-color:#25D366;padding:0.75rem 1.3rem;font-weight:700;}
 .btn-email{background:#2b6e9e;color:#fff;border-color:#2b6e9e;padding:0.75rem 1.3rem;font-weight:700;}
-.btn-send-all{background:linear-gradient(135deg,#128C7E,#25D366);color:#fff;border:none;padding:0.8rem 1.4rem;font-weight:700;width:100%;}
-.btn-archive{background:linear-gradient(135deg,#ff9800,#f57c00);color:#fff;border:none;padding:0.8rem 1.2rem;font-weight:700;}
-.btn-wipe{background:#c62828;color:#fff;border:none;padding:0.8rem 1.2rem;font-weight:700;}
+.btn-send-all-top{background:linear-gradient(135deg,#128C7E,#25D366);color:#fff;border:none;padding:0.55rem 1rem;font-weight:700;font-size:0.8rem;}
+.btn-notify{background:#0d47a1;color:#fff;border:none;padding:0.55rem 0.9rem;font-weight:700;font-size:0.78rem;border-radius:0.7rem;min-height:auto;}
+.btn-notify.enabled{background:#2e7d32;}
 .btn-save-settings{background:linear-gradient(135deg,#6a1b9a,#8e24aa);color:#fff;border:none;padding:0.8rem 1.3rem;font-weight:700;width:100%;}
 .btn-clear-all{background:#b71c1c;color:#fff;border:none;padding:0.8rem 1.3rem;font-weight:700;width:100%;}
 .btn-small{padding:0.4rem 0.7rem;font-size:0.72rem;border-radius:0.5rem;min-height:34px;}
 .btn-danger-small{background:#ffebee;border-color:#ef9a9a;color:#c62828;}
 .btn-green-small{background:#e2f0e9;border-color:#a5d6a7;color:#1f4e3d;}
 .btn-orange-small{background:#fff3e0;border-color:#ffb74d;color:#e65100;}
-.btn-blue-small{background:#e3f2fd;border-color:#64b5f6;color:#0d47a1;}
 .btn-approve{background:#2e7d32;color:#fff;border-color:#2e7d32;font-weight:700;padding:0.5rem 1rem;font-size:0.78rem;}
 .btn-reject{background:#c62828;color:#fff;border-color:#c62828;font-weight:700;padding:0.5rem 1rem;font-size:0.78rem;}
 .btn-add-day{background:#0d47a1;color:#fff;border-color:#0d47a1;padding:0.3rem 0.6rem;font-size:0.7rem;min-height:28px;border-radius:0.5rem;font-weight:700;}
-.btn-copy-last{background:linear-gradient(135deg,#6a1b9a,#8e24aa);color:#fff;border:none;padding:0.6rem 1.1rem;font-weight:700;font-size:0.82rem;}
 .btn-set-time{background:#e8f5e9;border:1.5px solid #a5d6a7;color:#1f4e3d;padding:0.35rem 0.6rem;font-size:0.7rem;font-weight:700;border-radius:0.5rem;min-height:30px;}
 
 .status-msg{margin-top:0.8rem;font-size:0.85rem;padding:0.7rem 0.9rem;border-radius:0.8rem;display:none;font-weight:500;line-height:1.4;}
@@ -169,12 +145,9 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
 .hidden{display:none !important;}
 
 .admin-section-title{font-size:0.85rem;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;color:#1f4e3d;margin:1.3rem 0 0.7rem;}
-
 .flex-row{display:flex;gap:0.7rem;flex-wrap:wrap;}
 .flex-row .input-group{flex:1 1 160px;min-width:0;}
 
-.global-settings{background:linear-gradient(135deg,#fff8e1,#ffecb3);padding:1rem 1.1rem;border-radius:1rem;border:2px solid #ffd54f;margin-bottom:1.2rem;display:flex;align-items:center;flex-wrap:wrap;gap:0.8rem;justify-content:space-between;}
-.global-settings-title{font-weight:700;color:#8d6e00;font-size:0.85rem;flex:1 1 200px;}
 .settings-panel{background:linear-gradient(135deg,#f3e5f5,#ede7f6);border:2px solid #ce93d8;border-radius:1.1rem;padding:1.1rem 1.2rem;margin-bottom:1.2rem;}
 .settings-panel h4{font-size:1rem;font-weight:700;color:#6a1b9a;margin-bottom:0.8rem;}
 .danger-panel{background:linear-gradient(135deg,#ffebee,#fce4ec);border:2px solid #ef5350;border-radius:1.1rem;padding:1.1rem 1.2rem;margin-top:1.2rem;}
@@ -193,10 +166,9 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
 .client-info{display:flex;flex-direction:column;gap:0.15rem;flex:1 1 140px;min-width:0;}
 .client-name{font-weight:700;color:#12344d;font-size:0.9rem;word-break:break-word;}
 .client-email{font-size:0.7rem;color:#4c6d84;word-break:break-word;}
-.client-login-badge,.client-phone-badge,.client-pass-badge,.client-pending-badge{font-size:0.68rem;font-weight:600;padding:0.22rem 0.6rem;border-radius:30px;font-family:monospace;white-space:nowrap;}
+.client-login-badge,.client-phone-badge,.client-pending-badge{font-size:0.68rem;font-weight:600;padding:0.22rem 0.6rem;border-radius:30px;font-family:monospace;white-space:nowrap;}
 .client-login-badge{background:#fce4ec;color:#880e4f;border:1px solid #f48fb1;}
 .client-phone-badge{background:#e3f2fd;color:#1565c0;border:1px solid #90caf9;}
-.client-pass-badge{background:#eef6ef;color:#1f4e3d;border:1px solid #bdd9cb;}
 .client-pending-badge{background:#fff3e0;color:#e65100;border:1px solid #ffb74d;font-family:inherit;}
 .client-status-badge-closed{background:#ffebee;color:#c62828;font-size:0.65rem;font-weight:700;padding:0.22rem 0.6rem;border-radius:30px;border:1px solid #ef9a9a;text-transform:uppercase;}
 .client-badges{display:flex;gap:0.3rem;flex-wrap:wrap;justify-content:flex-end;align-items:center;}
@@ -223,7 +195,6 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
 .reminder-preview{background:#fff;border-radius:0.8rem;padding:0.9rem 1rem;border:1.5px dashed #81c784;font-size:0.82rem;color:#1a3a4e;line-height:1.6;margin:0.8rem 0;white-space:pre-wrap;font-family:'SF Mono','Fira Code',monospace;max-height:260px;overflow-y:auto;word-break:break-word;}
 .action-buttons{display:flex;gap:0.6rem;flex-wrap:wrap;}
 .action-buttons button{flex:1 1 140px;}
-.small-note{font-size:0.7rem;color:#4d6b5a;margin-top:0.6rem;line-height:1.4;}
 
 .credentials-box{background:linear-gradient(135deg,#e8f5e9,#e0f2f1);border:2px solid #a5d6a7;border-radius:0.9rem;padding:0.9rem 1rem;margin:0.9rem 0;}
 .credentials-box .label{font-size:0.68rem;color:#1f4e3d;text-transform:uppercase;font-weight:700;letter-spacing:0.3px;margin-bottom:0.3rem;}
@@ -243,12 +214,10 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
 .client-upcoming-time-not-set{font-size:0.78rem;color:#a1887f;font-style:italic;font-weight:600;}
 .client-upcoming-note{font-size:0.75rem;color:#4d6b5a;font-style:italic;margin-top:0.4rem;padding:0.4rem 0.6rem;background:#ffffffaa;border-radius:0.5rem;line-height:1.4;}
 .client-pending-banner{background:#fff3e0;border:2px solid #ffb74d;border-radius:0.9rem;padding:0.8rem 1rem;margin-bottom:1rem;font-size:0.82rem;color:#7a4400;line-height:1.5;}
-.client-pending-banner strong{color:#e65100;}
 
 .month-selector{display:flex;gap:0.5rem;align-items:center;margin-bottom:0.8rem;flex-wrap:wrap;}
 .month-selector label{margin-bottom:0;font-size:0.72rem;}
 .month-selector select{width:auto;padding:0.45rem 0.9rem;font-size:0.82rem;}
-.sessions-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:0.6rem;margin-top:0.7rem;}
 .session-card{background:#fff;border-radius:0.85rem;padding:0.65rem 0.65rem 0.55rem;border:1.5px solid #e2edf7;position:relative;transition:0.1s;}
 .session-card:hover{border-color:#90caf9;}
 .session-card.done{background:#e2f0e9;border-color:#1f4e3d;}
@@ -273,14 +242,9 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
 .note-admin{font-size:0.7rem;color:#5d7a6b;margin-top:0.3rem;text-align:right;}
 .locked-msg{font-size:0.7rem;color:#9b6b4b;background:#fff3e6;padding:0.18rem 0.6rem;border-radius:30px;font-weight:600;}
 
-/* ═══════════════════════════════════════════════════════════════
-   DAILY WORKOUT PANEL — FREE ENTRY
-   ═══════════════════════════════════════════════════════════════ */
-.daily-workout-panel{background:#fffde7;border:2px solid #ffd54f;border-radius:1.1rem;padding:1.1rem;margin-top:1.2rem;}
-.daily-workout-panel h4{font-size:0.95rem;color:#e65100;margin-bottom:0.3rem;font-weight:700;}
-.daily-workout-panel .subtitle{font-size:0.78rem;color:#8d6e00;margin-bottom:0.9rem;line-height:1.4;}
+.day-log-meta{font-size:0.8rem;color:#0277bd;background:#e1f5fe;padding:0.5rem 0.8rem;border-radius:0.6rem;margin-bottom:0.9rem;}
+.day-log-section-title{font-weight:700;color:#1f4e3d;font-size:0.9rem;margin:1rem 0 0.6rem;padding-top:0.8rem;border-top:1px dashed #cbdae7;}
 
-/* Free add row */
 .free-add-row{display:flex;gap:0.5rem;flex-wrap:wrap;align-items:flex-end;margin-bottom:0.9rem;background:#fff;padding:0.8rem 0.9rem;border-radius:0.9rem;border:1.5px dashed #ffb74d;}
 .free-add-row .field{flex:1 1 140px;min-width:0;}
 .free-add-row .field label{font-size:0.62rem;color:#e65100;margin-bottom:0.15rem;}
@@ -288,12 +252,10 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
 .free-add-row .field select{min-height:38px;font-size:0.85rem;padding:0.5rem 0.7rem;border-radius:0.55rem;}
 .free-add-row .btn-add-custom{flex:0 0 auto;background:#ff9800;color:#fff;border-color:#ff9800;padding:0.5rem 1rem;font-size:0.82rem;font-weight:700;min-height:44px;}
 
-/* Quick-pick chips from the library */
 .library-quick-chips{display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.9rem;}
 .library-chip{background:#fff3e0;border:1.5px solid #ffb74d;color:#e65100;padding:0.4rem 0.75rem;border-radius:0.6rem;font-size:0.78rem;font-weight:700;cursor:pointer;min-height:34px;}
 .library-chip:hover{background:#ffe0b2;}
 
-/* The logged exercise entry */
 .exercise-entry{background:#fff;border-radius:0.85rem;padding:0.9rem 1rem;margin-bottom:0.7rem;border:1.5px solid #ffe082;}
 .exercise-entry-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.5rem;}
 .exercise-entry-name{font-weight:700;color:#0d47a1;font-size:0.9rem;}
@@ -305,7 +267,16 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
 .exercise-notes-row{margin-top:0.5rem;}
 .exercise-notes-row input{padding:0.45rem 0.7rem;font-size:0.82rem;border-radius:0.5rem;min-height:38px;}
 
-/* Library + assign (still available as an OPTIONAL template) */
+.last-time-banner{font-size:0.72rem;color:#6a1b9a;background:#f3e5f5;border-left:3px solid #8e24aa;padding:0.4rem 0.7rem;border-radius:0.5rem;margin-bottom:0.6rem;font-weight:600;line-height:1.4;word-break:break-word;}
+
+.month-summary-day{background:#fff;border-radius:0.85rem;padding:0.8rem 1rem;margin-bottom:0.6rem;border-left:4px solid #0277bd;border:1.5px solid #e2edf7;}
+.month-summary-date{font-weight:800;color:#0d47a1;font-size:0.9rem;margin-bottom:0.4rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.4rem;}
+.month-summary-count{font-size:0.68rem;color:#4c6d84;background:#e3f2fd;padding:0.15rem 0.5rem;border-radius:20px;font-weight:700;}
+.month-summary-ex{font-size:0.8rem;padding:0.4rem 0;border-bottom:1px dashed #e2edf7;display:flex;justify-content:space-between;gap:0.5rem;flex-wrap:wrap;}
+.month-summary-ex:last-child{border-bottom:none;}
+.month-summary-ex-name{font-weight:700;color:#0b1e2b;flex:1 1 100px;}
+.month-summary-ex-detail{font-family:monospace;font-size:0.72rem;color:#0d47a1;font-weight:700;}
+
 .library-list{display:flex;flex-direction:column;gap:0.5rem;max-height:420px;overflow-y:auto;padding:0.3rem;}
 .library-row{display:flex;justify-content:space-between;align-items:center;padding:0.65rem 0.9rem;background:#fff;border-radius:0.8rem;border:1px solid #e2edf7;gap:0.5rem;flex-wrap:wrap;}
 .library-row-name{font-weight:700;color:#0d47a1;font-size:0.85rem;}
@@ -324,14 +295,20 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
 
 .progress-list{display:flex;flex-direction:column;gap:0.6rem;max-height:420px;overflow-y:auto;padding:0.3rem;}
 .progress-entry{background:#fff;border-radius:0.85rem;padding:0.75rem 0.9rem;border:1.5px solid #e2edf7;}
+.progress-entry.pending{border-color:#ffb74d;background:#fff8e1;}
 .progress-entry-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.5rem;}
 .progress-entry-date{font-weight:700;color:#0d47a1;font-size:0.85rem;}
 .progress-entry-by{font-size:0.65rem;color:#6a1b9a;background:#f3e5f5;padding:0.15rem 0.5rem;border-radius:20px;font-weight:700;}
+.progress-entry-pending-badge{font-size:0.65rem;color:#e65100;background:#fff3e0;padding:0.15rem 0.5rem;border-radius:20px;font-weight:700;border:1px solid #ffb74d;}
 .progress-entry-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:0.5rem;font-size:0.78rem;}
 .progress-entry-grid .item{background:#f5f9ff;padding:0.35rem 0.5rem;border-radius:0.5rem;}
 .progress-entry-grid .item .label{font-size:0.6rem;color:#7a8f9e;text-transform:uppercase;font-weight:700;letter-spacing:0.3px;}
 .progress-entry-grid .item .value{font-weight:700;color:#0b1e2b;}
 .progress-entry-note{margin-top:0.4rem;font-size:0.76rem;color:#4c6d84;font-style:italic;padding:0.35rem 0.55rem;background:#f8f9fa;border-radius:0.5rem;line-height:1.4;}
+
+/* ═══ BIGGER PROGRESS PHOTOS ═══ */
+.progress-photo-wrap{margin-top:0.5rem;max-width:480px;height:360px;border-radius:0.8rem;overflow:hidden;background:#f5f9fc;}
+.progress-photo-wrap img{width:100%;height:100%;object-fit:cover;}
 
 .profile-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:0.7rem;}
 .profile-field{background:#fff;padding:0.75rem 0.9rem;border-radius:0.85rem;border:1px solid #e2edf7;}
@@ -355,11 +332,6 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
 .approval-diff-table td.arrow{width:20px;text-align:center;color:#7a8f9e;}
 .approval-actions{display:flex;gap:0.5rem;flex-wrap:wrap;}
 .approval-note-input{flex:1 1 180px;padding:0.45rem 0.7rem;font-size:0.78rem;border-radius:0.5rem;border:1.5px solid #cdddee;min-height:38px;}
-
-.last-session-meta{font-size:0.78rem;color:#0277bd;margin-bottom:0.9rem;background:#ffffffaa;padding:0.4rem 0.7rem;border-radius:0.6rem;}
-.last-session-exercise{background:#fff;border-radius:0.7rem;padding:0.65rem 0.9rem;margin-bottom:0.5rem;border:1.5px solid #81d4fa;font-size:0.82rem;}
-.last-session-exercise-name{font-weight:700;color:#01579b;}
-.last-session-exercise-meta{font-size:0.72rem;color:#4c6d84;margin-top:0.2rem;}
 
 .history-item{background:#fff;border-radius:0.85rem;padding:0.85rem 1rem;border:1.5px solid #e2edf7;margin-bottom:0.6rem;cursor:pointer;transition:0.1s;}
 .history-item:hover{border-color:#90caf9;background:#f5fbff;}
@@ -387,47 +359,26 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
 .modal-header.green{background:linear-gradient(135deg,#2e7d32,#1b5e20);}
 .modal-header.orange{background:linear-gradient(135deg,#e65100,#ef6c00);}
 .modal-header.blue{background:linear-gradient(135deg,#01579b,#0277bd);}
-.modal-header:not(.purple):not(.red):not(.green):not(.orange):not(.blue){background:linear-gradient(135deg,#ff9800,#f57c00);}
 .modal-body{padding:1.2rem 1.4rem;}
 .modal-warning{background:#fff3e0;border-left:5px solid #ff9800;padding:0.8rem 1rem;border-radius:0.7rem;margin-bottom:1rem;color:#7a4400;font-size:0.85rem;line-height:1.5;}
-.modal-data-list{background:#f5f9fc;border-radius:0.8rem;padding:0.8rem 1rem;margin-bottom:1.1rem;font-size:0.82rem;border:1px solid #d3e3f0;max-height:200px;overflow-y:auto;}
-.modal-data-row{display:flex;justify-content:space-between;padding:0.35rem 0;border-bottom:1px dashed #cbdae7;gap:0.5rem;flex-wrap:wrap;}
-.modal-data-row:last-child{border-bottom:none;}
-.modal-data-row .label{color:#4c6d84;}
-.modal-data-row .value{font-weight:700;color:#12344d;}
 .modal-actions{display:flex;gap:0.6rem;flex-wrap:wrap;margin-top:1rem;}
 .modal-actions button{flex:1 1 160px;}
-.modal-email-preview{background:#fafafa;border-radius:0.8rem;padding:0.9rem 1rem;margin-top:0.8rem;font-family:'SF Mono',monospace;font-size:0.72rem;color:#444;max-height:240px;overflow-y:auto;border:1px solid #e0e0e0;white-space:pre-wrap;line-height:1.5;word-break:break-word;}
 
 ::-webkit-scrollbar{width:6px;height:6px;}
 ::-webkit-scrollbar-thumb{background:#b6cfde;border-radius:20px;}
 
-@media (max-width:1100px){
-  .client-panel{max-width:100%;flex:1 1 100%;}
-  .admin-panel{max-width:100%;flex:1 1 100%;}
-}
 @media (max-width:700px){
   body{padding:0.7rem 0.5rem;font-size:14px;}
-  .app-container{gap:1rem;}
-  .card{padding:1rem;border-radius:1.1rem;}
+  .card{padding:1.1rem;border-radius:1.1rem;}
   h2{font-size:1.35rem;}
   .subhead{font-size:0.82rem;margin-bottom:1rem;}
   input,select,textarea{padding:0.7rem 0.9rem;font-size:0.9rem;min-height:44px;}
   button{padding:0.65rem 1.1rem;font-size:0.85rem;min-height:42px;}
   .btn-small{padding:0.4rem 0.65rem;font-size:0.7rem;min-height:34px;}
-  .btn-contact{padding:0.5rem 0.9rem;font-size:0.78rem;}
-  .tabs-bar{padding:0.3rem;gap:0.2rem;}
+  .tabs-bar{padding:0.3rem;gap:0.2rem;overflow-x:auto;flex-wrap:nowrap;}
   .tab-btn{padding:0.45rem 0.75rem;font-size:0.72rem;}
-  .sessions-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:0.5rem;}
-  .session-card{padding:0.55rem 0.55rem 0.45rem;}
-  .session-card label{font-size:0.75rem;}
-  .session-date,.session-time-custom,.session-checked-time,.session-no-time{font-size:0.62rem;margin-left:1.4rem;}
-  .session-amount{font-size:0.68rem;margin-left:1.4rem;}
   .summary-box{padding:0.8rem 1rem;flex-direction:column;align-items:flex-start;}
-  .summary-amount{font-size:1.2rem;}
   .exercise-entry-fields{grid-template-columns:repeat(2,1fr);}
-  .assign-custom-fields{grid-template-columns:repeat(2,1fr);}
-  .progress-entry-grid{grid-template-columns:repeat(2,1fr);}
   .profile-grid{grid-template-columns:1fr;}
   .modal-overlay{padding:0.5rem;align-items:flex-start;padding-top:1rem;}
   .modal-box{max-height:none;border-radius:1rem;}
@@ -435,57 +386,357 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
   .modal-body{padding:1rem 1.1rem;}
   .modal-actions button{flex:1 1 100%;}
   .action-buttons button{flex:1 1 100%;}
-  .tabs-bar{overflow-x:auto;flex-wrap:nowrap;}
-  .tabs-bar::-webkit-scrollbar{height:3px;}
-  .contact-picker-row .input-group{flex:1 1 100%;}
-  .contact-picker-row .btn-contact{width:100%;}
-  .panel-logo img{height:80px;max-width:160px;}
-  #bgWatermark img{width:85%;}
   .free-add-row .field{flex:1 1 100%;}
   .free-add-row .btn-add-custom{flex:1 1 100%;}
+  .contact-picker-row .input-group{flex:1 1 100%;}
+  .contact-picker-row .btn-contact{width:100%;}
+  /* BIGGER LOGO on mobile */
+  .login-logo-corner{width:160px;height:160px;top:0.6rem;right:0.6rem;}
+  .login-head{padding-right:175px;}
+  #bgWatermark img{width:130%;}
+  .progress-photo-wrap{max-width:100%;height:320px;}
 }
 @media (max-width:400px){
   body{padding:0.5rem 0.4rem;}
   .card{padding:0.9rem;}
   h2{font-size:1.2rem;}
-  .sessions-grid{grid-template-columns:1fr;}
   .exercise-entry-fields{grid-template-columns:1fr;}
-  .assign-custom-fields{grid-template-columns:1fr;}
   .progress-entry-grid{grid-template-columns:1fr;}
-  .panel-logo img{height:70px;}
+  .login-logo-corner{width:130px;height:130px;}
+  .login-head{padding-right:140px;}
 }
 </style>
 </head>
 <body>
 
 <div id="bgWatermark" aria-hidden="true">
-  <img data-gdrive-id="1N651kHeVrz6HEhAc1cRRKGx2DtS-IdX0"
-       data-gdrive-hide-fallback="1"
-       alt="">
+  <img data-gdrive-id="1N651kHeVrz6HEhAc1cRRKGx2DtS-IdX0" data-gdrive-hide-fallback="1" alt="">
 </div>
 
-<!-- ARCHIVE MODAL -->
-<div id="archiveModal" class="modal-overlay hidden">
-  <div class="modal-box">
-    <div class="modal-header"><h3>📦 Time to Archive Old Data</h3><p>Data before <span id="archiveCutoffLabel">—</span> is ready.</p></div>
-    <div class="modal-body">
-      <div class="modal-warning"><strong>⚠️ Important:</strong> Draft the email, send it, then confirm to wipe old data.</div>
-      <div class="modal-data-list" id="archiveDataList"></div>
-      <div class="modal-actions">
-        <button class="btn-archive" id="draftEmailBtn">📧 Draft Email</button>
-        <button class="btn-wipe" id="wipeDataBtn" disabled>🗑️ Email Sent → Wipe</button>
+<div class="unified-wrap">
+  <div class="card login-card" id="loginCard">
+    <div class="login-logo-corner">
+      <img data-gdrive-id="1N651kHeVrz6HEhAc1cRRKGx2DtS-IdX0" alt="Logo">
+    </div>
+    <div class="login-head">
+      <span class="badge" id="modeBadge">🔐 access</span>
+      <h2 id="modeTitle">Personal training</h2>
+      <div class="subhead" id="modeSubhead">Log in with your Login ID and password</div>
+    </div>
+    <div id="cloudStatus" class="cloud-status"><div class="dot"></div><span id="cloudStatusText">Checking...</span></div>
+    <div class="input-group">
+      <label for="loginIdInput">Login ID</label>
+      <input type="text" id="loginIdInput" placeholder="Enter your Login ID" autocomplete="off" autocapitalize="characters">
+    </div>
+    <div class="input-group">
+      <label for="passwordInput">Password</label>
+      <input type="password" id="passwordInput" placeholder="Enter your password" autocomplete="off">
+    </div>
+    <button class="btn-primary" id="unifiedLoginBtn">Log in</button>
+    <div id="unifiedStatus" class="status-msg"></div>
+  </div>
+
+  <!-- ═══ CLIENT DASHBOARD ═══ -->
+  <div class="card hidden" id="clientDashboard" style="margin-top:1.4rem;border-top:5px solid #2b6e9e;">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:0.5rem;margin-bottom:1rem;">
+      <div>
+        <div style="font-weight:700;color:#1f4e3d;font-size:1rem;">💪 Welcome, <span id="welcomeClientName">Client</span>!</div>
+        <div style="font-size:0.78rem;color:#4c6d84;margin-top:0.15rem;">Your training portal</div>
       </div>
-      <div id="archiveStatus" class="status-msg"></div>
-      <div id="emailPreviewContainer" class="hidden" style="margin-top:0.8rem;">
-        <div style="font-size:0.82rem;font-weight:700;color:#1f4e3d;margin-bottom:0.4rem;">📧 Email Preview:</div>
-        <div class="modal-email-preview" id="emailPreview"></div>
+      <button class="btn-secondary btn-small" id="clientLogoutBtn">Log out</button>
+    </div>
+    <div id="clientPendingBanner" class="hidden client-pending-banner"><strong>⏳ Pending approval:</strong> Your changes are waiting for approval.</div>
+    <div class="client-dash-card">
+      <div style="margin-top:0.2rem;color:#1e3b5c;">
+        <div class="dash-row"><span>Month:</span> <strong id="clientDashMonth">—</strong></div>
+        <div class="dash-row"><span>Sessions done:</span> <strong id="clientDashDone">0</strong></div>
+        <div class="dash-row"><span>Amount due:</span> <strong id="clientDashAmount">AED 0</strong></div>
       </div>
-      <button class="btn-secondary" id="archiveLaterBtn" style="margin-top:0.8rem;width:100%;">⏰ Remind Me Later</button>
+      <div id="clientUpcomingBlock" class="hidden client-upcoming">
+        <div class="client-upcoming-title">📅 Your upcoming schedule</div>
+        <div id="clientUpcomingList"></div>
+        <div id="clientUpcomingNote" class="hidden client-upcoming-note"></div>
+      </div>
+    </div>
+    <div class="tabs-bar" style="margin-top:1rem;">
+      <button class="tab-btn active" data-ctab="plan">🏋️ My Plan</button>
+      <button class="tab-btn" data-ctab="history">📜 History</button>
+      <button class="tab-btn" data-ctab="progress">📈 Progress</button>
+      <button class="tab-btn" data-ctab="profile">👤 Profile</button>
+    </div>
+    <div class="tab-content" id="ctab-plan">
+      <div style="background:#f5fbff;padding:0.9rem;border-radius:0.9rem;border-left:4px solid #1976d2;">
+        <div style="font-weight:700;color:#0d47a1;font-size:0.85rem;margin-bottom:0.5rem;">🏋️ Your Exercise Plan (Template)</div>
+        <div id="clientPlanList"></div>
+      </div>
+    </div>
+    <div class="tab-content hidden" id="ctab-history">
+      <div style="font-weight:700;color:#1f4e3d;font-size:0.85rem;margin-bottom:0.7rem;">📜 Your Workout History</div>
+      <div id="clientHistoryList" class="progress-list"></div>
+    </div>
+    <div class="tab-content hidden" id="ctab-progress">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.7rem;flex-wrap:wrap;gap:0.5rem;">
+        <span style="font-weight:700;color:#1f4e3d;font-size:0.85rem;">📈 Your Progress</span>
+        <button class="btn-green-small btn-small" id="clientAddProgressBtn">➕ Add Entry</button>
+      </div>
+      <div id="clientProgressList" class="progress-list"></div>
+    </div>
+    <div class="tab-content hidden" id="ctab-profile">
+      <div style="display:flex;justify-content:flex-end;margin-bottom:0.5rem;">
+        <button class="btn-green-small btn-small" id="clientEditProfileBtn">✏️ Edit Profile</button>
+      </div>
+      <div id="clientProfileView"></div>
+    </div>
+  </div>
+
+  <!-- ═══ ADMIN DASHBOARD ═══ -->
+  <div class="card hidden" id="adminDashboard" style="margin-top:1.4rem;border-top:5px solid #1f4e3d;">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:0.5rem;margin-bottom:1rem;flex-wrap:wrap;">
+      <div>
+        <div style="font-weight:700;color:#1f4e3d;font-size:1rem;">⚙️ Trainer dashboard</div>
+        <div style="font-size:0.78rem;color:#4c6d84;margin-top:0.15rem;">Signed in as <span id="adminDisplayId">—</span></div>
+      </div>
+      <div style="display:flex;gap:0.4rem;flex-wrap:wrap;">
+        <button class="btn-send-all-top btn-small" id="sendAllTopBtn">📢 Broadcast</button>
+        <button class="btn-notify btn-small" id="notifyBtn">🔔 Enable</button>
+        <button class="btn-approvals btn-small" id="approvalsBtn">✅ Approvals <span id="approvalsCountBadge" class="badge-count hidden">0</span></button>
+        <button class="btn-exercise btn-small" id="exerciseLibraryBtn">🏋️ Library</button>
+        <button class="btn-settings btn-small" id="openSettingsBtn">⚙️ Settings</button>
+        <button class="btn-secondary btn-small" id="adminLogoutBtn">Log out</button>
+      </div>
+    </div>
+
+    <div id="sendAllTopStatus" class="status-msg"></div>
+
+    <div id="approvalsPanel" class="settings-panel hidden" style="background:linear-gradient(135deg,#fff3e0,#ffe0b2);border-color:#ffb74d;">
+      <h4 style="color:#e65100;">📋 Approvals</h4>
+      <div style="display:flex;gap:0.4rem;margin-bottom:0.7rem;flex-wrap:wrap;">
+        <button class="btn-orange-small btn-small tab-approval active" data-atab="pending">⏳ Pending</button>
+        <button class="btn-secondary btn-small tab-approval" data-atab="completed">✅ Completed</button>
+      </div>
+      <div style="display:flex;gap:0.4rem;margin-bottom:0.9rem;flex-wrap:wrap;">
+        <button class="btn-orange-small btn-small tab-approval-type active" data-atype="profile">👤 Profile</button>
+        <button class="btn-secondary btn-small tab-approval-type" data-atype="progress">📈 Progress</button>
+      </div>
+      <div id="approvalsList"></div>
+      <div id="approvalsStatus" class="status-msg"></div>
+    </div>
+
+    <div id="settingsPanel" class="settings-panel hidden">
+      <h4>⚙️ Admin Settings</h4>
+      <div class="flex-row">
+        <div class="input-group" style="flex:1 1 180px;"><label for="settingsLoginId">Admin Login ID</label><input type="text" id="settingsLoginId"></div>
+        <div class="input-group" style="flex:1 1 180px;">
+          <label for="settingsCurrentPassword">Current password</label>
+          <div class="password-input-wrapper"><input type="password" id="settingsCurrentPassword"><button class="password-toggle" data-target="settingsCurrentPassword">👁️</button></div>
+        </div>
+      </div>
+      <div class="flex-row">
+        <div class="input-group" style="flex:1 1 180px;">
+          <label for="settingsNewPassword">New password</label>
+          <div class="password-input-wrapper"><input type="password" id="settingsNewPassword"><button class="password-toggle" data-target="settingsNewPassword">👁️</button></div>
+        </div>
+        <div class="input-group" style="flex:1 1 180px;">
+          <label for="settingsConfirmPassword">Confirm password</label>
+          <div class="password-input-wrapper"><input type="password" id="settingsConfirmPassword"><button class="password-toggle" data-target="settingsConfirmPassword">👁️</button></div>
+        </div>
+      </div>
+      <div class="input-group"><label for="settingsArchiveEmail">Archive email (wipe report sends here)</label><input type="email" id="settingsArchiveEmail"></div>
+      <button class="btn-save-settings" id="saveSettingsBtn">💾 Save Settings</button>
+      <div id="settingsStatus" class="status-msg"></div>
+      <div class="danger-panel">
+        <h4>🚨 Danger Zone — Email & Wipe All Data</h4>
+        <p>The full data dump (all clients, sessions, exercise logs per day, progress, approvals) will be emailed to <strong>Archive email</strong>, then permanently deleted.</p>
+        <button class="btn-clear-all" id="clearAllBtn">🗑️ Email & Wipe All Data</button>
+      </div>
+    </div>
+
+    <div id="libraryPanel" class="settings-panel hidden" style="background:linear-gradient(135deg,#e3f2fd,#bbdefb);border-color:#64b5f6;">
+      <h4 style="color:#0d47a1;">🏋️ Exercise Library</h4>
+      <button class="btn-exercise" id="addExerciseBtn">➕ Add New Exercise</button>
+      <div id="libraryList" class="library-list" style="margin-top:0.9rem;"></div>
+      <div id="libraryStatus" class="status-msg"></div>
+    </div>
+
+    <div class="admin-section-title">➕ Create new client</div>
+    <div class="contact-picker-row">
+      <div class="input-group" style="flex:2 1 220px;">
+        <label for="newClientName">Full name</label>
+        <input type="text" id="newClientName" placeholder="Alex Rivera">
+      </div>
+      <button class="btn-contact hidden" id="pickContactBtn">📇 Pick from Contacts</button>
+    </div>
+    <div id="contactHint" class="contact-hint hidden">💡 Contact picker works on mobile only.</div>
+    <div class="flex-row">
+      <div class="input-group" style="flex:2 1 180px;"><label for="newClientPhone">WhatsApp (no +)</label><input type="text" id="newClientPhone" placeholder="919876543210" inputmode="numeric"></div>
+      <div class="input-group" style="flex:2 1 200px;"><label for="newClientEmail">Email (optional)</label><input type="email" id="newClientEmail"></div>
+    </div>
+    <div class="flex-row">
+      <div class="input-group" style="flex:1 1 110px;"><label for="newClientRate">Rate (AED)</label><input type="number" id="newClientRate" value="200" min="1" inputmode="numeric"></div>
+    </div>
+    <button class="btn-admin" id="createClientBtn" style="width:100%;">➕ Create Client</button>
+    <div id="createClientStatus" class="status-msg"></div>
+    <div id="newClientCredsBox" class="credentials-box hidden">
+      <div style="font-weight:700;color:#1f4e3d;font-size:0.85rem;margin-bottom:0.5rem;">✅ Client Created — Share Credentials</div>
+      <div class="row"><span class="label">Login ID</span><span class="value" id="newClientCredsLogin">—</span></div>
+      <div class="row"><span class="label">Password</span><span class="value" id="newClientCredsPass">—</span></div>
+      <div style="font-size:0.7rem;color:#4d6b5a;margin-top:0.5rem;">🔒 This password is permanent and will never change.</div>
+    </div>
+
+    <div class="admin-section-title">📋 Client list</div>
+    <div id="clientListContainer" class="client-list"><div class="empty-message">Loading...</div></div>
+
+    <div id="clientDetailPanel" class="hidden client-detail-panel">
+      <div class="client-header-info">
+        <div class="client-header-left">
+          <span class="client-header-name" id="detailClientName">—</span>
+          <span id="detailClientStatusPill" class="hidden client-header-status-closed">● CLOSED</span>
+        </div>
+        <div class="client-header-rate">💵 AED <input type="number" id="ratePerSession" class="rate-input" value="200" min="1" inputmode="numeric"></div>
+      </div>
+      <div class="credentials-box">
+        <div style="font-weight:700;color:#1f4e3d;font-size:0.85rem;margin-bottom:0.5rem;">🔑 Client Credentials</div>
+        <div class="row"><span class="label">Login ID</span><span class="value" id="detailClientLogin">—</span></div>
+        <div class="row"><span class="label">Password</span><span class="value" id="detailClientPass">—</span></div>
+        <div style="font-size:0.7rem;color:#4d6b5a;margin-top:0.5rem;">🔒 Password is permanent — created once at signup.</div>
+      </div>
+      <div id="closedClientBanner" class="hidden closed-client-banner">
+        <div>
+          <div class="closed-client-banner-text">🔒 This client is CLOSED</div>
+          <div class="closed-client-banner-sub">They can't log in or receive reminders.</div>
+        </div>
+        <button class="btn-reopen" id="reopenClientBtn">🔓 Reopen</button>
+      </div>
+      <div id="closeClientBar" style="margin-bottom:1.1rem;display:flex;justify-content:flex-end;gap:0.5rem;flex-wrap:wrap;">
+        <button class="btn-secondary btn-small" id="deleteClientBtn">🗑️ Delete</button>
+        <button class="btn-danger btn-small" id="closeClientBtn">🔒 Close</button>
+      </div>
+      <div style="background:#e1f5fe;border:2px solid #4fc3f7;border-radius:0.9rem;padding:0.8rem 1rem;margin-bottom:1rem;display:flex;justify-content:space-between;align-items:center;gap:0.6rem;flex-wrap:wrap;">
+        <div style="font-size:0.85rem;color:#01579b;"><strong>📋 Track your work:</strong> Review everything you've done this month.</div>
+        <button class="btn-history btn-small" id="viewLastSessionBtn">📅 View Month Summary</button>
+      </div>
+      <div class="tabs-bar">
+        <button class="tab-btn active" data-tab="reminder">📨 Message</button>
+        <button class="tab-btn" data-tab="tracker">📊 Sessions</button>
+        <button class="tab-btn" data-tab="plan">🏋️ Exercises (Template)</button>
+        <button class="tab-btn" data-tab="progress">📈 Progress</button>
+      </div>
+      <div class="tab-content" id="tab-reminder">
+        <div class="reminder-section">
+          <h4>📨 Personal message to <span id="reminderClientNameInline">—</span></h4>
+          <div style="font-size:0.75rem;color:#1f4e3d;margin-bottom:0.5rem;background:#ffffffaa;padding:0.35rem 0.7rem;border-radius:0.6rem;display:inline-block;">
+            📱 To: <span id="reminderPhoneDisplay" style="font-family:monospace;font-weight:700;">—</span>
+          </div>
+          <div class="input-group"><label for="reminderNote">Personal note (optional)</label><input type="text" id="reminderNote" placeholder="Optional" value=""></div>
+          <div class="reminder-preview" id="reminderPreview"><strong>Preview:</strong> <span id="reminderPreviewText">—</span></div>
+          <div class="action-buttons">
+            <button class="btn-whatsapp" id="sendWhatsappBtn">📱 WhatsApp</button>
+            <button class="btn-email" id="sendEmailBtn">✉️ Email</button>
+          </div>
+          <div id="reminderStatus" class="status-msg"></div>
+        </div>
+      </div>
+      <div class="tab-content hidden" id="tab-tracker">
+        <div class="month-selector">
+          <label for="monthSelect">Month:</label>
+          <select id="monthSelect">
+            <option value="0">January</option><option value="1">February</option><option value="2">March</option>
+            <option value="3">April</option><option value="4">May</option><option value="5">June</option>
+            <option value="6">July</option><option value="7">August</option><option value="8">September</option>
+            <option value="9">October</option><option value="10">November</option><option value="11">December</option>
+          </select>
+          <span class="locked-msg">🔒 admin unchecks only</span>
+        </div>
+        <div id="sessionsGridContainer"></div>
+        <div class="summary-box">
+          <div>
+            <div class="summary-text">✅ Completed: <span id="summaryDoneCount">0</span></div>
+            <div class="summary-text" style="font-size:0.82rem;">Rate: <strong>AED <span id="summaryRate">200</span></strong></div>
+          </div>
+          <div>
+            <div class="summary-amount">AED <span id="summaryTotalAmount">0</span></div>
+            <div class="note-admin">Checked only</div>
+          </div>
+        </div>
+      </div>
+      <div class="tab-content hidden" id="tab-plan">
+        <div class="reminder-section" style="background:linear-gradient(135deg,#e3f2fd,#bbdefb);border-color:#64b5f6;">
+          <h4 style="color:#0d47a1;">🏋️ Exercise Template (optional)</h4>
+          <div style="font-size:0.78rem;color:#0d47a1;margin-bottom:0.9rem;background:#ffffffaa;padding:0.5rem 0.8rem;border-radius:0.7rem;line-height:1.5;">
+            ⚠️ This is only a starting reference.
+          </div>
+          <div id="assignList" class="assign-list"><div class="empty-message">Loading...</div></div>
+          <div id="assignStatus" class="status-msg"></div>
+        </div>
+      </div>
+      <div class="tab-content hidden" id="tab-progress">
+        <div class="reminder-section" style="background:linear-gradient(135deg,#f3e5f5,#ede7f6);border-color:#ce93d8;">
+          <h4 style="color:#6a1b9a;">📈 Client Progress</h4>
+          <button class="btn-green-small btn-small" id="adminAddProgressBtn" style="margin-bottom:0.7rem;">➕ Add Entry (as Admin)</button>
+          <div id="adminProgressList" class="progress-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="noClientSelectedMsg" style="margin-top:1.2rem;color:#7893a8;font-style:italic;text-align:center;padding:0.9rem;font-size:0.85rem;">
+      👆 Select a client above to manage.
     </div>
   </div>
 </div>
 
-<!-- EXERCISE LIBRARY MODAL -->
+<!-- MODALS -->
+<div id="dayLogModal" class="modal-overlay hidden">
+  <div class="modal-box">
+    <div class="modal-header orange"><h3>📝 Workout Log</h3><p id="dayLogDateLabel">—</p></div>
+    <div class="modal-body">
+      <input type="hidden" id="dayLogDate">
+      <div id="dayLogExisting"></div>
+      <div class="day-log-section-title">➕ Add exercise to this day</div>
+      <div class="free-add-row">
+        <div class="field" style="flex:2 1 200px;">
+          <label for="freeExName">Exercise name</label>
+          <input type="text" id="freeExName" placeholder="e.g. Bench Press, Squat, Run 5km" autocomplete="off">
+        </div>
+        <button class="btn-add-custom" id="freeAddBtn">➕ Add</button>
+      </div>
+      <div id="libraryQuickChips" class="library-quick-chips"></div>
+      <div class="modal-actions">
+        <button class="btn-secondary" id="closeDayLogBtn" style="width:100%;">Close</button>
+      </div>
+      <div id="dayLogStatus" class="status-msg"></div>
+    </div>
+  </div>
+</div>
+
+<div id="monthSummaryModal" class="modal-overlay hidden">
+  <div class="modal-box">
+    <div class="modal-header blue"><h3>📅 Month Summary</h3><p id="monthSummarySubtitle">—</p></div>
+    <div class="modal-body">
+      <div id="monthSummaryContent"></div>
+      <div class="modal-actions" style="margin-top:1rem;">
+        <button class="btn-secondary" id="closeMonthSummaryBtn" style="width:100%;">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="setTimeModal" class="modal-overlay hidden">
+  <div class="modal-box">
+    <div class="modal-header orange"><h3>⏰ Set Time for a Day</h3><p id="setTimeDateLabel">—</p></div>
+    <div class="modal-body">
+      <input type="hidden" id="stDayDate">
+      <div class="input-group"><label for="stTime">Class time *</label><input type="time" id="stTime"></div>
+      <div class="input-group"><label for="stNote">Note (optional)</label><input type="text" id="stNote" placeholder="e.g., Bring water bottle"></div>
+      <div class="modal-actions">
+        <button class="btn-admin" id="saveSetTimeBtn">💾 Save Time</button>
+        <button class="btn-secondary" id="clearSetTimeBtn" style="background:#ffebee;border-color:#ef9a9a;color:#c62828;">🗑️ Clear</button>
+        <button class="btn-secondary" id="cancelSetTimeBtn">Cancel</button>
+      </div>
+      <div id="setTimeStatus" class="status-msg"></div>
+    </div>
+  </div>
+</div>
+
 <div id="exerciseModal" class="modal-overlay hidden">
   <div class="modal-box">
     <div class="modal-header purple"><h3 id="exerciseModalTitle">➕ Add Exercise</h3></div>
@@ -503,27 +754,30 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
         <div class="input-group" style="flex:1 1 100px;"><label for="exRest">Rest</label><input type="text" id="exRest"></div>
       </div>
       <div class="input-group"><label for="exNotes">Notes</label><input type="text" id="exNotes"></div>
-      <div class="input-group"><label for="exVideo">Video URL</label><input type="text" id="exVideo"></div>
       <div class="modal-actions"><button class="btn-admin" id="saveExerciseBtn">💾 Save</button><button class="btn-secondary" id="cancelExerciseBtn">Cancel</button></div>
       <div id="exerciseModalStatus" class="status-msg"></div>
     </div>
   </div>
 </div>
 
-<!-- CLEAR ALL -->
+<!-- ═══ WIPE MODAL (updated) ═══ -->
 <div id="clearAllModal" class="modal-overlay hidden">
   <div class="modal-box">
-    <div class="modal-header red"><h3>⚠️ Clear ALL Data</h3><p>Permanently delete everything.</p></div>
+    <div class="modal-header red"><h3>⚠️ Email & Wipe All Data</h3><p>Full report will be emailed, then everything deleted.</p></div>
     <div class="modal-body">
-      <div class="modal-warning" style="background:#ffebee;border-left-color:#c62828;color:#7f1d1d;"><strong>🚨 Cannot be undone.</strong> Type <strong>DELETE</strong>.</div>
-      <div class="input-group"><label for="clearConfirmInput">Type DELETE</label><input type="text" id="clearConfirmInput" autocomplete="off"></div>
-      <div class="modal-actions"><button class="btn-danger" id="confirmClearAllBtn" disabled>🗑️ Clear All</button><button class="btn-secondary" id="cancelClearAllBtn">Cancel</button></div>
+      <div class="modal-warning" style="background:#ffebee;border-left-color:#c62828;color:#7f1d1d;">
+        <strong>🚨 Cannot be undone.</strong><br>
+        1. A full data report will be sent to <strong id="wipeArchiveEmailDisplay">—</strong>.<br>
+        2. Your mail app opens — click <strong>Send</strong>.<br>
+        3. Then <strong>everything is deleted automatically</strong> (3 seconds later).
+      </div>
+      <div class="input-group"><label for="clearConfirmInput">Type DELETE to enable</label><input type="text" id="clearConfirmInput" autocomplete="off"></div>
+      <div class="modal-actions"><button class="btn-danger" id="confirmClearAllBtn" disabled>📧 Email & Wipe</button><button class="btn-secondary" id="cancelClearAllBtn">Cancel</button></div>
       <div id="clearAllStatus" class="status-msg"></div>
     </div>
   </div>
 </div>
 
-<!-- DELETE CLIENT -->
 <div id="deleteClientModal" class="modal-overlay hidden">
   <div class="modal-box">
     <div class="modal-header red"><h3>🗑️ Delete Client</h3></div>
@@ -536,7 +790,6 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
   </div>
 </div>
 
-<!-- PROGRESS MODAL -->
 <div id="progressModal" class="modal-overlay hidden">
   <div class="modal-box">
     <div class="modal-header green"><h3 id="progressModalTitle">➕ Add Progress</h3></div>
@@ -564,7 +817,6 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
   </div>
 </div>
 
-<!-- PROFILE EDIT -->
 <div id="profileEditModal" class="modal-overlay hidden">
   <div class="modal-box">
     <div class="modal-header green"><h3>✏️ Edit My Profile</h3><p style="font-size:0.8rem;">Changes require admin approval</p></div>
@@ -587,353 +839,7 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
   </div>
 </div>
 
-<!-- SET TIME FOR A DAY MODAL -->
-<div id="setTimeModal" class="modal-overlay hidden">
-  <div class="modal-box">
-    <div class="modal-header orange"><h3>⏰ Set Time for a Day</h3><p id="setTimeDateLabel">—</p></div>
-    <div class="modal-body">
-      <input type="hidden" id="stDayDate">
-      <div class="input-group"><label for="stTime">Class time *</label><input type="time" id="stTime"></div>
-      <div class="input-group"><label for="stNote">Note (optional)</label><input type="text" id="stNote" placeholder="e.g., Bring water bottle"></div>
-      <div class="modal-actions">
-        <button class="btn-admin" id="saveSetTimeBtn">💾 Save Time</button>
-        <button class="btn-secondary" id="clearSetTimeBtn" style="background:#ffebee;border-color:#ef9a9a;color:#c62828;">🗑️ Clear Time</button>
-        <button class="btn-secondary" id="cancelSetTimeBtn">Cancel</button>
-      </div>
-      <div id="setTimeStatus" class="status-msg"></div>
-    </div>
-  </div>
-</div>
-
-<!-- LAST SESSION MODAL -->
-<div id="lastSessionModal" class="modal-overlay hidden">
-  <div class="modal-box">
-    <div class="modal-header blue"><h3>📋 Last Session Details</h3><p id="lastSessionSubtitle">—</p></div>
-    <div class="modal-body">
-      <div id="lastSessionContent"></div>
-      <div class="modal-actions" style="margin-top:1rem;">
-        <button class="btn-copy-last" id="applyLastSessionBtn">📋 Apply to Another Day</button>
-        <button class="btn-secondary" id="closeLastSessionBtn">Close</button>
-      </div>
-      <div id="lastSessionStatus" class="status-msg"></div>
-      <div id="applyTargetBox" class="hidden" style="margin-top:1rem;background:#e1f5fe;padding:1rem;border-radius:0.8rem;border:1.5px solid #4fc3f7;">
-        <div style="font-size:0.85rem;font-weight:700;color:#01579b;margin-bottom:0.6rem;">Choose a target day to copy this workout to:</div>
-        <input type="date" id="applyTargetDate" style="margin-bottom:0.6rem;">
-        <button class="btn-admin" id="confirmApplyBtn" style="width:100%;">✅ Copy to This Day</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="app-container">
-  <!-- CLIENT PANEL -->
-  <div class="card client-panel">
-    <span class="badge">🔐 client access</span>
-    <div class="panel-logo">
-      <img data-gdrive-id="1N651kHeVrz6HEhAc1cRRKGx2DtS-IdX0" alt="Logo">
-    </div>
-    <h2>Personal training</h2>
-    <div class="subhead">Log in to view your plan, sessions & progress</div>
-    <div id="cloudStatusClient" class="cloud-status"><div class="dot"></div><span id="cloudStatusClientText">Checking...</span></div>
-    <div class="input-group"><label for="clientLoginId">Login ID</label><input type="text" id="clientLoginId" placeholder="Enter your login ID" autocomplete="off" autocapitalize="characters"></div>
-    <div class="input-group"><label for="clientPassword">Password</label><input type="password" id="clientPassword" placeholder="Enter your password" autocomplete="off"></div>
-    <button class="btn-primary" id="clientLoginBtn">Log in</button>
-    <div id="clientStatus" class="status-msg"></div>
-
-    <div id="clientDashboard" class="hidden">
-      <div id="clientPendingBanner" class="hidden client-pending-banner"><strong>⏳ Pending approval:</strong> Your profile changes are waiting for approval.</div>
-      <div class="client-dash-card">
-        <div style="font-weight:700;color:#1f4e3d;font-size:1rem;">💪 Welcome, <span id="welcomeClientName">Client</span>!</div>
-        <div style="margin-top:0.7rem;color:#1e3b5c;">
-          <div class="dash-row"><span>Month:</span> <strong id="clientDashMonth">—</strong></div>
-          <div class="dash-row"><span>Sessions done:</span> <strong id="clientDashDone">0</strong></div>
-          <div class="dash-row"><span>Amount due:</span> <strong id="clientDashAmount">AED 0</strong></div>
-        </div>
-        <div id="clientUpcomingBlock" class="hidden client-upcoming">
-          <div class="client-upcoming-title">📅 Your upcoming schedule</div>
-          <div id="clientUpcomingList"></div>
-          <div id="clientUpcomingNote" class="hidden client-upcoming-note"></div>
-        </div>
-      </div>
-
-      <div class="tabs-bar" style="margin-top:1rem;">
-        <button class="tab-btn active" data-ctab="plan">🏋️ My Plan</button>
-        <button class="tab-btn" data-ctab="history">📜 History</button>
-        <button class="tab-btn" data-ctab="progress">📈 Progress</button>
-        <button class="tab-btn" data-ctab="profile">👤 Profile</button>
-      </div>
-
-      <div class="tab-content" id="ctab-plan">
-        <div id="clientPlanBlock" style="background:#f5fbff;padding:0.9rem;border-radius:0.9rem;border-left:4px solid #1976d2;">
-          <div style="font-weight:700;color:#0d47a1;font-size:0.85rem;margin-bottom:0.5rem;">🏋️ Your Exercise Plan (Template)</div>
-          <div id="clientPlanList"></div>
-        </div>
-      </div>
-      <div class="tab-content hidden" id="ctab-history">
-        <div style="font-weight:700;color:#1f4e3d;font-size:0.85rem;margin-bottom:0.7rem;">📜 Your Workout History</div>
-        <div id="clientHistoryList" class="progress-list"></div>
-      </div>
-      <div class="tab-content hidden" id="ctab-progress">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.7rem;flex-wrap:wrap;gap:0.5rem;">
-          <span style="font-weight:700;color:#1f4e3d;font-size:0.85rem;">📈 Your Progress</span>
-          <button class="btn-green-small btn-small" id="clientAddProgressBtn">➕ Add Entry</button>
-        </div>
-        <div id="clientProgressList" class="progress-list"></div>
-      </div>
-      <div class="tab-content hidden" id="ctab-profile">
-        <div style="display:flex;justify-content:flex-end;margin-bottom:0.5rem;">
-          <button class="btn-green-small btn-small" id="clientEditProfileBtn">✏️ Edit Profile</button>
-        </div>
-        <div id="clientProfileView"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ADMIN PANEL -->
-  <div class="card admin-panel">
-    <span class="badge admin-badge">⚙️ admin portal</span>
-    <div class="panel-logo">
-      <img data-gdrive-id="1N651kHeVrz6HEhAc1cRRKGx2DtS-IdX0" alt="Logo">
-    </div>
-    <h2>Trainer dashboard</h2>
-    <div class="subhead admin-subhead">Manage clients, exercises, sessions & progress</div>
-    <div id="cloudStatusAdmin" class="cloud-status"><div class="dot"></div><span id="cloudStatusAdminText">Checking...</span></div>
-
-    <div id="adminLoginBlock">
-      <div class="input-group"><label for="adminLoginId">Admin Login ID</label><input type="text" id="adminLoginId" autocomplete="off" autocapitalize="off"></div>
-      <div class="input-group"><label for="adminMasterPassword">Admin Password</label><input type="password" id="adminMasterPassword" autocomplete="off"></div>
-      <button class="btn-admin" id="adminLoginBtn" style="width:100%;">Unlock</button>
-      <div id="adminAuthStatus" class="status-msg"></div>
-    </div>
-
-    <div id="adminContent" class="hidden">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.7rem;flex-wrap:wrap;gap:0.5rem;">
-        <span style="font-weight:600;color:#1f4e3d;font-size:0.9rem;">✔️ Admin (<span id="adminDisplayId">—</span>)</span>
-        <div style="display:flex;gap:0.4rem;flex-wrap:wrap;">
-          <button class="btn-approvals" id="approvalsBtn">✅ Approvals <span id="approvalsCountBadge" class="badge-count hidden">0</span></button>
-          <button class="btn-exercise" id="exerciseLibraryBtn">🏋️ Library</button>
-          <button class="btn-settings" id="openSettingsBtn">⚙️ Settings</button>
-          <button class="btn-secondary" id="adminLockBtn">Lock</button>
-        </div>
-      </div>
-
-      <div id="approvalsPanel" class="settings-panel hidden" style="background:linear-gradient(135deg,#fff3e0,#ffe0b2);border-color:#ffb74d;">
-        <h4 style="color:#e65100;">📋 Profile Change Approvals</h4>
-        <div style="display:flex;gap:0.5rem;margin-bottom:0.9rem;flex-wrap:wrap;">
-          <button class="btn-orange-small btn-small tab-approval active" data-atab="pending">⏳ Pending</button>
-          <button class="btn-secondary btn-small tab-approval" data-atab="completed">✅ Completed</button>
-        </div>
-        <div id="approvalsList"></div>
-        <div id="approvalsStatus" class="status-msg"></div>
-      </div>
-
-      <div id="settingsPanel" class="settings-panel hidden">
-        <h4>⚙️ Admin Settings</h4>
-        <div class="flex-row">
-          <div class="input-group" style="flex:1 1 180px;"><label for="settingsLoginId">Admin Login ID</label><input type="text" id="settingsLoginId"></div>
-          <div class="input-group" style="flex:1 1 180px;">
-            <label for="settingsCurrentPassword">Current password</label>
-            <div class="password-input-wrapper"><input type="password" id="settingsCurrentPassword"><button class="password-toggle" data-target="settingsCurrentPassword">👁️</button></div>
-          </div>
-        </div>
-        <div class="flex-row">
-          <div class="input-group" style="flex:1 1 180px;">
-            <label for="settingsNewPassword">New password</label>
-            <div class="password-input-wrapper"><input type="password" id="settingsNewPassword"><button class="password-toggle" data-target="settingsNewPassword">👁️</button></div>
-          </div>
-          <div class="input-group" style="flex:1 1 180px;">
-            <label for="settingsConfirmPassword">Confirm password</label>
-            <div class="password-input-wrapper"><input type="password" id="settingsConfirmPassword"><button class="password-toggle" data-target="settingsConfirmPassword">👁️</button></div>
-          </div>
-        </div>
-        <div class="input-group"><label for="settingsArchiveEmail">Archive email</label><input type="email" id="settingsArchiveEmail"></div>
-        <button class="btn-save-settings" id="saveSettingsBtn">💾 Save Settings</button>
-        <div id="settingsStatus" class="status-msg"></div>
-        <div class="danger-panel">
-          <h4>🚨 Danger Zone — Clear All Data</h4>
-          <p>Permanently delete ALL clients, sessions, exercises, and logs.</p>
-          <button class="btn-clear-all" id="clearAllBtn">🗑️ Clear All Data</button>
-        </div>
-      </div>
-
-      <div id="libraryPanel" class="settings-panel hidden" style="background:linear-gradient(135deg,#e3f2fd,#bbdefb);border-color:#64b5f6;">
-        <h4 style="color:#0d47a1;">🏋️ Exercise Library</h4>
-        <button class="btn-exercise" id="addExerciseBtn">➕ Add New Exercise</button>
-        <div id="libraryList" class="library-list" style="margin-top:0.9rem;"></div>
-        <div id="libraryStatus" class="status-msg"></div>
-      </div>
-
-      <div class="global-settings">
-        <div class="global-settings-title">📢 Send broadcast (includes login URL + credentials)</div>
-        <button class="btn-send-all" id="sendAllBtn">Send to All Active Clients</button>
-      </div>
-      <div id="sendAllStatus" class="status-msg"></div>
-
-      <div class="admin-section-title">➕ Create new client</div>
-
-      <div class="contact-picker-row">
-        <div class="input-group" style="flex:2 1 220px;">
-          <label for="newClientName">Full name</label>
-          <input type="text" id="newClientName" placeholder="Alex Rivera">
-        </div>
-        <button class="btn-contact hidden" id="pickContactBtn" title="Pick a contact from your phone">
-          📇 Pick from Contacts
-        </button>
-      </div>
-      <div id="contactHint" class="contact-hint hidden">
-        💡 Contact picker works on mobile (Android Chrome / iOS Safari). On desktop, type the details manually.
-      </div>
-
-      <div class="flex-row">
-        <div class="input-group" style="flex:2 1 180px;"><label for="newClientPhone">WhatsApp (no +)</label><input type="text" id="newClientPhone" placeholder="919876543210" inputmode="numeric"></div>
-        <div class="input-group" style="flex:2 1 200px;"><label for="newClientEmail">Email (optional)</label><input type="email" id="newClientEmail"></div>
-      </div>
-      <div class="flex-row">
-        <div class="input-group" style="flex:1 1 110px;"><label for="newClientRate">Rate (AED)</label><input type="number" id="newClientRate" value="200" min="1" inputmode="numeric"></div>
-      </div>
-      <button class="btn-admin" id="createClientBtn" style="width:100%;">➕ Create Client</button>
-      <div id="createClientStatus" class="status-msg"></div>
-      <div id="newClientCredsBox" class="credentials-box hidden">
-        <div style="font-weight:700;color:#1f4e3d;font-size:0.85rem;margin-bottom:0.5rem;">✅ Client Created — Share Credentials</div>
-        <div class="row"><span class="label">Login ID</span><span class="value" id="newClientCredsLogin">—</span></div>
-        <div class="row"><span class="label">Password</span><span class="value" id="newClientCredsPass">—</span></div>
-      </div>
-
-      <div class="admin-section-title">📋 Client list</div>
-      <div id="clientListContainer" class="client-list"><div class="empty-message">Loading...</div></div>
-
-      <div id="clientDetailPanel" class="hidden client-detail-panel">
-        <div class="client-header-info">
-          <div class="client-header-left">
-            <span class="client-header-name" id="detailClientName">—</span>
-            <span id="detailClientStatusPill" class="hidden client-header-status-closed">● CLOSED</span>
-          </div>
-          <div class="client-header-rate">💵 AED <input type="number" id="ratePerSession" class="rate-input" value="200" min="1" inputmode="numeric"></div>
-        </div>
-
-        <div class="credentials-box">
-          <div style="font-weight:700;color:#1f4e3d;font-size:0.85rem;margin-bottom:0.5rem;">🔑 Client Credentials</div>
-          <div class="row"><span class="label">Login ID</span><span class="value" id="detailClientLogin">—</span></div>
-          <div class="row"><span class="label">Password</span><span class="value" id="detailClientPass">—</span></div>
-        </div>
-
-        <div id="closedClientBanner" class="hidden closed-client-banner">
-          <div>
-            <div class="closed-client-banner-text">🔒 This client is CLOSED</div>
-            <div class="closed-client-banner-sub">They can't log in or receive reminders.</div>
-          </div>
-          <button class="btn-reopen" id="reopenClientBtn">🔓 Reopen</button>
-        </div>
-
-        <div id="closeClientBar" style="margin-bottom:1.1rem;display:flex;justify-content:flex-end;gap:0.5rem;flex-wrap:wrap;">
-          <button class="btn-secondary btn-small" id="deleteClientBtn">🗑️ Delete</button>
-          <button class="btn-danger btn-small" id="closeClientBtn">🔒 Close</button>
-        </div>
-
-        <div style="background:#e1f5fe;border:2px solid #4fc3f7;border-radius:0.9rem;padding:0.8rem 1rem;margin-bottom:1rem;display:flex;justify-content:space-between;align-items:center;gap:0.6rem;flex-wrap:wrap;">
-          <div style="font-size:0.85rem;color:#01579b;">
-            <strong>📋 Track your work:</strong> See what you did last session and reuse it.
-          </div>
-          <button class="btn-history btn-small" id="viewLastSessionBtn">👁️ View Last Session</button>
-        </div>
-
-        <div class="tabs-bar">
-          <button class="tab-btn active" data-tab="reminder">📨 Message</button>
-          <button class="tab-btn" data-tab="tracker">📊 Sessions</button>
-          <button class="tab-btn" data-tab="plan">🏋️ Exercises (Template)</button>
-          <button class="tab-btn" data-tab="progress">📈 Progress</button>
-        </div>
-
-        <div class="tab-content" id="tab-reminder">
-          <div class="reminder-section">
-            <h4>📨 Personal message to <span id="reminderClientNameInline">—</span></h4>
-            <div style="font-size:0.75rem;color:#1f4e3d;margin-bottom:0.5rem;background:#ffffffaa;padding:0.35rem 0.7rem;border-radius:0.6rem;display:inline-block;">
-              📱 To: <span id="reminderPhoneDisplay" style="font-family:monospace;font-weight:700;">—</span>
-            </div>
-            <div class="input-group"><label for="reminderNote">Personal note (optional)</label><input type="text" id="reminderNote" placeholder="Optional" value=""></div>
-            <div class="reminder-preview" id="reminderPreview"><strong>Preview:</strong> <span id="reminderPreviewText">—</span></div>
-            <div class="action-buttons">
-              <button class="btn-whatsapp" id="sendWhatsappBtn">📱 WhatsApp</button>
-              <button class="btn-email" id="sendEmailBtn">✉️ Email</button>
-            </div>
-            <div id="reminderStatus" class="status-msg"></div>
-            <div class="small-note">💡 Includes login URL, ID & password. Not saved to cloud.</div>
-          </div>
-        </div>
-
-        <div class="tab-content hidden" id="tab-tracker">
-          <div class="month-selector">
-            <label for="monthSelect">Month:</label>
-            <select id="monthSelect">
-              <option value="0">January</option><option value="1">February</option><option value="2">March</option>
-              <option value="3">April</option><option value="4">May</option><option value="5">June</option>
-              <option value="6">July</option><option value="7">August</option><option value="8">September</option>
-              <option value="9">October</option><option value="10">November</option><option value="11">December</option>
-            </select>
-            <span class="locked-msg">🔒 admin unchecks only</span>
-          </div>
-          <div id="sessionsGridContainer"></div>
-          <div class="summary-box">
-            <div>
-              <div class="summary-text">✅ Completed: <span id="summaryDoneCount">0</span></div>
-              <div class="summary-text" style="font-size:0.82rem;">Rate: <strong>AED <span id="summaryRate">200</span></strong></div>
-            </div>
-            <div>
-              <div class="summary-amount">AED <span id="summaryTotalAmount">0</span></div>
-              <div class="note-admin">Checked only</div>
-            </div>
-          </div>
-          <div id="dailyWorkoutPanel" class="daily-workout-panel hidden">
-            <h4>📝 Workout Log — <span id="dailyWorkoutDate">—</span></h4>
-            <div class="subtitle">
-              Every day is different. Type the exercises you did on this specific day. Nothing is pre-filled.
-            </div>
-
-            <!-- Free-entry add row -->
-            <div class="free-add-row">
-              <div class="field" style="flex:2 1 200px;">
-                <label for="freeExName">Exercise name</label>
-                <input type="text" id="freeExName" placeholder="e.g. Bench Press, Squat, Run 5km" autocomplete="off">
-              </div>
-              <button class="btn-add-custom" id="freeAddBtn">➕ Add to this day</button>
-            </div>
-
-            <!-- Quick-pick from library (optional) -->
-            <div id="libraryQuickChips" class="library-quick-chips"></div>
-
-            <div id="dailyExerciseEntries"></div>
-          </div>
-        </div>
-
-        <div class="tab-content hidden" id="tab-plan">
-          <div class="reminder-section" style="background:linear-gradient(135deg,#e3f2fd,#bbdefb);border-color:#64b5f6;">
-            <h4 style="color:#0d47a1;">🏋️ Exercise Template (optional)</h4>
-            <div style="font-size:0.78rem;color:#0d47a1;margin-bottom:0.9rem;background:#ffffffaa;padding:0.5rem 0.8rem;border-radius:0.7rem;line-height:1.5;">
-              ⚠️ This is only a starting point for quick reference. What you actually log per day is completely independent.
-            </div>
-            <div id="assignList" class="assign-list"><div class="empty-message">Loading...</div></div>
-            <div id="assignStatus" class="status-msg"></div>
-          </div>
-        </div>
-
-        <div class="tab-content hidden" id="tab-progress">
-          <div class="reminder-section" style="background:linear-gradient(135deg,#f3e5f5,#ede7f6);border-color:#ce93d8;">
-            <h4 style="color:#6a1b9a;">📈 Client Progress</h4>
-            <button class="btn-green-small btn-small" id="adminAddProgressBtn" style="margin-bottom:0.7rem;">➕ Add Entry (as Admin)</button>
-            <div id="adminProgressList" class="progress-list"></div>
-          </div>
-        </div>
-      </div>
-
-      <div id="noClientSelectedMsg" style="margin-top:1.2rem;color:#7893a8;font-style:italic;text-align:center;padding:0.9rem;font-size:0.85rem;">
-        👆 Select a client above to manage.
-      </div>
-    </div>
-  </div>
-</div>
-
 <script>
-// ============ CONFIG ============
 const SUPABASE_URL = 'https://tacgfjxutmdpcatztcpu.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRhY2dmanh1dG1kcGNhdHp0Y3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk4OTEwOTYsImV4cCI6MjEwNTQ2NzA5Nn0.FpqZOgvf6ATllwPPMFLAkz_3HvexD4aztFQTY-FgQZw';
 const CURRENCY = 'AED';
@@ -948,6 +854,7 @@ let clients = [];
 let clientSettings = {};
 let clientProfiles = {};
 let progressEntries = {};
+let progressApprovals = [];
 let sessionCache = {};
 let exercises = [];
 let clientExercisesCache = {};
@@ -958,11 +865,12 @@ let selectedClientId = null;
 let selectedClientForProgress = null;
 let selectedMonth = new Date().getMonth();
 let selectedDay = null;
-let archiveDataPending = null;
 let pendingDeleteClientId = null;
 let currentApprovalTab = 'pending';
+let currentApprovalType = 'profile';
 let loggedInClient = null;
-let lastSessionData = null;
+let notificationsEnabled = false;
+let lastSeenApprovalCount = 0;
 
 const $ = (id) => document.getElementById(id);
 const escapeHtml = (t) => { const d = document.createElement('div'); d.textContent = t ?? ''; return d.innerHTML; };
@@ -980,13 +888,9 @@ function showStatus(el, msg, type = 'error') {
 const clearStatus = (el) => { if (el) { el.textContent=''; el.className='status-msg'; } };
 
 function setCloudStatus(online) {
-  ['cloudStatusClient','cloudStatusAdmin'].forEach(id => {
-    const el = $(id); if (!el) return;
-    el.classList.toggle('online', online);
-  });
-  const txt = online ? '☁️ Connected' : '⚠️ Offline';
-  $('cloudStatusClientText').textContent = txt;
-  $('cloudStatusAdminText').textContent = txt;
+  const el = $('cloudStatus'); if (!el) return;
+  el.classList.toggle('online', online);
+  $('cloudStatusText').textContent = online ? '☁️ Connected' : '⚠️ Offline';
 }
 
 const getMonthName = (i) => ['January','February','March','April','May','June','July','August','September','October','November','December'][i];
@@ -1026,17 +930,183 @@ function generatePassword(name) {
   return `${first}${last}${sym}${num}`;
 }
 
-// ============ CONTACT PICKER ============
-function supportsContactPicker() { return 'contacts' in navigator && 'ContactsManager' in window; }
+function getLastLogForExercise(clientId, exerciseName, exerciseId, beforeDateISO) {
+  const normName = (exerciseName || '').trim().toLowerCase();
+  if (!normName && !exerciseId) return null;
+  let best = null;
+  Object.keys(workoutLogsCache).forEach(k => {
+    if (!k.startsWith(clientId + '-')) return;
+    const dateStr = k.substring(clientId.length + 1);
+    if (beforeDateISO && dateStr >= beforeDateISO) return;
+    const logs = workoutLogsCache[k] || [];
+    logs.forEach(log => {
+      const logName = (log.exercise_name || '').trim().toLowerCase();
+      const logExId = log.exercise_id || null;
+      const matchesId = exerciseId && logExId && String(logExId) === String(exerciseId);
+      const matchesName = normName && logName && logName === normName;
+      const exNameFromLib = log.exercise_id ? (getExercise(log.exercise_id)?.name || '').trim().toLowerCase() : '';
+      const matchesLibName = normName && exNameFromLib && exNameFromLib === normName;
+      if (matchesId || matchesName || matchesLibName) {
+        if (!best || dateStr > best.dateStr) best = { dateStr, log };
+      }
+    });
+  });
+  return best;
+}
+function formatLastTimeSummary(match) {
+  if (!match) return '';
+  const { dateStr, log } = match;
+  const [y,m,d] = dateStr.split('-').map(Number);
+  const dateLabel = new Date(y, m-1, d).toLocaleDateString('en-US',{day:'numeric',month:'short'});
+  const bits = [];
+  if (log.sets_done) bits.push(`${log.sets_done}×`);
+  if (log.reps_done) bits.push(log.reps_done);
+  if (log.weight_done) bits.push(`@ ${log.weight_done}`);
+  if (log.rest_done) bits.push(`rest ${log.rest_done}`);
+  return `📌 Last time (${dateLabel}): ${bits.join(' ') || 'no details'}`;
+}
 
+// ═══════════════════════════════════════════════════════════
+// FULL DATA REPORT — builds the wipe email body
+// ═══════════════════════════════════════════════════════════
+function buildFullDataReport() {
+  const now = new Date();
+  const header = `═══════════════════════════════════════════════════════════\nPERSONAL TRAINING — FULL DATA EXPORT\nGenerated: ${now.toLocaleString()}\n═══════════════════════════════════════════════════════════\n\n`;
+
+  let totalSessions = 0, totalWorkouts = 0, totalProgress = 0;
+  let body = '';
+
+  if (clients.length === 0) {
+    body = '(No clients in database)\n';
+  }
+
+  clients.forEach(c => {
+    const rate = getRate(c.id);
+    body += `\n▌CLIENT: ${c.name}\n`;
+    body += `   Login ID: ${c.login_id}\n`;
+    body += `   Password: ${c.password_hint}\n`;
+    body += `   Email:    ${c.email || '—'}\n`;
+    body += `   Phone:    ${c.phone || '—'}\n`;
+    body += `   Rate:     ${CURRENCY} ${rate}/session\n`;
+    body += `   Status:   ${c.active ? 'Active' : 'CLOSED'}\n`;
+
+    // Sessions checked
+    const sessionsList = [];
+    Object.keys(sessionCache).forEach(k => {
+      if (!k.startsWith(c.id + '-')) return;
+      sessionCache[k].forEach(s => {
+        const [yy, mm] = k.substring(c.id.length + 1).split('-').map(Number);
+        sessionsList.push(formatDateISO(yy, mm, s.day));
+      });
+    });
+    sessionsList.sort();
+    totalSessions += sessionsList.length;
+    body += `\n   ── SESSIONS (checked days) ──\n`;
+    body += sessionsList.length > 0 ? `   ${sessionsList.join(', ')}\n` : `   (none)\n`;
+
+    // Daily times
+    const dts = dailyTimesCache[c.id] || [];
+    if (dts.length > 0) {
+      body += `\n   ── DAILY TIMES ──\n`;
+      dts.sort((a,b) => a.day_date.localeCompare(b.day_date)).forEach(d => {
+        body += `   ${d.day_date} @ ${formatClassTime12(d.class_time)}${d.note ? ' — ' + d.note : ''}\n`;
+      });
+    }
+
+    // Workout logs per day
+    body += `\n   ── WORKOUT LOGS (exercises done per day) ──\n`;
+    const dateKeys = Object.keys(workoutLogsCache).filter(k => k.startsWith(c.id + '-')).map(k => k.substring(c.id.length + 1)).sort();
+    if (dateKeys.length === 0) {
+      body += `   (none)\n`;
+    } else {
+      dateKeys.forEach(ds => {
+        const logs = workoutLogsCache[`${c.id}-${ds}`] || [];
+        if (logs.length === 0) return;
+        totalWorkouts += logs.length;
+        const [yy,mm,dd] = ds.split('-').map(Number);
+        const dayLabel = new Date(yy, mm-1, dd).toLocaleDateString('en-US',{weekday:'long',day:'numeric',month:'short',year:'numeric'});
+        body += `\n   📅 ${dayLabel}\n`;
+        logs.forEach(log => {
+          const name = getWorkoutDisplayName(log);
+          const parts = [];
+          if (log.sets_done) parts.push(`${log.sets_done} sets`);
+          if (log.reps_done) parts.push(`${log.reps_done} reps`);
+          if (log.weight_done) parts.push(`@ ${log.weight_done}`);
+          if (log.rest_done) parts.push(`rest ${log.rest_done}`);
+          body += `      • ${name}${parts.length ? ' — ' + parts.join(' × ') : ''}`;
+          if (log.notes) body += `\n        Notes: ${log.notes}`;
+          body += `\n`;
+        });
+      });
+    }
+
+    // Progress entries
+    const prog = (progressEntries[c.id] || []).slice().sort((a,b) => (b.entry_date||'').localeCompare(a.entry_date||''));
+    totalProgress += prog.length;
+    body += `\n   ── PROGRESS ENTRIES ──\n`;
+    if (prog.length === 0) body += `   (none)\n`;
+    else prog.forEach(p => {
+      body += `   📅 ${p.entry_date} (${p.added_by === 'admin' ? 'Admin' : 'Client'})\n`;
+      const line = [];
+      if (p.weight_kg) line.push(`Weight: ${p.weight_kg} kg`);
+      if (p.body_fat_pct) line.push(`Body Fat: ${p.body_fat_pct}%`);
+      if (p.chest_cm) line.push(`Chest: ${p.chest_cm} cm`);
+      if (p.waist_cm) line.push(`Waist: ${p.waist_cm} cm`);
+      if (p.hips_cm) line.push(`Hips: ${p.hips_cm} cm`);
+      if (p.arms_cm) line.push(`Arms: ${p.arms_cm} cm`);
+      if (p.thighs_cm) line.push(`Thighs: ${p.thighs_cm} cm`);
+      if (line.length) body += `        ${line.join(' · ')}\n`;
+      if (p.notes) body += `        Notes: ${p.notes}\n`;
+      if (p.photo_url) body += `        Photo: ${p.photo_url}\n`;
+    });
+
+    // Profile
+    const prof = clientProfiles[c.id] || {};
+    body += `\n   ── PROFILE ──\n`;
+    body += `   Height: ${prof.height_cm ? prof.height_cm + ' cm' : '—'} · Gender: ${prof.gender || '—'}\n`;
+    body += `   Birth: ${prof.birth_date || '—'}\n`;
+    body += `   Goal: ${prof.goal || '—'}\n`;
+    body += `   Medical: ${prof.medical_notes || '—'}\n`;
+    body += `   Emergency: ${prof.emergency_contact || '—'}\n`;
+
+    // Template exercises
+    const assigned = clientExercisesCache[c.id] || [];
+    body += `\n   ── TEMPLATE EXERCISES ──\n`;
+    if (assigned.length === 0) body += `   (none)\n`;
+    else assigned.forEach(a => {
+      const ex = getExercise(a.exercise_id);
+      if (!ex) return;
+      body += `   • ${ex.name} — ${a.custom_sets || ex.default_sets || '-'} × ${a.custom_reps || ex.default_reps || '-'}`;
+      const w = a.custom_weight || ex.default_weight; if (w) body += ` @ ${w}`;
+      body += `\n`;
+    });
+
+    // Approvals (any status) for this client
+    const pa = profileApprovals.filter(x => x.client_id === c.id);
+    const pga = progressApprovals.filter(x => x.client_id === c.id);
+    if (pa.length + pga.length > 0) {
+      body += `\n   ── APPROVALS ──\n`;
+      pa.forEach(a => { body += `   [Profile / ${a.status}] submitted ${new Date(a.submitted_at).toLocaleString()}${a.admin_note ? ' — ' + a.admin_note : ''}\n`; });
+      pga.forEach(a => { body += `   [Progress ${a.action} / ${a.status}] submitted ${new Date(a.submitted_at).toLocaleString()}${a.admin_note ? ' — ' + a.admin_note : ''}\n`; });
+    }
+
+    body += `\n${'─'.repeat(59)}\n`;
+  });
+
+  const footer = `\n═══════════════════════════════════════════════════════════\nTOTALS\n   Clients:   ${clients.length}\n   Sessions:  ${totalSessions}\n   Workouts:  ${totalWorkouts} exercise logs\n   Progress:  ${totalProgress} entries\n═══════════════════════════════════════════════════════════\n`;
+  return header + body + footer;
+}
+
+// CONTACT PICKER
+function supportsContactPicker() { return 'contacts' in navigator && 'ContactsManager' in window; }
 async function pickFromContacts() {
-  if (!supportsContactPicker()) { showStatus($('createClientStatus'), '⚠️ Contact picker not supported.', 'error'); return; }
+  if (!supportsContactPicker()) { showStatus($('createClientStatus'), '⚠️ Not supported.', 'error'); return; }
   try {
-    const contacts = await navigator.contacts.select(['name', 'tel'], { multiple: false });
+    const contacts = await navigator.contacts.select(['name','tel'], { multiple: false });
     if (!contacts || contacts.length === 0) return;
-    const contact = contacts[0];
-    const name = (contact.name && contact.name[0]) || '';
-    let phone = (contact.tel && contact.tel[0]) || '';
+    const c = contacts[0];
+    const name = (c.name && c.name[0]) || '';
+    let phone = (c.tel && c.tel[0]) || '';
     phone = phone.replace(/[\s\-\(\)\.]/g, '').replace(/^\+/, '');
     if (name) $('newClientName').value = name;
     if (phone) $('newClientPhone').value = phone;
@@ -1044,23 +1114,16 @@ async function pickFromContacts() {
     setTimeout(() => clearStatus($('createClientStatus')), 3000);
   } catch (err) {
     if (err && err.name === 'AbortError') return;
-    if (err && err.name === 'SecurityError') { showStatus($('createClientStatus'), '⚠️ Contacts permission denied.', 'error'); return; }
-    showStatus($('createClientStatus'), '⚠️ Could not open contacts: ' + err.message, 'error');
+    showStatus($('createClientStatus'), '⚠️ ' + err.message, 'error');
   }
 }
-
 (function initContactPicker() {
-  const btn = $('pickContactBtn');
-  const hint = $('contactHint');
+  const btn = $('pickContactBtn'); const hint = $('contactHint');
   if (supportsContactPicker()) { btn.classList.remove('hidden'); hint.classList.add('hidden'); }
-  else {
-    btn.classList.add('hidden');
-    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    if (isMobile) hint.classList.remove('hidden');
-  }
+  else { btn.classList.add('hidden'); if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) hint.classList.remove('hidden'); }
 })();
 
-// ============ INIT ============
+// INIT
 async function initSupabase() {
   try {
     if (typeof window.supabase === 'undefined') throw new Error('Supabase SDK missing');
@@ -1070,19 +1133,16 @@ async function initSupabase() {
     setCloudStatus(true);
     await loadAdminConfig();
     await loadAllData();
-    await checkArchiveNeeded();
   } catch (err) {
     console.error('Init failed:', err);
     setCloudStatus(false);
-    showStatus($('adminAuthStatus'), '⚠️ ' + err.message, 'error');
+    showStatus($('unifiedStatus'), '⚠️ ' + err.message, 'error');
   }
 }
-
 async function loadAdminConfig() {
   const { data, error } = await supabaseClient.from('admin_config').select('*').eq('id',1).single();
   if (!error && data) adminConfig = { ...adminConfig, ...data };
 }
-
 async function loadAllData() {
   const { data: cd } = await supabaseClient.from('clients').select('*').order('created_at',{ascending:true});
   clients = cd || [];
@@ -1091,12 +1151,12 @@ async function loadAllData() {
   const { data: pd } = await supabaseClient.from('client_profiles').select('*');
   clientProfiles = {}; (pd||[]).forEach(p => { clientProfiles[p.client_id] = p; });
   const { data: pr } = await supabaseClient.from('progress_entries').select('*').order('entry_date',{ascending:false});
-  progressEntries = {}; (pr||[]).forEach(p => {
-    if (!progressEntries[p.client_id]) progressEntries[p.client_id] = [];
-    progressEntries[p.client_id].push(p);
-  });
-  const { data: sess } = await supabaseClient.from('sessions').select('*')
-    .gte('session_date',`${CURRENT_YEAR}-01-01`).lte('session_date',`${CURRENT_YEAR}-12-31`);
+  progressEntries = {}; (pr||[]).forEach(p => { if (!progressEntries[p.client_id]) progressEntries[p.client_id] = []; progressEntries[p.client_id].push(p); });
+  try {
+    const { data: pa, error: paErr } = await supabaseClient.from('progress_approvals').select('*').order('submitted_at',{ascending:false});
+    if (!paErr) progressApprovals = pa || [];
+  } catch(e) { progressApprovals = []; }
+  const { data: sess } = await supabaseClient.from('sessions').select('*').gte('session_date',`${CURRENT_YEAR-3}-01-01`).lte('session_date',`${CURRENT_YEAR+1}-12-31`);
   sessionCache = {};
   (sess||[]).forEach(s => {
     const d = new Date(s.session_date);
@@ -1109,8 +1169,7 @@ async function loadAllData() {
   const { data: ce } = await supabaseClient.from('client_exercises').select('*');
   clientExercisesCache = {};
   (ce||[]).forEach(a => { if (!clientExercisesCache[a.client_id]) clientExercisesCache[a.client_id]=[]; clientExercisesCache[a.client_id].push(a); });
-  const { data: wl } = await supabaseClient.from('workout_logs').select('*')
-    .gte('session_date',`${CURRENT_YEAR}-01-01`).lte('session_date',`${CURRENT_YEAR}-12-31`);
+  const { data: wl } = await supabaseClient.from('workout_logs').select('*').gte('session_date',`${CURRENT_YEAR-3}-01-01`).lte('session_date',`${CURRENT_YEAR+1}-12-31`);
   workoutLogsCache = {};
   (wl||[]).forEach(w => {
     const k = `${w.client_id}-${w.session_date}`;
@@ -1119,64 +1178,106 @@ async function loadAllData() {
   });
   const { data: dt } = await supabaseClient.from('daily_times').select('*');
   dailyTimesCache = {};
-  (dt||[]).forEach(d => {
-    if (!dailyTimesCache[d.client_id]) dailyTimesCache[d.client_id] = [];
-    dailyTimesCache[d.client_id].push(d);
-  });
-  const { data: pa } = await supabaseClient.from('profile_approvals').select('*').order('submitted_at',{ascending:false});
-  profileApprovals = pa || [];
+  (dt||[]).forEach(d => { if (!dailyTimesCache[d.client_id]) dailyTimesCache[d.client_id] = []; dailyTimesCache[d.client_id].push(d); });
+  const { data: pa2 } = await supabaseClient.from('profile_approvals').select('*').order('submitted_at',{ascending:false});
+  profileApprovals = pa2 || [];
+  updateApprovalsBadge();
+  checkForNewApprovalsAndNotify();
+}
 
+// LOGIN
+async function handleUnifiedLogin() {
+  const loginId = $('loginIdInput').value.trim();
+  const password = $('passwordInput').value.trim();
+  if (!loginId || !password) { showStatus($('unifiedStatus'), 'Enter Login ID and password.', 'error'); return; }
+  if (loginId === adminConfig.admin_login_id && password === adminConfig.admin_password) { openAdminDashboard(); return; }
+  const up = loginId.toUpperCase();
+  const c = clients.find(x => (x.login_id || '').toUpperCase() === up && x.password_hint === password);
+  if (!c) { showStatus($('unifiedStatus'), '❌ Invalid login.', 'error'); return; }
+  if (!c.active) { showStatus($('unifiedStatus'), '🔒 Account closed.', 'error'); return; }
+  openClientDashboard(c);
+}
+function openAdminDashboard() {
+  loggedInClient = null;
+  $('loginCard').classList.add('hidden');
+  $('clientDashboard').classList.add('hidden');
+  $('adminDashboard').classList.remove('hidden');
+  $('adminDisplayId').textContent = adminConfig.admin_login_id;
+  clearStatus($('unifiedStatus'));
   renderClientList();
   updateApprovalsBadge();
+  selectedClientId = null;
+  $('clientDetailPanel').classList.add('hidden');
+  $('noClientSelectedMsg').classList.remove('hidden');
+  $('settingsPanel').classList.add('hidden');
+  $('libraryPanel').classList.add('hidden');
+  $('approvalsPanel').classList.add('hidden');
+  updateNotifyButton();
+  startNotificationPolling();
+}
+function openClientDashboard(c) {
+  loggedInClient = c;
+  $('loginCard').classList.add('hidden');
+  $('adminDashboard').classList.add('hidden');
+  $('clientDashboard').classList.remove('hidden');
+  $('welcomeClientName').textContent = c.name;
+  clearStatus($('unifiedStatus'));
+  const y = CURRENT_YEAR, m = new Date().getMonth();
+  const sessions = getSessions(c.id, y, m);
+  const rate = getRate(c.id);
+  $('clientDashMonth').textContent = `${getMonthName(m)} ${y}`;
+  $('clientDashDone').textContent = sessions.length;
+  $('clientDashAmount').textContent = `${CURRENCY} ${sessions.length * rate}`;
+  renderClientUpcoming(c);
+  renderClientPlan(c);
+  renderClientProgress(c);
+  renderClientProfile(c);
+  renderClientHistory(c);
+  const hasPendingProfile = profileApprovals.some(a => a.client_id === c.id && a.status === 'pending');
+  const hasPendingProgress = progressApprovals.some(a => a.client_id === c.id && a.status === 'pending');
+  $('clientPendingBanner').classList.toggle('hidden', !(hasPendingProfile || hasPendingProgress));
+  document.querySelectorAll('.tab-btn[data-ctab]').forEach(b => b.classList.toggle('active', b.dataset.ctab === 'plan'));
+  document.querySelectorAll('.tab-content[id^="ctab-"]').forEach(t => t.classList.toggle('hidden', t.id !== 'ctab-plan'));
+}
+function unifiedLogout() {
+  loggedInClient = null; selectedClientId = null;
+  $('loginCard').classList.remove('hidden');
+  $('clientDashboard').classList.add('hidden');
+  $('adminDashboard').classList.add('hidden');
+  $('loginIdInput').value = ''; $('passwordInput').value = '';
+  clearStatus($('unifiedStatus'));
 }
 
-// ============ HELPERS ============
-function getWorkoutLogs(clientId, dateStr) {
-  return workoutLogsCache[`${clientId}-${dateStr}`] || [];
-}
-function getAllWorkoutDates(clientId) {
-  const dates = new Set();
-  Object.keys(workoutLogsCache).forEach(k => {
-    if (k.startsWith(clientId + '-')) dates.add(k.substring(clientId.length + 1));
-  });
-  return Array.from(dates).sort().reverse();
-}
-function getLastWorkoutDate(clientId) {
-  const dates = getAllWorkoutDates(clientId);
-  return dates.length > 0 ? dates[0] : null;
-}
+// SESSIONS
 function getOrderedDaysForMonth(year, month) {
   const daysInMonth = getDaysInMonth(year, month);
   const today = new Date();
   const isCurrentMonth = today.getFullYear() === year && today.getMonth() === month;
   const currentDay = isCurrentMonth ? today.getDate() : null;
-  const days = [];
-  for (let d = 1; d <= daysInMonth; d++) days.push(d);
+  const days = []; for (let d = 1; d <= daysInMonth; d++) days.push(d);
   if (currentDay === null) return days;
-  const idx = days.indexOf(currentDay);
-  if (idx <= 0) return days;
-  const [cd] = days.splice(idx, 1);
-  return [cd, ...days];
+  const idx = days.indexOf(currentDay); if (idx <= 0) return days;
+  const [cd] = days.splice(idx, 1); return [cd, ...days];
 }
-
-// Display name for a workout log entry (library name OR custom name)
+function getWorkoutLogs(clientId, dateStr) { return workoutLogsCache[`${clientId}-${dateStr}`] || []; }
+function getAllWorkoutDates(clientId) {
+  const dates = new Set();
+  Object.keys(workoutLogsCache).forEach(k => { if (k.startsWith(clientId + '-')) dates.add(k.substring(clientId.length + 1)); });
+  return Array.from(dates).sort().reverse();
+}
 function getWorkoutDisplayName(log) {
   if (log.exercise_name && log.exercise_name.trim()) return log.exercise_name.trim();
-  if (log.exercise_id) {
-    const ex = getExercise(log.exercise_id);
-    if (ex) return ex.name;
-  }
+  if (log.exercise_id) { const ex = getExercise(log.exercise_id); if (ex) return ex.name; }
   return 'Exercise';
 }
-
-// ============ CLIENT LIST ============
 function renderClientList() {
   if (clients.length === 0) { $('clientListContainer').innerHTML = `<div class="empty-message">No clients yet.</div>`; return; }
   let html = '';
   clients.forEach(c => {
     const rate = getRate(c.id);
     const isClosed = !c.active;
-    const hasPending = profileApprovals.some(a => a.client_id === c.id && a.status === 'pending');
+    const hasPending = profileApprovals.some(a => a.client_id === c.id && a.status === 'pending')
+                    || progressApprovals.some(a => a.client_id === c.id && a.status === 'pending');
     html += `<div class="client-item ${selectedClientId === c.id ? 'active-client' : ''} ${isClosed ? 'closed-client' : ''} ${hasPending ? 'has-pending' : ''}" data-client-id="${c.id}">
       <div class="client-info">
         <span class="client-name">${escapeHtml(c.name)}</span>
@@ -1191,17 +1292,11 @@ function renderClientList() {
     </div>`;
   });
   $('clientListContainer').innerHTML = html;
-  document.querySelectorAll('.client-item').forEach(item => {
-    item.addEventListener('click', () => selectClient(item.dataset.clientId));
-  });
+  document.querySelectorAll('.client-item').forEach(item => item.addEventListener('click', () => selectClient(item.dataset.clientId)));
 }
-
-// ============ SELECT CLIENT ============
 function selectClient(clientId) {
-  const c = getClient(clientId);
-  if (!c) return;
-  selectedClientId = clientId;
-  selectedDay = null;
+  const c = getClient(clientId); if (!c) return;
+  selectedClientId = clientId; selectedDay = null;
   document.querySelectorAll('.client-item').forEach(el => el.classList.toggle('active-client', el.dataset.clientId === clientId));
   $('clientDetailPanel').classList.remove('hidden');
   $('noClientSelectedMsg').classList.add('hidden');
@@ -1221,15 +1316,12 @@ function selectClient(clientId) {
   renderAdminProgress();
   updateReminderPreview();
 }
-
 function updateClientStatusUI(c) {
   const isClosed = !c.active;
   $('detailClientStatusPill').classList.toggle('hidden', !isClosed);
   $('closedClientBanner').classList.toggle('hidden', !isClosed);
   $('closeClientBar').classList.toggle('hidden', isClosed);
 }
-
-// ============ TABS ============
 document.querySelectorAll('.tab-btn[data-tab]').forEach(btn => {
   btn.addEventListener('click', () => {
     const tab = btn.dataset.tab;
@@ -1247,31 +1339,29 @@ document.querySelectorAll('.tab-btn[data-ctab]').forEach(btn => {
 document.querySelectorAll('.tab-approval').forEach(btn => {
   btn.addEventListener('click', () => {
     currentApprovalTab = btn.dataset.atab;
-    document.querySelectorAll('.tab-approval').forEach(b => {
-      b.classList.toggle('active', b === btn);
-      b.classList.toggle('btn-orange-small', b === btn);
-      b.classList.toggle('btn-secondary', b !== btn);
-    });
+    document.querySelectorAll('.tab-approval').forEach(b => { b.classList.toggle('active', b === btn); b.classList.toggle('btn-orange-small', b === btn); b.classList.toggle('btn-secondary', b !== btn); });
+    renderApprovals();
+  });
+});
+document.querySelectorAll('.tab-approval-type').forEach(btn => {
+  btn.addEventListener('click', () => {
+    currentApprovalType = btn.dataset.atype;
+    document.querySelectorAll('.tab-approval-type').forEach(b => { b.classList.toggle('active', b === btn); b.classList.toggle('btn-orange-small', b === btn); b.classList.toggle('btn-secondary', b !== btn); });
     renderApprovals();
   });
 });
 
-// ============ SESSIONS ============
 function renderSessions() {
   if (!selectedClientId) return;
   const y = CURRENT_YEAR, m = selectedMonth;
   const sessions = getSessions(selectedClientId, y, m);
   const doneDays = sessions.map(s => s.day);
-  const checkedTimes = {};
-  sessions.forEach(s => { checkedTimes[s.day] = s.checked_at; });
+  const checkedTimes = {}; sessions.forEach(s => { checkedTimes[s.day] = s.checked_at; });
   const rate = getRate(selectedClientId);
-  $('summaryRate').textContent = rate;
-  $('ratePerSession').value = rate;
-
+  $('summaryRate').textContent = rate; $('ratePerSession').value = rate;
   const today = new Date();
   const todayStr = formatDateISO(today.getFullYear(), today.getMonth(), today.getDate());
   const orderedDays = getOrderedDaysForMonth(y, m);
-
   let html = '';
   for (const day of orderedDays) {
     const isDone = doneDays.includes(day);
@@ -1284,11 +1374,7 @@ function renderSessions() {
     const dayTime = getTimeForDate(selectedClientId, dateStr);
     const logs = getWorkoutLogs(selectedClientId, dateStr);
     const hasWorkout = logs.length > 0;
-
-    let timeHtml = dayTime.isSet
-      ? `<div class="session-time-custom">⏰ ${formatClassTime12(dayTime.time)}</div>`
-      : `<div class="session-no-time">⏰ No time set</div>`;
-
+    let timeHtml = dayTime.isSet ? `<div class="session-time-custom">⏰ ${formatClassTime12(dayTime.time)}</div>` : `<div class="session-no-time">⏰ No time set</div>`;
     html += `<div class="session-card ${isDone ? 'done' : ''} ${isSel ? 'selected-day' : ''} ${dayTime.isSet ? 'has-custom-time' : ''} ${hasWorkout ? 'has-workout' : ''} ${isToday ? 'is-today' : ''}" data-day="${day}">
       <label><input type="checkbox" class="session-checkbox" data-day="${day}" ${isDone ? 'checked' : ''}> Day ${day}${isToday ? ' <span class="session-today-badge">TODAY</span>' : ''}</label>
       <div class="session-date">${dow}, ${getMonthName(m).slice(0,3)} ${day}</div>
@@ -1307,27 +1393,12 @@ function renderSessions() {
   $('sessionsGridContainer').innerHTML = html;
   $('summaryDoneCount').textContent = doneDays.length;
   $('summaryTotalAmount').textContent = doneDays.length * rate;
-
   document.querySelectorAll('.session-checkbox').forEach(cb => {
-    cb.addEventListener('click', async (e) => {
-      e.stopPropagation();
-      await toggleSession(selectedClientId, y, m, parseInt(cb.dataset.day,10), cb.checked);
-    });
+    cb.addEventListener('click', async (e) => { e.stopPropagation(); await toggleSession(selectedClientId, y, m, parseInt(cb.dataset.day,10), cb.checked); });
   });
-  document.querySelectorAll('.view-day-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      openDailyWorkout(parseInt(btn.dataset.day, 10));
-    });
-  });
-  document.querySelectorAll('.set-day-time-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      openSetTimeModal(parseInt(btn.dataset.day, 10));
-    });
-  });
+  document.querySelectorAll('.view-day-btn').forEach(btn => btn.addEventListener('click', (e) => { e.stopPropagation(); openDayLogModal(parseInt(btn.dataset.day, 10)); }));
+  document.querySelectorAll('.set-day-time-btn').forEach(btn => btn.addEventListener('click', (e) => { e.stopPropagation(); openSetTimeModal(parseInt(btn.dataset.day, 10)); }));
 }
-
 async function toggleSession(cid, y, m, day, checked) {
   const dateStr = formatDateISO(y, m, day);
   const key = getSessionCacheKey(cid, y, m);
@@ -1344,10 +1415,9 @@ async function toggleSession(cid, y, m, day, checked) {
       if (sessionCache[key]) sessionCache[key] = sessionCache[key].filter(s => s.day !== day);
     }
     renderSessions();
-  } catch (err) { console.error(err); alert('Save failed: ' + err.message); renderSessions(); }
+  } catch (err) { alert('Save failed: ' + err.message); renderSessions(); }
 }
 
-// ============ SET TIME FOR A DAY ============
 function openSetTimeModal(day) {
   const y = CURRENT_YEAR, m = selectedMonth;
   const dateStr = formatDateISO(y, m, day);
@@ -1359,19 +1429,13 @@ function openSetTimeModal(day) {
   $('setTimeModal').classList.remove('hidden');
   clearStatus($('setTimeStatus'));
 }
-
 $('cancelSetTimeBtn').addEventListener('click', () => $('setTimeModal').classList.add('hidden'));
-
 $('saveSetTimeBtn').addEventListener('click', async () => {
-  const dateStr = $('stDayDate').value;
-  const timeVal = $('stTime').value;
-  const noteVal = $('stNote').value.trim();
+  const dateStr = $('stDayDate').value; const timeVal = $('stTime').value; const noteVal = $('stNote').value.trim();
   if (!dateStr || !timeVal) { showStatus($('setTimeStatus'), '⚠️ Time required.', 'error'); return; }
   try {
     $('saveSetTimeBtn').disabled = true;
-    const { error } = await supabaseClient.from('daily_times').upsert({
-      client_id: selectedClientId, day_date: dateStr, class_time: timeVal, note: noteVal || null
-    },{onConflict:'client_id,day_date'});
+    const { error } = await supabaseClient.from('daily_times').upsert({ client_id: selectedClientId, day_date: dateStr, class_time: timeVal, note: noteVal || null },{onConflict:'client_id,day_date'});
     if (error) throw error;
     if (!dailyTimesCache[selectedClientId]) dailyTimesCache[selectedClientId] = [];
     dailyTimesCache[selectedClientId] = dailyTimesCache[selectedClientId].filter(d => d.day_date !== dateStr);
@@ -1381,68 +1445,46 @@ $('saveSetTimeBtn').addEventListener('click', async () => {
   } catch (err) { showStatus($('setTimeStatus'), '❌ '+err.message, 'error'); }
   finally { $('saveSetTimeBtn').disabled = false; }
 });
-
 $('clearSetTimeBtn').addEventListener('click', async () => {
-  const dateStr = $('stDayDate').value;
-  if (!dateStr) return;
+  const dateStr = $('stDayDate').value; if (!dateStr) return;
   if (!confirm('Clear the time for this day?')) return;
   try {
     await supabaseClient.from('daily_times').delete().eq('client_id', selectedClientId).eq('day_date', dateStr);
     dailyTimesCache[selectedClientId] = (dailyTimesCache[selectedClientId]||[]).filter(d => d.day_date !== dateStr);
-    $('setTimeModal').classList.add('hidden');
-    renderSessions();
+    $('setTimeModal').classList.add('hidden'); renderSessions();
   } catch (err) { alert('Failed: ' + err.message); }
 });
 
-// ============ DAILY WORKOUT (free-entry) ============
-function openDailyWorkout(day) {
+function openDayLogModal(day) {
   selectedDay = day;
   const y = CURRENT_YEAR, m = selectedMonth;
   const dateStr = formatDateISO(y, m, day);
-  $('dailyWorkoutPanel').classList.remove('hidden');
-  $('dailyWorkoutDate').textContent = formatDateReadable(y, m, day);
-  renderSessions();
-
-  // Quick-pick chips from library
-  const chipsContainer = $('libraryQuickChips');
-  if (exercises.length === 0) {
-    chipsContainer.innerHTML = '';
-  } else {
-    chipsContainer.innerHTML = exercises.slice(0, 20).map(ex =>
-      `<div class="library-chip" data-ex-id="${ex.id}" data-ex-name="${escapeHtml(ex.name)}">+ ${escapeHtml(ex.name)}</div>`
-    ).join('');
-    chipsContainer.querySelectorAll('.library-chip').forEach(chip => {
-      chip.addEventListener('click', async () => {
-        await quickAddCustomToDay(selectedClientId, y, m, day, {
-          name: chip.dataset.exName,
-          exercise_id: chip.dataset.exId
-        });
-        openDailyWorkout(day);
-      });
-    });
-  }
-
-  renderDailyEntries(dateStr);
+  $('dayLogDate').value = dateStr;
+  $('dayLogDateLabel').textContent = formatDateReadable(y, m, day);
+  $('freeExName').value = '';
+  renderDayLogExisting(dateStr);
+  renderDayLogChips();
+  $('dayLogModal').classList.remove('hidden');
+  clearStatus($('dayLogStatus'));
 }
-
-function renderDailyEntries(dateStr) {
+function renderDayLogExisting(dateStr) {
   const logs = workoutLogsCache[`${selectedClientId}-${dateStr}`] || [];
-  const container = $('dailyExerciseEntries');
-  if (logs.length === 0) {
-    container.innerHTML = `<div style="padding:0.9rem;text-align:center;color:#8d6e00;font-size:0.8rem;font-style:italic;">No exercises logged yet for this day. Add one above.</div>`;
-    return;
-  }
-  let html = '';
-  logs.forEach((log, idx) => {
+  const container = $('dayLogExisting');
+  if (logs.length === 0) { container.innerHTML = `<div class="day-log-meta">No exercises logged for this day yet.</div>`; return; }
+  let html = `<div class="day-log-meta">🏋️ ${logs.length} exercise${logs.length > 1 ? 's' : ''} logged on this day</div>`;
+  logs.forEach(log => {
     const name = getWorkoutDisplayName(log);
+    const lastMatch = getLastLogForExercise(selectedClientId, name, log.exercise_id || null, dateStr);
+    const lastBanner = lastMatch ? `<div class="last-time-banner">${escapeHtml(formatLastTimeSummary(lastMatch))}</div>` : '';
     html += `<div class="exercise-entry" data-log-id="${log.id}">
       <div class="exercise-entry-header">
         <div>
           <div class="exercise-entry-name">${escapeHtml(name)}</div>
-          ${log.exercise_name ? `<div class="exercise-entry-meta">Custom entry</div>` : ''}
+          ${log.exercise_name && !log.exercise_id ? `<div class="exercise-entry-meta">Custom entry</div>` : ''}
         </div>
-        <button class="btn-danger-small btn-small remove-log-btn" data-log-id="${log.id}">✖ Remove</button>
+        <button class="btn-danger-small btn-small remove-log-btn" data-log-id="${log.id}">✖</button>
       </div>
+      ${lastBanner}
       <div class="exercise-entry-fields">
         <div class="field"><label>Sets</label><input type="number" class="log-field" data-field="sets_done" value="${log.sets_done||''}" inputmode="numeric" placeholder="—"></div>
         <div class="field"><label>Reps</label><input type="text" class="log-field" data-field="reps_done" value="${escapeHtml(log.reps_done||'')}" placeholder="—"></div>
@@ -1453,7 +1495,6 @@ function renderDailyEntries(dateStr) {
     </div>`;
   });
   container.innerHTML = html;
-
   document.querySelectorAll('.log-field').forEach(input => {
     input.addEventListener('change', async (e) => {
       const entry = e.target.closest('.exercise-entry');
@@ -1462,64 +1503,66 @@ function renderDailyEntries(dateStr) {
   });
   document.querySelectorAll('.remove-log-btn').forEach(btn => {
     btn.addEventListener('click', async () => {
-      if (!confirm('Remove this exercise from the log?')) return;
+      if (!confirm('Remove?')) return;
       await removeWorkoutLogById(btn.dataset.logId);
+      openDayLogModal(selectedDay);
     });
   });
 }
-
-// Add a custom entry to this day — no pre-fill, no defaults from plan
-async function quickAddCustomToDay(cid, y, m, day, opts) {
-  const dateStr = formatDateISO(y, m, day);
-  const payload = {
-    client_id: cid,
-    session_date: dateStr,
-    exercise_id: opts.exercise_id || null,
-    exercise_name: opts.name,
-    sets_done: null,
-    reps_done: null,
-    weight_done: null,
-    rest_done: null,
-    notes: null
-  };
+function renderDayLogChips() {
+  const chipsContainer = $('libraryQuickChips');
+  if (exercises.length === 0) { chipsContainer.innerHTML = ''; return; }
+  chipsContainer.innerHTML = exercises.slice(0, 20).map(ex => `<div class="library-chip" data-ex-id="${ex.id}" data-ex-name="${escapeHtml(ex.name)}">+ ${escapeHtml(ex.name)}</div>`).join('');
+  chipsContainer.querySelectorAll('.library-chip').forEach(chip => {
+    chip.addEventListener('click', async () => {
+      await addExerciseToDay({ name: chip.dataset.exName, exercise_id: chip.dataset.exId });
+      openDayLogModal(selectedDay);
+    });
+  });
+}
+async function addExerciseToDay(opts) {
+  const dateStr = $('dayLogDate').value;
+  if (!dateStr) return;
+  const exerciseName = opts.name;
+  const exerciseId = opts.exercise_id || null;
+  const last = getLastLogForExercise(selectedClientId, exerciseName, exerciseId, dateStr);
+  let prefill = { sets_done: null, reps_done: null, weight_done: null, rest_done: null, notes: null };
+  if (last && last.log) {
+    prefill = { sets_done: last.log.sets_done ?? null, reps_done: last.log.reps_done ?? null, weight_done: last.log.weight_done ?? null, rest_done: last.log.rest_done ?? null, notes: last.log.notes ?? null };
+  } else if (exerciseId) {
+    const assigned = (clientExercisesCache[selectedClientId] || []).find(a => a.exercise_id === exerciseId);
+    const libEx = getExercise(exerciseId);
+    if (assigned || libEx) {
+      prefill.sets_done = assigned?.custom_sets ?? libEx?.default_sets ?? null;
+      prefill.reps_done = assigned?.custom_reps ?? libEx?.default_reps ?? null;
+      prefill.weight_done = assigned?.custom_weight ?? libEx?.default_weight ?? null;
+      prefill.rest_done = assigned?.custom_rest ?? libEx?.default_rest ?? null;
+      prefill.notes = assigned?.custom_notes ?? null;
+    }
+  }
+  const payload = { client_id: selectedClientId, session_date: dateStr, exercise_id: exerciseId, exercise_name: exerciseName, ...prefill };
   try {
     const { data, error } = await supabaseClient.from('workout_logs').insert(payload).select().single();
     if (error) throw error;
-    const k = `${cid}-${dateStr}`;
+    const k = `${selectedClientId}-${dateStr}`;
     if (!workoutLogsCache[k]) workoutLogsCache[k] = [];
     workoutLogsCache[k].push(data);
     renderSessions();
-  } catch (err) {
-    console.error(err);
-    alert('Failed to add: ' + err.message);
-  }
+  } catch (err) { showStatus($('dayLogStatus'), '❌ ' + err.message, 'error'); }
 }
-
-// Free-add button
 $('freeAddBtn').addEventListener('click', async () => {
-  const name = $('freeExName').value.trim();
-  if (!name) { $('freeExName').focus(); return; }
-  if (!selectedDay) return;
-  const y = CURRENT_YEAR, m = selectedMonth;
-  // Try to match to a library exercise by name (case-insensitive)
+  const name = $('freeExName').value.trim(); if (!name) { $('freeExName').focus(); return; }
   const matched = exercises.find(e => e.name.toLowerCase() === name.toLowerCase());
-  await quickAddCustomToDay(selectedClientId, y, m, selectedDay, {
-    name: matched ? matched.name : name,
-    exercise_id: matched ? matched.id : null
-  });
+  await addExerciseToDay({ name: matched ? matched.name : name, exercise_id: matched ? matched.id : null });
   $('freeExName').value = '';
-  openDailyWorkout(selectedDay);
+  openDayLogModal(selectedDay);
 });
-
-$('freeExName').addEventListener('keypress', e => {
-  if (e.key === 'Enter') { e.preventDefault(); $('freeAddBtn').click(); }
-});
-
+$('freeExName').addEventListener('keypress', e => { if (e.key === 'Enter') { e.preventDefault(); $('freeAddBtn').click(); } });
+$('closeDayLogBtn').addEventListener('click', () => $('dayLogModal').classList.add('hidden'));
 async function saveWorkoutLogField(logId, field, val) {
   try {
     const { error } = await supabaseClient.from('workout_logs').update({ [field]: val||null }).eq('id', logId);
     if (error) throw error;
-    // Update cache
     Object.keys(workoutLogsCache).forEach(k => {
       const arr = workoutLogsCache[k];
       const idx = arr.findIndex(w => String(w.id) === String(logId));
@@ -1527,85 +1570,53 @@ async function saveWorkoutLogField(logId, field, val) {
     });
   } catch (err) { console.error(err); }
 }
-
 async function removeWorkoutLogById(logId) {
   try {
     await supabaseClient.from('workout_logs').delete().eq('id', logId);
-    Object.keys(workoutLogsCache).forEach(k => {
-      workoutLogsCache[k] = workoutLogsCache[k].filter(w => String(w.id) !== String(logId));
-    });
-    openDailyWorkout(selectedDay);
+    Object.keys(workoutLogsCache).forEach(k => { workoutLogsCache[k] = workoutLogsCache[k].filter(w => String(w.id) !== String(logId)); });
     renderSessions();
   } catch (err) { console.error(err); }
 }
 
-// ============ LAST SESSION ============
 $('viewLastSessionBtn').addEventListener('click', () => {
   if (!selectedClientId) return;
-  const lastDate = getLastWorkoutDate(selectedClientId);
-  if (!lastDate) { alert('No past sessions logged for this client yet.'); return; }
-  const logs = getWorkoutLogs(selectedClientId, lastDate);
   const c = getClient(selectedClientId);
-  lastSessionData = { date: lastDate, logs };
-  $('lastSessionSubtitle').textContent = `${c.name} · ${lastDate}`;
-  let html = `<div class="last-session-meta">📅 ${formatDateReadable(...lastDate.split('-').map((v,i) => i===1 ? parseInt(v)-1 : parseInt(v)))} · ${logs.length} exercise${logs.length > 1 ? 's' : ''}</div>`;
-  logs.forEach(log => {
-    const name = getWorkoutDisplayName(log);
-    html += `<div class="last-session-exercise">
-      <div class="last-session-exercise-name">${escapeHtml(name)}</div>
-      <div class="last-session-exercise-meta">
-        ${log.sets_done ? `<strong>${log.sets_done}</strong> sets` : ''}${log.reps_done ? ` × ${escapeHtml(log.reps_done)} reps` : ''}${log.weight_done ? ` · ${escapeHtml(log.weight_done)}` : ''}${log.rest_done ? ` · rest ${escapeHtml(log.rest_done)}` : ''}
-      </div>
-      ${log.notes ? `<div style="font-size:0.72rem;color:#4c6d84;font-style:italic;margin-top:0.2rem;">📝 ${escapeHtml(log.notes)}</div>` : ''}
-    </div>`;
+  const y = CURRENT_YEAR, m = selectedMonth;
+  $('monthSummarySubtitle').textContent = `${c.name} · ${getMonthName(m)} ${y}`;
+  const datesInMonth = [];
+  Object.keys(workoutLogsCache).forEach(k => {
+    if (!k.startsWith(selectedClientId + '-')) return;
+    const ds = k.substring(selectedClientId.length + 1);
+    const parts = ds.split('-');
+    if (parseInt(parts[0]) === y && (parseInt(parts[1]) - 1) === m) datesInMonth.push(ds);
   });
-  $('lastSessionContent').innerHTML = html;
-  $('applyTargetBox').classList.add('hidden');
-  $('lastSessionModal').classList.remove('hidden');
+  datesInMonth.sort().reverse();
+  if (datesInMonth.length === 0) { $('monthSummaryContent').innerHTML = `<div class="empty-message">No workouts logged this month yet.</div>`; $('monthSummaryModal').classList.remove('hidden'); return; }
+  let totalEx = 0; let html = '';
+  datesInMonth.forEach(ds => {
+    const logs = workoutLogsCache[`${selectedClientId}-${ds}`] || [];
+    if (logs.length === 0) return;
+    totalEx += logs.length;
+    const parts = ds.split('-');
+    const dateLabel = formatDateReadable(parseInt(parts[0]), parseInt(parts[1])-1, parseInt(parts[2]));
+    let exHtml = '';
+    logs.forEach(log => {
+      const name = getWorkoutDisplayName(log);
+      const d = [];
+      if (log.sets_done) d.push(`${log.sets_done}×`);
+      if (log.reps_done) d.push(log.reps_done);
+      if (log.weight_done) d.push(`@ ${log.weight_done}`);
+      if (log.rest_done) d.push(`rest ${log.rest_done}`);
+      exHtml += `<div class="month-summary-ex"><span class="month-summary-ex-name">${escapeHtml(name)}</span><span class="month-summary-ex-detail">${escapeHtml(d.join(' ') || '—')}</span></div>`;
+    });
+    html += `<div class="month-summary-day"><div class="month-summary-date"><span>📅 ${dateLabel}</span><span class="month-summary-count">${logs.length} exercise${logs.length > 1 ? 's' : ''}</span></div>${exHtml}</div>`;
+  });
+  html = `<div class="day-log-meta" style="background:#e1f5fe;color:#01579b;">📊 ${datesInMonth.length} workout day${datesInMonth.length > 1 ? 's' : ''} · ${totalEx} total exercise${totalEx > 1 ? 's' : ''}</div>` + html;
+  $('monthSummaryContent').innerHTML = html;
+  $('monthSummaryModal').classList.remove('hidden');
 });
+$('closeMonthSummaryBtn').addEventListener('click', () => $('monthSummaryModal').classList.add('hidden'));
 
-$('applyLastSessionBtn').addEventListener('click', () => {
-  $('applyTargetBox').classList.remove('hidden');
-  $('applyTargetDate').value = new Date().toISOString().split('T')[0];
-});
-$('closeLastSessionBtn').addEventListener('click', () => $('lastSessionModal').classList.add('hidden'));
-
-$('confirmApplyBtn').addEventListener('click', async () => {
-  if (!lastSessionData || !selectedClientId) return;
-  const targetDate = $('applyTargetDate').value;
-  if (!targetDate) { alert('Pick a date.'); return; }
-  try {
-    $('confirmApplyBtn').disabled = true;
-    $('confirmApplyBtn').textContent = '⏳ Copying...';
-    let added = 0;
-    for (const log of lastSessionData.logs) {
-      const { error } = await supabaseClient.from('workout_logs').insert({
-        client_id: selectedClientId,
-        session_date: targetDate,
-        exercise_id: log.exercise_id,
-        exercise_name: log.exercise_name,
-        sets_done: log.sets_done,
-        reps_done: log.reps_done,
-        weight_done: log.weight_done,
-        rest_done: log.rest_done,
-        notes: log.notes
-      });
-      if (error) console.error(error);
-      else {
-        added++;
-        const k = `${selectedClientId}-${targetDate}`;
-        if (!workoutLogsCache[k]) workoutLogsCache[k] = [];
-        workoutLogsCache[k].push({ ...log, id: Date.now() + Math.random(), session_date: targetDate });
-      }
-    }
-    showStatus($('lastSessionStatus'), `✅ Copied ${added} exercise(s).`, 'success');
-    renderSessions();
-    setTimeout(() => { $('lastSessionModal').classList.add('hidden'); clearStatus($('lastSessionStatus')); }, 1500);
-  } catch (err) { showStatus($('lastSessionStatus'), '❌ ' + err.message, 'error'); }
-  finally { $('confirmApplyBtn').disabled = false; $('confirmApplyBtn').textContent = '✅ Copy to This Day'; }
-});
-
-// ============ ASSIGN (template only) ============
 function renderAssignList() {
   if (!selectedClientId) return;
   const assigned = clientExercisesCache[selectedClientId] || [];
@@ -1613,52 +1624,33 @@ function renderAssignList() {
   if (exercises.length === 0) { $('assignList').innerHTML = `<div class="empty-message">No exercises in library.</div>`; return; }
   let html = '';
   exercises.forEach(ex => {
-    const sel = !!map[ex.id];
-    const a = map[ex.id] || {};
+    const sel = !!map[ex.id]; const a = map[ex.id] || {};
     html += `<div class="assign-row ${sel ? 'selected' : ''}" data-ex-id="${ex.id}">
-      <div class="assign-row-header">
-        <input type="checkbox" class="assign-checkbox" data-ex-id="${ex.id}" ${sel ? 'checked' : ''}>
-        <div style="flex:1;min-width:0;">
-          <div class="assign-row-name">${escapeHtml(ex.name)}</div>
-          <div class="assign-row-meta">${ex.category?escapeHtml(ex.category)+' · ':''}${ex.default_sets||'-'} × ${ex.default_reps||'-'}</div>
-        </div>
-      </div>
+      <div class="assign-row-header"><input type="checkbox" class="assign-checkbox" data-ex-id="${ex.id}" ${sel ? 'checked' : ''}>
+        <div style="flex:1;min-width:0;"><div class="assign-row-name">${escapeHtml(ex.name)}</div>
+          <div class="assign-row-meta">${ex.category?escapeHtml(ex.category)+' · ':''}${ex.default_sets||'-'} × ${ex.default_reps||'-'}</div></div></div>
       ${sel ? `<div class="assign-custom-fields">
-        <div class="field"><label>Suggested sets</label><input type="number" class="assign-field" data-ex-id="${ex.id}" data-field="custom_sets" value="${a.custom_sets ?? ''}" inputmode="numeric"></div>
-        <div class="field"><label>Suggested reps</label><input type="text" class="assign-field" data-ex-id="${ex.id}" data-field="custom_reps" value="${escapeHtml(a.custom_reps||'')}"></div>
-        <div class="field"><label>Suggested weight</label><input type="text" class="assign-field" data-ex-id="${ex.id}" data-field="custom_weight" value="${escapeHtml(a.custom_weight||'')}"></div>
-        <div class="field"><label>Suggested rest</label><input type="text" class="assign-field" data-ex-id="${ex.id}" data-field="custom_rest" value="${escapeHtml(a.custom_rest||'')}"></div>
+        <div class="field"><label>Sets</label><input type="number" class="assign-field" data-ex-id="${ex.id}" data-field="custom_sets" value="${a.custom_sets ?? ''}" inputmode="numeric"></div>
+        <div class="field"><label>Reps</label><input type="text" class="assign-field" data-ex-id="${ex.id}" data-field="custom_reps" value="${escapeHtml(a.custom_reps||'')}"></div>
+        <div class="field"><label>Weight</label><input type="text" class="assign-field" data-ex-id="${ex.id}" data-field="custom_weight" value="${escapeHtml(a.custom_weight||'')}"></div>
+        <div class="field"><label>Rest</label><input type="text" class="assign-field" data-ex-id="${ex.id}" data-field="custom_rest" value="${escapeHtml(a.custom_rest||'')}"></div>
       </div>
-      <div class="exercise-notes-row" style="margin-top:0.5rem;"><input type="text" class="assign-field" data-ex-id="${ex.id}" data-field="custom_notes" value="${escapeHtml(a.custom_notes||'')}" placeholder="Suggested notes"></div>` : ''}
+      <div class="exercise-notes-row" style="margin-top:0.5rem;"><input type="text" class="assign-field" data-ex-id="${ex.id}" data-field="custom_notes" value="${escapeHtml(a.custom_notes||'')}" placeholder="Notes"></div>` : ''}
     </div>`;
   });
   $('assignList').innerHTML = html;
-  document.querySelectorAll('.assign-checkbox').forEach(cb => {
-    cb.addEventListener('change', async (e) => {
-      const exId = cb.dataset.exId;
-      if (cb.checked) await assignExercise(exId);
-      else await unassignExercise(exId);
-    });
-  });
-  document.querySelectorAll('.assign-field').forEach(inp => {
-    inp.addEventListener('change', async (e) => {
-      await updateAssignmentField(e.target.dataset.exId, e.target.dataset.field, e.target.value);
-    });
-  });
+  document.querySelectorAll('.assign-checkbox').forEach(cb => cb.addEventListener('change', async () => { if (cb.checked) await assignExercise(cb.dataset.exId); else await unassignExercise(cb.dataset.exId); }));
+  document.querySelectorAll('.assign-field').forEach(inp => inp.addEventListener('change', async (e) => { await updateAssignmentField(e.target.dataset.exId, e.target.dataset.field, e.target.value); }));
 }
-
 async function assignExercise(exId) {
   try {
     const { error } = await supabaseClient.from('client_exercises').insert({ client_id: selectedClientId, exercise_id: exId, sort_order: 0 });
     if (error && !error.message.includes('duplicate')) throw error;
     if (!clientExercisesCache[selectedClientId]) clientExercisesCache[selectedClientId] = [];
-    if (!clientExercisesCache[selectedClientId].find(a => a.exercise_id === exId)) {
-      clientExercisesCache[selectedClientId].push({ client_id: selectedClientId, exercise_id: exId, sort_order: 0 });
-    }
+    if (!clientExercisesCache[selectedClientId].find(a => a.exercise_id === exId)) clientExercisesCache[selectedClientId].push({ client_id: selectedClientId, exercise_id: exId, sort_order: 0 });
     renderAssignList();
   } catch (err) { showStatus($('assignStatus'), '❌ '+err.message, 'error'); }
 }
-
 async function unassignExercise(exId) {
   try {
     await supabaseClient.from('client_exercises').delete().eq('client_id', selectedClientId).eq('exercise_id', exId);
@@ -1666,7 +1658,6 @@ async function unassignExercise(exId) {
     renderAssignList();
   } catch (err) { console.error(err); }
 }
-
 async function updateAssignmentField(exId, field, val) {
   try {
     await supabaseClient.from('client_exercises').update({ [field]: val||null }).eq('client_id', selectedClientId).eq('exercise_id', exId);
@@ -1675,13 +1666,25 @@ async function updateAssignmentField(exId, field, val) {
   } catch (err) { console.error(err); }
 }
 
-// ============ PROGRESS ============
 function renderProgressEntries(containerId, clientId, adminMode) {
   const entries = progressEntries[clientId] || [];
-  const container = $(containerId);
-  if (!container) return;
-  if (entries.length === 0) { container.innerHTML = `<div class="empty-message">No progress entries yet.</div>`; return; }
+  const pending = progressApprovals.filter(a => a.client_id === clientId && a.status === 'pending' && a.action === 'add');
+  const container = $(containerId); if (!container) return;
+  if (entries.length === 0 && pending.length === 0) { container.innerHTML = `<div class="empty-message">No progress entries yet.</div>`; return; }
   let html = '';
+  if (!adminMode) {
+    pending.forEach(a => {
+      const d = a.proposed_data || {}; const parts = [];
+      if (d.weight_kg) parts.push(`<div class="item"><div class="label">Weight</div><div class="value">${d.weight_kg} kg</div></div>`);
+      if (d.body_fat_pct) parts.push(`<div class="item"><div class="label">Body Fat</div><div class="value">${d.body_fat_pct}%</div></div>`);
+      if (d.chest_cm) parts.push(`<div class="item"><div class="label">Chest</div><div class="value">${d.chest_cm} cm</div></div>`);
+      if (d.waist_cm) parts.push(`<div class="item"><div class="label">Waist</div><div class="value">${d.waist_cm} cm</div></div>`);
+      if (d.hips_cm) parts.push(`<div class="item"><div class="label">Hips</div><div class="value">${d.hips_cm} cm</div></div>`);
+      if (d.arms_cm) parts.push(`<div class="item"><div class="label">Arms</div><div class="value">${d.arms_cm} cm</div></div>`);
+      if (d.thighs_cm) parts.push(`<div class="item"><div class="label">Thighs</div><div class="value">${d.thighs_cm} cm</div></div>`);
+      html += `<div class="progress-entry pending"><div class="progress-entry-header"><span class="progress-entry-date">📅 ${d.entry_date || '—'}</span><span class="progress-entry-pending-badge">⏳ Pending approval</span></div><div class="progress-entry-grid">${parts.join('')}</div>${d.notes ? `<div class="progress-entry-note">📝 ${escapeHtml(d.notes)}</div>` : ''}</div>`;
+    });
+  }
   entries.forEach(e => {
     const byLabel = e.added_by === 'admin' ? '👨‍🏫 Admin' : '🙋 Client';
     const parts = [];
@@ -1694,24 +1697,10 @@ function renderProgressEntries(containerId, clientId, adminMode) {
     if (e.thighs_cm) parts.push(`<div class="item"><div class="label">Thighs</div><div class="value">${e.thighs_cm} cm</div></div>`);
     let photoHtml = '';
     if (e.photo_url) {
-      if (/^https?:\/\//.test(e.photo_url)) {
-        photoHtml = `<div style="margin-top:0.4rem;font-size:0.75rem;"><a href="${escapeHtml(e.photo_url)}" target="_blank" style="color:#1976d2;">📷 View photo</a></div>`;
-      } else {
-        photoHtml = `<div class="progress-photo" style="margin-top:0.5rem;max-width:200px;height:140px;border-radius:0.6rem;overflow:hidden;background:#f5f9fc;">
-          <img data-gdrive-id="${escapeHtml(e.photo_url)}" alt="Progress photo" style="width:100%;height:100%;object-fit:cover;">
-        </div>`;
-      }
+      if (/^https?:\/\//.test(e.photo_url)) photoHtml = `<div style="margin-top:0.4rem;font-size:0.75rem;"><a href="${escapeHtml(e.photo_url)}" target="_blank" style="color:#1976d2;">📷 View photo</a></div>`;
+      else photoHtml = `<div class="progress-photo-wrap"><img data-gdrive-id="${escapeHtml(e.photo_url)}" alt="Progress photo"></div>`;
     }
-    html += `<div class="progress-entry">
-      <div class="progress-entry-header">
-        <span class="progress-entry-date">📅 ${e.entry_date}</span>
-        <span class="progress-entry-by">${byLabel}</span>
-      </div>
-      <div class="progress-entry-grid">${parts.join('')}</div>
-      ${e.notes ? `<div class="progress-entry-note">📝 ${escapeHtml(e.notes)}</div>` : ''}
-      ${photoHtml}
-      ${adminMode ? `<div style="margin-top:0.5rem;text-align:right;"><button class="btn-danger-small btn-small delete-progress-btn" data-id="${e.id}" data-client="${clientId}">🗑️</button></div>` : ''}
-    </div>`;
+    html += `<div class="progress-entry"><div class="progress-entry-header"><span class="progress-entry-date">📅 ${e.entry_date}</span><span class="progress-entry-by">${byLabel}</span></div><div class="progress-entry-grid">${parts.join('')}</div>${e.notes ? `<div class="progress-entry-note">📝 ${escapeHtml(e.notes)}</div>` : ''}${photoHtml}${adminMode ? `<div style="margin-top:0.5rem;text-align:right;"><button class="btn-danger-small btn-small delete-progress-btn" data-id="${e.id}" data-client="${clientId}">🗑️</button></div>` : ''}</div>`;
   });
   container.innerHTML = html;
   if (window.DriveImages) window.DriveImages.init(container);
@@ -1726,21 +1715,15 @@ function renderProgressEntries(containerId, clientId, adminMode) {
     });
   }
 }
-function renderAdminProgress() {
-  if (!selectedClientId) return;
-  renderProgressEntries('adminProgressList', selectedClientId, true);
-}
+function renderAdminProgress() { if (selectedClientId) renderProgressEntries('adminProgressList', selectedClientId, true); }
 
-// ============ HISTORY ============
 function renderClientHistory(c) {
-  const container = $('clientHistoryList');
-  if (!container) return;
+  const container = $('clientHistoryList'); if (!container) return;
   const dates = getAllWorkoutDates(c.id);
   if (dates.length === 0) { container.innerHTML = `<div class="empty-message">No workouts logged yet.</div>`; return; }
   let html = '';
   dates.forEach(dateStr => {
-    const logs = getWorkoutLogs(c.id, dateStr);
-    if (logs.length === 0) return;
+    const logs = getWorkoutLogs(c.id, dateStr); if (logs.length === 0) return;
     const dParts = dateStr.split('-');
     const dateLabel = formatDateReadable(parseInt(dParts[0]), parseInt(dParts[1])-1, parseInt(dParts[2]));
     let exercisesHtml = '';
@@ -1748,31 +1731,19 @@ function renderClientHistory(c) {
       const name = getWorkoutDisplayName(log);
       const details = [];
       if (log.sets_done) details.push(`${log.sets_done}×`);
-      if (log.reps_done) details.push(`${log.reps_done}`);
+      if (log.reps_done) details.push(log.reps_done);
       if (log.weight_done) details.push(`@ ${log.weight_done}`);
-      exercisesHtml += `<div class="history-exercise">
-        <span class="history-exercise-name">${escapeHtml(name)}</span>
-        <span class="history-exercise-details">${escapeHtml(details.join(' ') || '—')}</span>
-      </div>`;
+      exercisesHtml += `<div class="history-exercise"><span class="history-exercise-name">${escapeHtml(name)}</span><span class="history-exercise-details">${escapeHtml(details.join(' ') || '—')}</span></div>`;
     });
-    html += `<div class="history-item" data-date="${dateStr}">
-      <div class="history-item-header">
-        <span class="history-item-date">📅 ${dateLabel}</span>
-        <span class="history-item-count">${logs.length} exercise${logs.length > 1 ? 's' : ''}</span>
-      </div>
-      <div class="history-item-exercises hidden">${exercisesHtml}</div>
-    </div>`;
+    html += `<div class="history-item" data-date="${dateStr}"><div class="history-item-header"><span class="history-item-date">📅 ${dateLabel}</span><span class="history-item-count">${logs.length} exercise${logs.length > 1 ? 's' : ''}</span></div><div class="history-item-exercises hidden">${exercisesHtml}</div></div>`;
   });
   container.innerHTML = html;
-  container.querySelectorAll('.history-item').forEach(item => {
-    item.addEventListener('click', () => {
-      const expanded = item.classList.toggle('expanded');
-      item.querySelector('.history-item-exercises').classList.toggle('hidden', !expanded);
-    });
-  });
+  container.querySelectorAll('.history-item').forEach(item => item.addEventListener('click', () => {
+    const expanded = item.classList.toggle('expanded');
+    item.querySelector('.history-item-exercises').classList.toggle('hidden', !expanded);
+  }));
 }
 
-// ============ PROGRESS MODAL ============
 function openProgressModal(entry, clientId, addedBy) {
   selectedClientForProgress = { clientId, addedBy };
   if (entry) {
@@ -1797,312 +1768,62 @@ function openProgressModal(entry, clientId, addedBy) {
   $('progressModal').classList.remove('hidden');
   clearStatus($('progressModalStatus'));
 }
-
 $('cancelProgressBtn').addEventListener('click', () => $('progressModal').classList.add('hidden'));
 $('saveProgressBtn').addEventListener('click', async () => {
   if (!selectedClientForProgress) return;
   const { clientId, addedBy } = selectedClientForProgress;
-  const payload = {
-    client_id: clientId,
+  const proposed = {
     entry_date: $('pgDate').value || new Date().toISOString().split('T')[0],
-    weight_kg: parseFloat($('pgWeight').value) || null,
-    body_fat_pct: parseFloat($('pgBodyFat').value) || null,
-    chest_cm: parseFloat($('pgChest').value) || null,
-    waist_cm: parseFloat($('pgWaist').value) || null,
-    hips_cm: parseFloat($('pgHips').value) || null,
-    arms_cm: parseFloat($('pgArms').value) || null,
-    thighs_cm: parseFloat($('pgThighs').value) || null,
-    notes: $('pgNotes').value.trim() || null,
-    photo_url: $('pgPhoto').value.trim() || null,
-    added_by: addedBy
+    weight_kg: parseFloat($('pgWeight').value) || null, body_fat_pct: parseFloat($('pgBodyFat').value) || null,
+    chest_cm: parseFloat($('pgChest').value) || null, waist_cm: parseFloat($('pgWaist').value) || null,
+    hips_cm: parseFloat($('pgHips').value) || null, arms_cm: parseFloat($('pgArms').value) || null,
+    thighs_cm: parseFloat($('pgThighs').value) || null, notes: $('pgNotes').value.trim() || null,
+    photo_url: $('pgPhoto').value.trim() || null
   };
+  const editId = $('editProgressId').value;
   try {
     $('saveProgressBtn').disabled = true;
-    const editId = $('editProgressId').value;
-    if (editId) {
-      const { error } = await supabaseClient.from('progress_entries').update(payload).eq('id', editId);
+    if (addedBy === 'client') {
+      const action = editId ? 'edit' : 'add';
+      let currentData = null;
+      if (editId) currentData = (progressEntries[clientId]||[]).find(x => String(x.id) === String(editId)) || null;
+      const payload = { client_id: clientId, action, entry_id: editId || null, proposed_data: { ...proposed, added_by: 'client' }, current_data: currentData, status: 'pending' };
+      const { data, error } = await supabaseClient.from('progress_approvals').insert(payload).select().single();
       if (error) throw error;
-      const arr = progressEntries[clientId] || [];
-      const idx = arr.findIndex(x => String(x.id) === String(editId));
-      if (idx >= 0) arr[idx] = { ...arr[idx], ...payload };
+      progressApprovals.unshift(data);
+      $('progressModal').classList.add('hidden');
+      updateApprovalsBadge();
+      if (loggedInClient && loggedInClient.id === clientId) { renderClientProgress(loggedInClient); $('clientPendingBanner').classList.remove('hidden'); }
+      showStatus($('progressModalStatus'), '✅ Submitted for admin approval!', 'success');
     } else {
-      const { data, error } = await supabaseClient.from('progress_entries').insert(payload).select().single();
-      if (error) throw error;
-      if (!progressEntries[clientId]) progressEntries[clientId] = [];
-      progressEntries[clientId].unshift(data);
+      const payload = { client_id: clientId, added_by: 'admin', ...proposed };
+      if (editId) {
+        const { error } = await supabaseClient.from('progress_entries').update(payload).eq('id', editId);
+        if (error) throw error;
+        const arr = progressEntries[clientId] || [];
+        const idx = arr.findIndex(x => String(x.id) === String(editId));
+        if (idx >= 0) arr[idx] = { ...arr[idx], ...payload };
+      } else {
+        const { data, error } = await supabaseClient.from('progress_entries').insert(payload).select().single();
+        if (error) throw error;
+        if (!progressEntries[clientId]) progressEntries[clientId] = [];
+        progressEntries[clientId].unshift(data);
+      }
+      progressEntries[clientId].sort((a,b) => (b.entry_date||'').localeCompare(a.entry_date||''));
+      $('progressModal').classList.add('hidden');
+      if (selectedClientId === clientId) renderAdminProgress();
     }
-    progressEntries[clientId].sort((a,b) => (b.entry_date||'').localeCompare(a.entry_date||''));
-    $('progressModal').classList.add('hidden');
-    if (selectedClientId === clientId) renderAdminProgress();
-    if (loggedInClient && loggedInClient.id === clientId) renderClientProgress(loggedInClient);
   } catch (err) { showStatus($('progressModalStatus'), '❌ '+err.message, 'error'); }
   finally { $('saveProgressBtn').disabled = false; }
 });
-
-// ============ APPROVALS ============
-function renderApprovals() {
-  const container = $('approvalsList');
-  if (!container) return;
-  let list = profileApprovals;
-  if (currentApprovalTab === 'pending') list = list.filter(a => a.status === 'pending');
-  else list = list.filter(a => a.status !== 'pending');
-  if (list.length === 0) { container.innerHTML = `<div class="empty-message">No ${currentApprovalTab} approvals.</div>`; return; }
-  let html = '';
-  list.forEach(a => {
-    const c = getClient(a.client_id);
-    const clientName = c ? c.name : 'Unknown';
-    const proposed = a.proposed_data || {};
-    const current = a.current_data || {};
-    const fields = ['height_cm','gender','birth_date','goal','medical_notes','emergency_contact'];
-    let diffRows = '';
-    fields.forEach(f => {
-      const oldV = current[f] ?? '';
-      const newV = proposed[f] ?? '';
-      if (String(oldV) !== String(newV)) {
-        diffRows += `<tr>
-          <td class="field">${f.replace(/_/g,' ').replace(/\b\w/g, l => l.toUpperCase())}</td>
-          <td class="old">${escapeHtml(String(oldV||'—'))}</td>
-          <td class="arrow">→</td>
-          <td class="new">${escapeHtml(String(newV||'—'))}</td>
-        </tr>`;
-      }
-    });
-    const statusClass = a.status === 'pending' ? '' : (a.status === 'approved' ? 'completed' : 'rejected');
-    const statusColor = a.status === 'pending' ? '' : (a.status === 'approved' ? 'completed' : 'rejected');
-    const submitted = new Date(a.submitted_at).toLocaleString();
-    const decided = a.decided_at ? new Date(a.decided_at).toLocaleString() : '';
-    html += `<div class="approval-card ${statusClass}">
-      <div class="approval-card-header">
-        <div style="min-width:0;">
-          <div class="approval-card-title ${statusColor}">
-            ${a.status === 'pending' ? '⏳ Pending' : (a.status === 'approved' ? '✅ Approved' : '❌ Rejected')} — ${escapeHtml(clientName)}
-          </div>
-          <div class="approval-card-date">Submitted: ${submitted}${decided ? ' · Decided: ' + decided : ''}</div>
-        </div>
-        ${a.admin_note ? `<span style="font-size:0.68rem;background:#f3e5f5;color:#6a1b9a;padding:0.2rem 0.5rem;border-radius:20px;font-weight:700;">💬 ${escapeHtml(a.admin_note)}</span>` : ''}
-      </div>
-      ${diffRows ? `<table class="approval-diff-table"><thead><tr><th>Field</th><th>Old</th><th></th><th>New</th></tr></thead><tbody>${diffRows}</tbody></table>` : '<div style="font-size:0.78rem;color:#7893a8;font-style:italic;">No visible differences.</div>'}
-      ${a.status === 'pending' ? `
-        <div class="approval-actions">
-          <input type="text" class="approval-note-input" id="approvalNote-${a.id}" placeholder="Optional note">
-          <button class="btn-approve" data-id="${a.id}">✅ Approve</button>
-          <button class="btn-reject" data-id="${a.id}">❌ Reject</button>
-        </div>
-      ` : ''}
-    </div>`;
-  });
-  container.innerHTML = html;
-  container.querySelectorAll('.btn-approve').forEach(b => b.addEventListener('click', () => decideApproval(b.dataset.id, 'approved')));
-  container.querySelectorAll('.btn-reject').forEach(b => b.addEventListener('click', () => decideApproval(b.dataset.id, 'rejected')));
-}
-
-async function decideApproval(id, decision) {
-  const a = profileApprovals.find(x => String(x.id) === String(id));
-  if (!a) return;
-  const noteEl = $(`approvalNote-${id}`);
-  const note = noteEl ? noteEl.value.trim() : '';
-  if (!confirm(`${decision === 'approved' ? 'Approve' : 'Reject'} this change?`)) return;
-  try {
-    const updates = { status: decision, decided_at: new Date().toISOString(), admin_note: note || null };
-    const { error: e1 } = await supabaseClient.from('profile_approvals').update(updates).eq('id', id);
-    if (e1) throw e1;
-    if (decision === 'approved') {
-      const payload = {
-        client_id: a.client_id,
-        height_cm: a.proposed_data.height_cm ?? null,
-        gender: a.proposed_data.gender ?? null,
-        birth_date: a.proposed_data.birth_date ?? null,
-        goal: a.proposed_data.goal ?? null,
-        medical_notes: a.proposed_data.medical_notes ?? null,
-        emergency_contact: a.proposed_data.emergency_contact ?? null,
-        updated_at: new Date().toISOString(),
-        approved_at: new Date().toISOString(),
-        approved_by: adminConfig.admin_login_id
-      };
-      const { error: e2 } = await supabaseClient.from('client_profiles').upsert(payload, { onConflict: 'client_id' });
-      if (e2) throw e2;
-      clientProfiles[a.client_id] = { ...(clientProfiles[a.client_id]||{}), ...payload };
-    }
-    Object.assign(a, updates);
-    renderApprovals(); updateApprovalsBadge(); renderClientList();
-    showStatus($('approvalsStatus'), `✅ ${decision === 'approved' ? 'Approved' : 'Rejected'}.`, 'success');
-    setTimeout(() => clearStatus($('approvalsStatus')), 3000);
-  } catch (err) { showStatus($('approvalsStatus'), `❌ ${err.message}`, 'error'); }
-}
-
-function updateApprovalsBadge() {
-  const pending = profileApprovals.filter(a => a.status === 'pending').length;
-  const badge = $('approvalsCountBadge');
-  if (pending > 0) { badge.textContent = pending; badge.classList.remove('hidden'); }
-  else badge.classList.add('hidden');
-}
-
-// ============ REMINDER ============
-async function updateReminderPreview() {
-  if (!selectedClientId) return;
-  const c = getClient(selectedClientId); if (!c) return;
-  const note = $('reminderNote').value.trim();
-  const noteStr = note ? `\n\n📝 Note: ${note}` : '';
-  const creds = `\n\n🔑 Your login details:\n🌐 ${LOGIN_URL}\nLogin ID: ${c.login_id}\nPassword: ${c.password_hint}`;
-  $('reminderPreviewText').textContent = `Hi ${c.name},\n\nYour schedule has been updated. Please check the app for your class time and progress.${noteStr}${creds}\n\nSee you there! 💪`;
-}
-
-$('reminderNote').addEventListener('input', async () => {
-  if (!selectedClientId) return;
-  const note = $('reminderNote').value.trim();
-  try {
-    await supabaseClient.from('client_settings').update({ note }).eq('client_id', selectedClientId);
-    if (clientSettings[selectedClientId]) clientSettings[selectedClientId].note = note;
-  } catch (err) { console.error(err); }
-  updateReminderPreview();
-});
-
-// ============ SEND ============
-function buildBroadcastMessage(c) {
-  const rs = clientSettings[c.id] || {};
-  const note = rs.note || '';
-  const noteStr = note ? `\n\n📝 Note: ${note}` : '';
-  const creds = `\n\n🔑 Your login details:\n🌐 ${LOGIN_URL}\nLogin ID: ${c.login_id}\nPassword: ${c.password_hint}`;
-  return `Hi ${c.name},\n\nYour schedule has been updated. Please check the app for your class time and progress.${noteStr}${creds}\n\nSee you there! 💪`;
-}
-
-function sendReminder(method) {
-  if (!selectedClientId) return;
-  const c = getClient(selectedClientId); if (!c) return;
-  if (!c.active) { showStatus($('reminderStatus'), `⚠️ ${c.name} is CLOSED.`, 'error'); return; }
-  const msg = buildBroadcastMessage(c);
-  const enc = encodeURIComponent(msg);
-  if (method === 'whatsapp') {
-    const phone = (c.phone || '').replace(/\D/g, '');
-    if (!phone) { showStatus($('reminderStatus'), '⚠️ No number.', 'error'); return; }
-    window.open(`https://wa.me/${phone}?text=${enc}`, '_blank');
-    showStatus($('reminderStatus'), `✅ WhatsApp opened`, 'success');
-  } else {
-    if (!c.email) { showStatus($('reminderStatus'), '⚠️ No email.', 'error'); return; }
-    const subj = `Schedule Updated — ${c.name}`;
-    window.location.href = `mailto:${c.email}?subject=${encodeURIComponent(subj)}&body=${enc}`;
-    showStatus($('reminderStatus'), `✅ Email opened`, 'success');
-  }
-  setTimeout(() => clearStatus($('reminderStatus')), 5000);
-}
-
-function sendToAllClients() {
-  const active = clients.filter(c => c.active);
-  if (active.length === 0) { showStatus($('sendAllStatus'), '⚠️ No active clients.', 'error'); return; }
-  const missing = active.filter(c => !c.phone || !c.phone.replace(/\D/g, ''));
-  if (missing.length > 0) { showStatus($('sendAllStatus'), `⚠️ Missing phone: ${missing.map(x => x.name).join(', ')}`, 'error'); return; }
-  let opened = 0;
-  active.forEach((c, i) => {
-    const msg = buildBroadcastMessage(c);
-    const phone = c.phone.replace(/\D/g, '');
-    setTimeout(() => { window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank'); }, i * 400);
-    opened++;
-  });
-  showStatus($('sendAllStatus'), `✅ Opening ${opened} WhatsApp tab(s)`, 'success');
-  setTimeout(() => clearStatus($('sendAllStatus')), 8000);
-}
-
-// ============ CLOSE / REOPEN / DELETE ============
-async function closeSelectedClient() {
-  if (!selectedClientId) return;
-  const c = getClient(selectedClientId); if (!c) return;
-  if (!confirm(`CLOSE ${c.name}?`)) return;
-  try {
-    await supabaseClient.from('clients').update({ active: false }).eq('id', selectedClientId);
-    c.active = false; updateClientStatusUI(c); renderClientList();
-    document.querySelectorAll('.client-item').forEach(el => el.classList.toggle('active-client', el.dataset.clientId === selectedClientId));
-  } catch (err) { alert('Failed: ' + err.message); }
-}
-
-async function reopenSelectedClient() {
-  if (!selectedClientId) return;
-  const c = getClient(selectedClientId); if (!c) return;
-  if (!confirm(`Reopen ${c.name}?`)) return;
-  try {
-    await supabaseClient.from('clients').update({ active: true }).eq('id', selectedClientId);
-    c.active = true; updateClientStatusUI(c); renderClientList();
-    document.querySelectorAll('.client-item').forEach(el => el.classList.toggle('active-client', el.dataset.clientId === selectedClientId));
-  } catch (err) { alert('Failed: ' + err.message); }
-}
-
-$('deleteClientBtn').addEventListener('click', () => {
-  if (!selectedClientId) return;
-  pendingDeleteClientId = selectedClientId;
-  $('deleteClientModal').classList.remove('hidden');
-  $('deleteConfirmInput').value = '';
-  $('confirmDeleteClientBtn').disabled = true;
-  clearStatus($('deleteClientStatus'));
-});
-$('deleteConfirmInput').addEventListener('input', (e) => {
-  $('confirmDeleteClientBtn').disabled = e.target.value.trim() !== 'DELETE';
-});
-$('cancelDeleteClientBtn').addEventListener('click', () => $('deleteClientModal').classList.add('hidden'));
-$('confirmDeleteClientBtn').addEventListener('click', async () => {
-  if (!pendingDeleteClientId) return;
-  const btn = $('confirmDeleteClientBtn');
-  btn.disabled = true; btn.textContent = '⏳ Deleting...';
-  try {
-    await supabaseClient.from('clients').delete().eq('id', pendingDeleteClientId);
-    clients = clients.filter(x => x.id !== pendingDeleteClientId);
-    delete clientSettings[pendingDeleteClientId]; delete clientProfiles[pendingDeleteClientId];
-    delete progressEntries[pendingDeleteClientId]; delete clientExercisesCache[pendingDeleteClientId];
-    delete dailyTimesCache[pendingDeleteClientId];
-    profileApprovals = profileApprovals.filter(a => a.client_id !== pendingDeleteClientId);
-    Object.keys(sessionCache).forEach(k => { if (k.startsWith(pendingDeleteClientId)) delete sessionCache[k]; });
-    Object.keys(workoutLogsCache).forEach(k => { if (k.startsWith(pendingDeleteClientId)) delete workoutLogsCache[k]; });
-    if (selectedClientId === pendingDeleteClientId) {
-      selectedClientId = null;
-      $('clientDetailPanel').classList.add('hidden');
-      $('noClientSelectedMsg').classList.remove('hidden');
-    }
-    renderClientList(); updateApprovalsBadge();
-    showStatus($('deleteClientStatus'), `✅ Deleted.`, 'success');
-    setTimeout(() => { $('deleteClientModal').classList.add('hidden'); pendingDeleteClientId = null; }, 1500);
-  } catch (err) {
-    showStatus($('deleteClientStatus'), `❌ ${err.message}`, 'error');
-    btn.disabled = false;
-  } finally { btn.textContent = '🗑️ Delete'; }
-});
-
-// ============ CLIENT LOGIN ============
-async function handleClientLogin() {
-  const loginId = $('clientLoginId').value.trim().toUpperCase();
-  const password = $('clientPassword').value.trim();
-  if (!loginId || !password) { showStatus($('clientStatus'), 'Enter login ID and password.', 'error'); return; }
-  const c = clients.find(x => (x.login_id || '').toUpperCase() === loginId && x.password_hint === password);
-  if (!c) { showStatus($('clientStatus'), '❌ Invalid login.', 'error'); $('clientDashboard').classList.add('hidden'); return; }
-  if (!c.active) { showStatus($('clientStatus'), '🔒 Account closed.', 'error'); $('clientDashboard').classList.add('hidden'); return; }
-  loggedInClient = c;
-  showStatus($('clientStatus'), `✅ Welcome, ${c.name}!`, 'success');
-  $('clientDashboard').classList.remove('hidden');
-  $('welcomeClientName').textContent = c.name;
-  const y = CURRENT_YEAR, m = new Date().getMonth();
-  const sessions = getSessions(c.id, y, m);
-  const rate = getRate(c.id);
-  $('clientDashMonth').textContent = `${getMonthName(m)} ${y}`;
-  $('clientDashDone').textContent = sessions.length;
-  $('clientDashAmount').textContent = `${CURRENCY} ${sessions.length * rate}`;
-  renderClientUpcoming(c);
-  renderClientPlan(c);
-  renderClientProgress(c);
-  renderClientProfile(c);
-  renderClientHistory(c);
-  const hasPending = profileApprovals.some(a => a.client_id === c.id && a.status === 'pending');
-  $('clientPendingBanner').classList.toggle('hidden', !hasPending);
-  document.querySelectorAll('.tab-btn[data-ctab]').forEach(b => b.classList.toggle('active', b.dataset.ctab === 'plan'));
-  document.querySelectorAll('.tab-content[id^="ctab-"]').forEach(t => t.classList.toggle('hidden', t.id !== 'ctab-plan'));
-  setTimeout(() => clearStatus($('clientStatus')), 3000);
-}
 
 function renderClientUpcoming(c) {
   const today = new Date();
   const tY = today.getFullYear(), tM = today.getMonth(), tD = today.getDate();
   const tmr = new Date(today); tmr.setDate(tmr.getDate() + 1);
   const mY = tmr.getFullYear(), mM = tmr.getMonth(), mD = tmr.getDate();
-  const todayDateStr = formatDateISO(tY, tM, tD);
-  const tmrDateStr = formatDateISO(mY, mM, mD);
-  const todayTime = getTimeForDate(c.id, todayDateStr);
-  const tmrTime = getTimeForDate(c.id, tmrDateStr);
+  const todayTime = getTimeForDate(c.id, formatDateISO(tY, tM, tD));
+  const tmrTime = getTimeForDate(c.id, formatDateISO(mY, mM, mD));
   const tTimeHtml = todayTime.isSet ? `<span class="client-upcoming-time">${formatClassTime12(todayTime.time)}</span>` : `<span class="client-upcoming-time-not-set">Time not set yet</span>`;
   const mTimeHtml = tmrTime.isSet ? `<span class="client-upcoming-time">${formatClassTime12(tmrTime.time)}</span>` : `<span class="client-upcoming-time-not-set">Time not set yet</span>`;
   let html = '';
@@ -2112,11 +1833,9 @@ function renderClientUpcoming(c) {
   html += `<div class="client-upcoming-item"><span class="client-upcoming-icon">📅</span><div><div><strong>Tomorrow</strong> · ${mTimeHtml}</div><div style="font-size:0.75rem;color:#4c6d84;">${formatDateReadable(mY,mM,mD)} — ${mDone?'✅ Completed':'⏳ Upcoming'}</div></div></div>`;
   $('clientUpcomingList').innerHTML = html;
   const rs = clientSettings[c.id] || {};
-  if (rs.note) { $('clientUpcomingNote').textContent = `📝 Note from trainer: ${rs.note}`; $('clientUpcomingNote').classList.remove('hidden'); }
-  else $('clientUpcomingNote').classList.add('hidden');
+  if (rs.note) { $('clientUpcomingNote').textContent = `📝 Note from trainer: ${rs.note}`; $('clientUpcomingNote').classList.remove('hidden'); } else $('clientUpcomingNote').classList.add('hidden');
   $('clientUpcomingBlock').classList.remove('hidden');
 }
-
 function renderClientPlan(c) {
   const assigned = clientExercisesCache[c.id] || [];
   if (assigned.length === 0) { $('clientPlanList').innerHTML = '<div style="font-size:0.82rem;color:#7893a8;font-style:italic;">No template exercises assigned.</div>'; return; }
@@ -2131,123 +1850,327 @@ function renderClientPlan(c) {
   });
   $('clientPlanList').innerHTML = html;
 }
-
 function renderClientProgress(c) { renderProgressEntries('clientProgressList', c.id, false); }
-
 function renderClientProfile(c) {
   const p = clientProfiles[c.id] || {};
   const fields = [
     ['Height', p.height_cm ? p.height_cm + ' cm' : '—'],
-    ['Gender', p.gender || '—'],
-    ['Birth date', p.birth_date || '—'],
-    ['Goal', p.goal || '—'],
-    ['Medical notes', p.medical_notes || '—'],
+    ['Gender', p.gender || '—'], ['Birth date', p.birth_date || '—'],
+    ['Goal', p.goal || '—'], ['Medical notes', p.medical_notes || '—'],
     ['Emergency contact', p.emergency_contact || '—']
   ];
   let html = '<div class="profile-grid">';
-  fields.forEach(([k,v]) => {
-    html += `<div class="profile-field"><div class="label">${escapeHtml(k)}</div><div class="value">${escapeHtml(v)}</div></div>`;
-  });
+  fields.forEach(([k,v]) => { html += `<div class="profile-field"><div class="label">${escapeHtml(k)}</div><div class="value">${escapeHtml(v)}</div></div>`; });
   html += '</div>';
   $('clientProfileView').innerHTML = html;
 }
-
-$('clientAddProgressBtn').addEventListener('click', () => {
-  if (!loggedInClient) return;
-  openProgressModal(null, loggedInClient.id, 'client');
-});
-
+$('clientAddProgressBtn').addEventListener('click', () => { if (loggedInClient) openProgressModal(null, loggedInClient.id, 'client'); });
 $('clientEditProfileBtn').addEventListener('click', () => {
   if (!loggedInClient) return;
   const p = clientProfiles[loggedInClient.id] || {};
-  $('peHeight').value = p.height_cm || '';
-  $('peGender').value = p.gender || '';
-  $('peBirth').value = p.birth_date || '';
-  $('peGoal').value = p.goal || '';
-  $('peMedical').value = p.medical_notes || '';
-  $('peEmergency').value = p.emergency_contact || '';
+  $('peHeight').value = p.height_cm || ''; $('peGender').value = p.gender || ''; $('peBirth').value = p.birth_date || '';
+  $('peGoal').value = p.goal || ''; $('peMedical').value = p.medical_notes || ''; $('peEmergency').value = p.emergency_contact || '';
   $('profileEditModal').classList.remove('hidden');
   clearStatus($('profileEditStatus'));
 });
-
 $('cancelProfileEditBtn').addEventListener('click', () => $('profileEditModal').classList.add('hidden'));
-
 $('submitProfileBtn').addEventListener('click', async () => {
   if (!loggedInClient) return;
   const proposed = {
-    height_cm: parseFloat($('peHeight').value) || null,
-    gender: $('peGender').value.trim() || null,
-    birth_date: $('peBirth').value || null,
-    goal: $('peGoal').value.trim() || null,
-    medical_notes: $('peMedical').value.trim() || null,
-    emergency_contact: $('peEmergency').value.trim() || null
+    height_cm: parseFloat($('peHeight').value) || null, gender: $('peGender').value.trim() || null,
+    birth_date: $('peBirth').value || null, goal: $('peGoal').value.trim() || null,
+    medical_notes: $('peMedical').value.trim() || null, emergency_contact: $('peEmergency').value.trim() || null
   };
   const current = clientProfiles[loggedInClient.id] || {};
   try {
     $('submitProfileBtn').disabled = true;
-    const { data, error } = await supabaseClient.from('profile_approvals').insert({
-      client_id: loggedInClient.id, proposed_data: proposed, current_data: current, status: 'pending'
-    }).select().single();
+    const { data, error } = await supabaseClient.from('profile_approvals').insert({ client_id: loggedInClient.id, proposed_data: proposed, current_data: current, status: 'pending' }).select().single();
     if (error) throw error;
     profileApprovals.unshift(data);
     $('profileEditModal').classList.add('hidden');
     $('clientPendingBanner').classList.remove('hidden');
-    updateApprovalsBadge(); renderClientList();
+    updateApprovalsBadge();
     showStatus($('profileEditStatus'), '✅ Submitted for approval!', 'success');
   } catch (err) { showStatus($('profileEditStatus'), '❌ '+err.message, 'error'); }
   finally { $('submitProfileBtn').disabled = false; }
 });
 
-// ============ ADMIN LOGIN ============
-function handleAdminLogin() {
-  const id = $('adminLoginId').value.trim();
-  const pw = $('adminMasterPassword').value.trim();
-  if (id === adminConfig.admin_login_id && pw === adminConfig.admin_password) {
-    $('adminLoginBlock').classList.add('hidden');
-    $('adminContent').classList.remove('hidden');
-    $('adminDisplayId').textContent = adminConfig.admin_login_id;
-    clearStatus($('adminAuthStatus'));
+function renderApprovals() {
+  const container = $('approvalsList'); if (!container) return;
+  const source = currentApprovalType === 'profile' ? profileApprovals : progressApprovals;
+  let list = currentApprovalTab === 'pending' ? source.filter(a => a.status === 'pending') : source.filter(a => a.status !== 'pending');
+  if (list.length === 0) { container.innerHTML = `<div class="empty-message">No ${currentApprovalTab} ${currentApprovalType} approvals.</div>`; return; }
+  let html = '';
+  list.forEach(a => {
+    const c = getClient(a.client_id);
+    const clientName = c ? c.name : 'Unknown';
+    const submitted = new Date(a.submitted_at).toLocaleString();
+    const decided = a.decided_at ? new Date(a.decided_at).toLocaleString() : '';
+    const statusClass = a.status === 'pending' ? '' : (a.status === 'approved' ? 'completed' : 'rejected');
+    const statusColor = a.status === 'pending' ? '' : (a.status === 'approved' ? 'completed' : 'rejected');
+
+    if (currentApprovalType === 'profile') {
+      const proposed = a.proposed_data || {}; const current = a.current_data || {};
+      const fields = ['height_cm','gender','birth_date','goal','medical_notes','emergency_contact'];
+      let diffRows = '';
+      fields.forEach(f => {
+        const oldV = current[f] ?? ''; const newV = proposed[f] ?? '';
+        if (String(oldV) !== String(newV)) diffRows += `<tr><td class="field">${f.replace(/_/g,' ').replace(/\b\w/g, l => l.toUpperCase())}</td><td class="old">${escapeHtml(String(oldV||'—'))}</td><td class="arrow">→</td><td class="new">${escapeHtml(String(newV||'—'))}</td></tr>`;
+      });
+      html += `<div class="approval-card ${statusClass}">
+        <div class="approval-card-header"><div style="min-width:0;"><div class="approval-card-title ${statusColor}">${a.status === 'pending' ? '⏳ Pending Profile' : (a.status === 'approved' ? '✅ Approved Profile' : '❌ Rejected Profile')} — ${escapeHtml(clientName)}</div><div class="approval-card-date">Submitted: ${submitted}${decided ? ' · Decided: ' + decided : ''}</div></div>${a.admin_note ? `<span style="font-size:0.68rem;background:#f3e5f5;color:#6a1b9a;padding:0.2rem 0.5rem;border-radius:20px;font-weight:700;">💬 ${escapeHtml(a.admin_note)}</span>` : ''}</div>
+        ${diffRows ? `<table class="approval-diff-table"><thead><tr><th>Field</th><th>Old</th><th></th><th>New</th></tr></thead><tbody>${diffRows}</tbody></table>` : '<div style="font-size:0.78rem;color:#7893a8;font-style:italic;">No visible differences.</div>'}
+        ${a.status === 'pending' ? `<div class="approval-actions"><input type="text" class="approval-note-input" id="approvalNote-${a.id}" placeholder="Optional note"><button class="btn-approve" data-id="${a.id}" data-type="profile">✅ Approve</button><button class="btn-reject" data-id="${a.id}" data-type="profile">❌ Reject</button></div>` : ''}
+      </div>`;
+    } else {
+      const actionLabel = a.action === 'add' ? '➕ Add' : (a.action === 'edit' ? '✏️ Edit' : '🗑️ Delete');
+      const proposed = a.proposed_data || {}; const current = a.current_data || {};
+      let diffRows = '';
+      if (a.action === 'delete') diffRows = `<tr><td class="field">Action</td><td class="old">—</td><td class="arrow">→</td><td class="new">Delete entry from ${escapeHtml(current?.entry_date || '—')}</td></tr>`;
+      else {
+        const fields = ['entry_date','weight_kg','body_fat_pct','chest_cm','waist_cm','hips_cm','arms_cm','thighs_cm','notes'];
+        fields.forEach(f => {
+          const oldV = current ? (current[f] ?? '') : ''; const newV = proposed[f] ?? '';
+          if (String(oldV) !== String(newV)) diffRows += `<tr><td class="field">${f.replace(/_/g,' ').replace(/\b\w/g, l => l.toUpperCase())}</td><td class="old">${escapeHtml(String(oldV||'—'))}</td><td class="arrow">→</td><td class="new">${escapeHtml(String(newV||'—'))}</td></tr>`;
+        });
+      }
+      html += `<div class="approval-card ${statusClass}">
+        <div class="approval-card-header"><div style="min-width:0;"><div class="approval-card-title ${statusColor}">${a.status === 'pending' ? '⏳ Pending Progress' : (a.status === 'approved' ? '✅ Approved Progress' : '❌ Rejected Progress')} — ${escapeHtml(clientName)} <span style="font-size:0.7rem;background:#e3f2fd;color:#0d47a1;padding:0.15rem 0.5rem;border-radius:20px;font-weight:700;">${actionLabel}</span></div><div class="approval-card-date">Submitted: ${submitted}${decided ? ' · Decided: ' + decided : ''}</div></div>${a.admin_note ? `<span style="font-size:0.68rem;background:#f3e5f5;color:#6a1b9a;padding:0.2rem 0.5rem;border-radius:20px;font-weight:700;">💬 ${escapeHtml(a.admin_note)}</span>` : ''}</div>
+        ${diffRows ? `<table class="approval-diff-table"><thead><tr><th>Field</th><th>Old</th><th></th><th>New</th></tr></thead><tbody>${diffRows}</tbody></table>` : '<div style="font-size:0.78rem;color:#7893a8;font-style:italic;">No visible differences.</div>'}
+        ${a.status === 'pending' ? `<div class="approval-actions"><input type="text" class="approval-note-input" id="approvalNote-${a.id}" placeholder="Optional note"><button class="btn-approve" data-id="${a.id}" data-type="progress">✅ Approve</button><button class="btn-reject" data-id="${a.id}" data-type="progress">❌ Reject</button></div>` : ''}
+      </div>`;
+    }
+  });
+  container.innerHTML = html;
+  container.querySelectorAll('.btn-approve').forEach(b => b.addEventListener('click', () => decideApproval(b.dataset.id, 'approved', b.dataset.type)));
+  container.querySelectorAll('.btn-reject').forEach(b => b.addEventListener('click', () => decideApproval(b.dataset.id, 'rejected', b.dataset.type)));
+}
+async function decideApproval(id, decision, type) {
+  const source = type === 'progress' ? progressApprovals : profileApprovals;
+  const a = source.find(x => String(x.id) === String(id)); if (!a) return;
+  const noteEl = $(`approvalNote-${id}`); const note = noteEl ? noteEl.value.trim() : '';
+  if (!confirm(`${decision === 'approved' ? 'Approve' : 'Reject'} this ${type} change?`)) return;
+  try {
+    const updates = { status: decision, decided_at: new Date().toISOString(), admin_note: note || null };
+    if (type === 'progress') {
+      const { error: e1 } = await supabaseClient.from('progress_approvals').update(updates).eq('id', id);
+      if (e1) throw e1;
+      if (decision === 'approved') {
+        const proposed = a.proposed_data || {};
+        if (a.action === 'add') {
+          const payload = { client_id: a.client_id, added_by: 'client', ...proposed };
+          const { data, error: e2 } = await supabaseClient.from('progress_entries').insert(payload).select().single();
+          if (e2) throw e2;
+          if (!progressEntries[a.client_id]) progressEntries[a.client_id] = [];
+          progressEntries[a.client_id].unshift(data);
+        } else if (a.action === 'edit' && a.entry_id) {
+          const { error: e2 } = await supabaseClient.from('progress_entries').update({ ...proposed }).eq('id', a.entry_id);
+          if (e2) throw e2;
+          const arr = progressEntries[a.client_id] || [];
+          const idx = arr.findIndex(x => String(x.id) === String(a.entry_id));
+          if (idx >= 0) arr[idx] = { ...arr[idx], ...proposed };
+        } else if (a.action === 'delete' && a.entry_id) {
+          const { error: e2 } = await supabaseClient.from('progress_entries').delete().eq('id', a.entry_id);
+          if (e2) throw e2;
+          progressEntries[a.client_id] = (progressEntries[a.client_id]||[]).filter(x => String(x.id) !== String(a.entry_id));
+        }
+      }
+      Object.assign(a, updates);
+      renderApprovals(); updateApprovalsBadge(); renderClientList();
+      if (selectedClientId === a.client_id) renderAdminProgress();
+      if (loggedInClient && loggedInClient.id === a.client_id) renderClientProgress(loggedInClient);
+    } else {
+      const { error: e1 } = await supabaseClient.from('profile_approvals').update(updates).eq('id', id);
+      if (e1) throw e1;
+      if (decision === 'approved') {
+        const payload = { client_id: a.client_id, height_cm: a.proposed_data.height_cm ?? null, gender: a.proposed_data.gender ?? null, birth_date: a.proposed_data.birth_date ?? null, goal: a.proposed_data.goal ?? null, medical_notes: a.proposed_data.medical_notes ?? null, emergency_contact: a.proposed_data.emergency_contact ?? null, updated_at: new Date().toISOString(), approved_at: new Date().toISOString(), approved_by: adminConfig.admin_login_id };
+        const { error: e2 } = await supabaseClient.from('client_profiles').upsert(payload, { onConflict: 'client_id' });
+        if (e2) throw e2;
+        clientProfiles[a.client_id] = { ...(clientProfiles[a.client_id]||{}), ...payload };
+      }
+      Object.assign(a, updates);
+      renderApprovals(); updateApprovalsBadge(); renderClientList();
+    }
+    showStatus($('approvalsStatus'), `✅ ${decision === 'approved' ? 'Approved' : 'Rejected'}.`, 'success');
+    setTimeout(() => clearStatus($('approvalsStatus')), 3000);
+  } catch (err) { showStatus($('approvalsStatus'), `❌ ${err.message}`, 'error'); }
+}
+function updateApprovalsBadge() {
+  const pending = profileApprovals.filter(a => a.status === 'pending').length + progressApprovals.filter(a => a.status === 'pending').length;
+  const badge = $('approvalsCountBadge'); if (!badge) return;
+  if (pending > 0) { badge.textContent = pending; badge.classList.remove('hidden'); } else badge.classList.add('hidden');
+}
+
+function updateNotifyButton() {
+  const btn = $('notifyBtn'); if (!btn) return;
+  if (!('Notification' in window)) { btn.textContent = '🔔 N/A'; btn.disabled = true; return; }
+  if (Notification.permission === 'granted') { btn.textContent = '🔔 On'; btn.classList.add('enabled'); notificationsEnabled = true; }
+  else if (Notification.permission === 'denied') { btn.textContent = '🔕 Blocked'; btn.classList.remove('enabled'); btn.disabled = true; }
+  else { btn.textContent = '🔔 Enable'; btn.classList.remove('enabled'); notificationsEnabled = false; }
+}
+$('notifyBtn').addEventListener('click', async () => {
+  if (!('Notification' in window)) { alert('Notifications not supported on this browser.'); return; }
+  const perm = await Notification.requestPermission();
+  if (perm === 'granted') { notificationsEnabled = true; new Notification('🔔 Notifications enabled', { body: 'You will be notified of new approvals.' }); }
+  updateNotifyButton();
+});
+function checkForNewApprovalsAndNotify() {
+  if (!notificationsEnabled) return;
+  const totalPending = profileApprovals.filter(a => a.status === 'pending').length + progressApprovals.filter(a => a.status === 'pending').length;
+  if (totalPending > lastSeenApprovalCount && lastSeenApprovalCount > 0) {
+    const diff = totalPending - lastSeenApprovalCount;
+    try { new Notification('🔔 New approval' + (diff > 1 ? 's' : ''), { body: `${diff} new pending item${diff > 1 ? 's' : ''} waiting for you.`, tag: 'approvals' }); } catch(e) {}
+  }
+  lastSeenApprovalCount = totalPending;
+}
+let notificationPollHandle = null;
+function startNotificationPolling() {
+  if (notificationPollHandle) clearInterval(notificationPollHandle);
+  notificationPollHandle = setInterval(async () => {
+    if (!loggedInClient && !$('adminDashboard').classList.contains('hidden')) {
+      try {
+        const { data: pa } = await supabaseClient.from('profile_approvals').select('*').order('submitted_at',{ascending:false});
+        profileApprovals = pa || [];
+        const { data: pg } = await supabaseClient.from('progress_approvals').select('*').order('submitted_at',{ascending:false});
+        progressApprovals = pg || [];
+        updateApprovalsBadge(); checkForNewApprovalsAndNotify();
+        if (!$('approvalsPanel').classList.contains('hidden')) renderApprovals();
+        renderClientList();
+      } catch(e) {}
+    }
+  }, 60000);
+}
+
+function buildReminderMessage(c) {
+  const rs = clientSettings[c.id] || {};
+  const note = rs.note || '';
+  const noteStr = note ? `\n\n📝 Note: ${note}` : '';
+  const creds = `\n\n🔑 Your login details:\n🌐 ${LOGIN_URL}\nLogin ID: ${c.login_id}\nPassword: ${c.password_hint}`;
+  return `Hi ${c.name},\n\nYour schedule has been updated. Please check the app for your class time and progress.${noteStr}${creds}\n\nSee you there! 💪`;
+}
+function buildBroadcastMessage(c) {
+  const rs = clientSettings[c.id] || {};
+  const note = rs.note || '';
+  const noteStr = note ? `\n\n📝 Note: ${note}` : '';
+  return `Hi ${c.name},\n\nThis is an announcement from your trainer.${noteStr}\n\nPlease open the app to check your schedule and updates. 💪`;
+}
+async function updateReminderPreview() {
+  if (!selectedClientId) return;
+  const c = getClient(selectedClientId); if (!c) return;
+  const note = $('reminderNote').value.trim();
+  const noteStr = note ? `\n\n📝 Note: ${note}` : '';
+  const creds = `\n\n🔑 Your login details:\n🌐 ${LOGIN_URL}\nLogin ID: ${c.login_id}\nPassword: ${c.password_hint}`;
+  $('reminderPreviewText').textContent = `Hi ${c.name},\n\nYour schedule has been updated. Please check the app for your class time and progress.${noteStr}${creds}\n\nSee you there! 💪`;
+}
+$('reminderNote').addEventListener('input', async () => {
+  if (!selectedClientId) return;
+  const note = $('reminderNote').value.trim();
+  try {
+    await supabaseClient.from('client_settings').update({ note }).eq('client_id', selectedClientId);
+    if (clientSettings[selectedClientId]) clientSettings[selectedClientId].note = note;
+  } catch (err) {}
+  updateReminderPreview();
+});
+function sendReminder(method) {
+  if (!selectedClientId) return;
+  const c = getClient(selectedClientId); if (!c) return;
+  if (!c.active) { showStatus($('reminderStatus'), `⚠️ ${c.name} is CLOSED.`, 'error'); return; }
+  const msg = buildReminderMessage(c);
+  const enc = encodeURIComponent(msg);
+  if (method === 'whatsapp') {
+    const phone = (c.phone || '').replace(/\D/g, '');
+    if (!phone) { showStatus($('reminderStatus'), '⚠️ No number.', 'error'); return; }
+    window.open(`https://wa.me/${phone}?text=${enc}`, '_blank');
+    showStatus($('reminderStatus'), `✅ WhatsApp opened`, 'success');
+  } else {
+    if (!c.email) { showStatus($('reminderStatus'), '⚠️ No email.', 'error'); return; }
+    const subj = `Schedule Updated — ${c.name}`;
+    window.location.href = `mailto:${c.email}?subject=${encodeURIComponent(subj)}&body=${enc}`;
+    showStatus($('reminderStatus'), `✅ Email opened`, 'success');
+  }
+  setTimeout(() => clearStatus($('reminderStatus')), 5000);
+}
+function sendToAllClients() {
+  const active = clients.filter(c => c.active);
+  if (active.length === 0) { showStatus($('sendAllTopStatus'), '⚠️ No active clients.', 'error'); return; }
+  const ready = active.filter(c => c.phone && c.phone.replace(/\D/g, ''));
+  const missing = active.filter(c => !c.phone || !c.phone.replace(/\D/g, ''));
+  if (ready.length === 0) { showStatus($('sendAllTopStatus'), '⚠️ No active client has a WhatsApp number.', 'error'); return; }
+  const confirmMsg = `Send announcement to ${ready.length} active client${ready.length > 1 ? 's' : ''}?` + (missing.length ? `\n\n(Skipping ${missing.length} without a phone: ${missing.map(x => x.name).join(', ')})` : '');
+  if (!confirm(confirmMsg)) return;
+  ready.forEach((c, i) => {
+    const msg = buildBroadcastMessage(c);
+    const phone = c.phone.replace(/\D/g, '');
+    setTimeout(() => { window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank'); }, i * 400);
+  });
+  showStatus($('sendAllTopStatus'), `✅ Opening ${ready.length} WhatsApp tab${ready.length > 1 ? 's' : ''}` + (missing.length ? ` · skipped ${missing.length}` : ''), 'success');
+  setTimeout(() => clearStatus($('sendAllTopStatus')), 8000);
+}
+
+async function closeSelectedClient() {
+  if (!selectedClientId) return;
+  const c = getClient(selectedClientId); if (!c) return;
+  if (!confirm(`CLOSE ${c.name}?`)) return;
+  try {
+    await supabaseClient.from('clients').update({ active: false }).eq('id', selectedClientId);
+    c.active = false; updateClientStatusUI(c); renderClientList();
+    document.querySelectorAll('.client-item').forEach(el => el.classList.toggle('active-client', el.dataset.clientId === selectedClientId));
+  } catch (err) { alert('Failed: ' + err.message); }
+}
+async function reopenSelectedClient() {
+  if (!selectedClientId) return;
+  const c = getClient(selectedClientId); if (!c) return;
+  if (!confirm(`Reopen ${c.name}?`)) return;
+  try {
+    await supabaseClient.from('clients').update({ active: true }).eq('id', selectedClientId);
+    c.active = true; updateClientStatusUI(c); renderClientList();
+    document.querySelectorAll('.client-item').forEach(el => el.classList.toggle('active-client', el.dataset.clientId === selectedClientId));
+  } catch (err) { alert('Failed: ' + err.message); }
+}
+$('deleteClientBtn').addEventListener('click', () => {
+  if (!selectedClientId) return;
+  pendingDeleteClientId = selectedClientId;
+  $('deleteClientModal').classList.remove('hidden');
+  $('deleteConfirmInput').value = '';
+  $('confirmDeleteClientBtn').disabled = true;
+  clearStatus($('deleteClientStatus'));
+});
+$('deleteConfirmInput').addEventListener('input', (e) => { $('confirmDeleteClientBtn').disabled = e.target.value.trim() !== 'DELETE'; });
+$('cancelDeleteClientBtn').addEventListener('click', () => $('deleteClientModal').classList.add('hidden'));
+$('confirmDeleteClientBtn').addEventListener('click', async () => {
+  if (!pendingDeleteClientId) return;
+  const btn = $('confirmDeleteClientBtn'); btn.disabled = true; btn.textContent = '⏳ Deleting...';
+  try {
+    await supabaseClient.from('clients').delete().eq('id', pendingDeleteClientId);
+    clients = clients.filter(x => x.id !== pendingDeleteClientId);
+    delete clientSettings[pendingDeleteClientId]; delete clientProfiles[pendingDeleteClientId];
+    delete progressEntries[pendingDeleteClientId]; delete clientExercisesCache[pendingDeleteClientId];
+    delete dailyTimesCache[pendingDeleteClientId];
+    profileApprovals = profileApprovals.filter(a => a.client_id !== pendingDeleteClientId);
+    progressApprovals = progressApprovals.filter(a => a.client_id !== pendingDeleteClientId);
+    Object.keys(sessionCache).forEach(k => { if (k.startsWith(pendingDeleteClientId)) delete sessionCache[k]; });
+    Object.keys(workoutLogsCache).forEach(k => { if (k.startsWith(pendingDeleteClientId)) delete workoutLogsCache[k]; });
+    if (selectedClientId === pendingDeleteClientId) { selectedClientId = null; $('clientDetailPanel').classList.add('hidden'); $('noClientSelectedMsg').classList.remove('hidden'); }
     renderClientList(); updateApprovalsBadge();
-    selectedClientId = null;
-    $('clientDetailPanel').classList.add('hidden');
-    $('noClientSelectedMsg').classList.remove('hidden');
-    $('settingsPanel').classList.add('hidden');
-    $('libraryPanel').classList.add('hidden');
-    $('approvalsPanel').classList.add('hidden');
-  } else { showStatus($('adminAuthStatus'), '⛔ Incorrect login.', 'error'); }
-}
+    showStatus($('deleteClientStatus'), `✅ Deleted.`, 'success');
+    setTimeout(() => { $('deleteClientModal').classList.add('hidden'); pendingDeleteClientId = null; }, 1500);
+  } catch (err) { showStatus($('deleteClientStatus'), `❌ ${err.message}`, 'error'); btn.disabled = false; }
+  finally { btn.textContent = '🗑️ Delete'; }
+});
 
-function lockAdmin() {
-  $('adminContent').classList.add('hidden');
-  $('adminLoginBlock').classList.remove('hidden');
-  $('adminMasterPassword').value = '';
-  clearStatus($('adminAuthStatus'));
-  selectedClientId = null;
-  $('clientDetailPanel').classList.add('hidden');
-  $('noClientSelectedMsg').classList.remove('hidden');
-  $('settingsPanel').classList.add('hidden');
-  $('libraryPanel').classList.add('hidden');
-  $('approvalsPanel').classList.add('hidden');
-}
-
-// ============ SETTINGS ============
 $('openSettingsBtn').addEventListener('click', () => {
   $('settingsPanel').classList.toggle('hidden');
-  $('libraryPanel').classList.add('hidden');
-  $('approvalsPanel').classList.add('hidden');
+  $('libraryPanel').classList.add('hidden'); $('approvalsPanel').classList.add('hidden');
   if (!$('settingsPanel').classList.contains('hidden')) {
     $('settingsLoginId').value = adminConfig.admin_login_id || DEFAULT_ADMIN_ID;
     $('settingsArchiveEmail').value = adminConfig.archive_email || '';
   }
 });
-
 $('approvalsBtn').addEventListener('click', () => {
   $('approvalsPanel').classList.toggle('hidden');
-  $('libraryPanel').classList.add('hidden');
-  $('settingsPanel').classList.add('hidden');
+  $('libraryPanel').classList.add('hidden'); $('settingsPanel').classList.add('hidden');
   if (!$('approvalsPanel').classList.contains('hidden')) renderApprovals();
 });
-
 $('saveSettingsBtn').addEventListener('click', async () => {
   const newLoginId = $('settingsLoginId').value.trim();
   const currentPw = $('settingsCurrentPassword').value.trim();
@@ -2276,7 +2199,6 @@ $('saveSettingsBtn').addEventListener('click', async () => {
   } catch (err) { showStatus($('settingsStatus'), `❌ ${err.message}`, 'error'); }
   finally { $('saveSettingsBtn').disabled = false; }
 });
-
 document.querySelectorAll('.password-toggle').forEach(btn => {
   btn.addEventListener('click', (e) => {
     e.preventDefault();
@@ -2285,74 +2207,96 @@ document.querySelectorAll('.password-toggle').forEach(btn => {
   });
 });
 
-// ============ CLEAR ALL ============
+// ═══════════════════════════════════════════════════════════
+// WIPE — Email full report + auto-wipe after 3 seconds
+// ═══════════════════════════════════════════════════════════
 $('clearAllBtn').addEventListener('click', () => {
   $('clearAllModal').classList.remove('hidden');
   $('clearConfirmInput').value = '';
   $('confirmClearAllBtn').disabled = true;
+  $('wipeArchiveEmailDisplay').textContent = adminConfig.archive_email || '(not set)';
   clearStatus($('clearAllStatus'));
 });
-$('clearConfirmInput').addEventListener('input', (e) => {
-  $('confirmClearAllBtn').disabled = e.target.value.trim() !== 'DELETE';
-});
+$('clearConfirmInput').addEventListener('input', (e) => { $('confirmClearAllBtn').disabled = e.target.value.trim() !== 'DELETE'; });
 $('cancelClearAllBtn').addEventListener('click', () => $('clearAllModal').classList.add('hidden'));
+
 $('confirmClearAllBtn').addEventListener('click', async () => {
   const btn = $('confirmClearAllBtn');
-  btn.disabled = true; btn.textContent = '⏳ Deleting...';
-  try {
-    await supabaseClient.from('profile_approvals').delete().neq('id', 0);
-    await supabaseClient.from('daily_times').delete().neq('id', 0);
-    await supabaseClient.from('progress_entries').delete().neq('id', 0);
-    await supabaseClient.from('workout_logs').delete().neq('id', 0);
-    await supabaseClient.from('client_exercises').delete().neq('id', 0);
-    await supabaseClient.from('sessions').delete().neq('id', 0);
-    await supabaseClient.from('client_profiles').delete().neq('client_id', '00000000-0000-0000-0000-000000000000');
-    await supabaseClient.from('client_settings').delete().neq('client_id', '00000000-0000-0000-0000-000000000000');
-    await supabaseClient.from('clients').delete().neq('id', '00000000-0000-0000-0000-000000000000');
-    await supabaseClient.from('exercises').delete().neq('id', '00000000-0000-0000-0000-000000000000');
-    await supabaseClient.from('admin_config').update({
-      admin_login_id: DEFAULT_ADMIN_ID, admin_password: DEFAULT_ADMIN_PW,
-      archive_email: 'trainer@example.com', updated_at: new Date().toISOString()
-    }).eq('id', 1);
-    clients = []; clientSettings = {}; clientProfiles = {}; progressEntries = {};
-    sessionCache = {}; exercises = []; clientExercisesCache = {}; workoutLogsCache = {};
-    dailyTimesCache = {}; profileApprovals = []; selectedClientId = null;
-    adminConfig = { admin_login_id: DEFAULT_ADMIN_ID, admin_password: DEFAULT_ADMIN_PW, archive_email: 'trainer@example.com' };
-    renderClientList(); updateApprovalsBadge();
-    $('adminDisplayId').textContent = adminConfig.admin_login_id;
-    $('clientDetailPanel').classList.add('hidden');
-    $('noClientSelectedMsg').classList.remove('hidden');
-    $('settingsPanel').classList.add('hidden');
-    $('libraryPanel').classList.add('hidden');
-    $('approvalsPanel').classList.add('hidden');
-    showStatus($('clearAllStatus'), '✅ All data cleared!', 'success');
-    setTimeout(() => { $('clearAllModal').classList.add('hidden'); lockAdmin(); }, 2000);
-  } catch (err) {
-    showStatus($('clearAllStatus'), `❌ ${err.message}`, 'error');
-    btn.disabled = false;
-  } finally { btn.textContent = '🗑️ Clear All'; }
+  btn.disabled = true; btn.textContent = '📧 Preparing...';
+
+  // 1. Build the report
+  let report = '';
+  try { report = buildFullDataReport(); } catch (e) { report = 'Error building report: ' + e.message; }
+
+  // 2. Open mail client with the report
+  const archiveEmail = adminConfig.archive_email || '';
+  const subject = `Training Data Backup — ${new Date().toLocaleDateString()}`;
+  // Truncate to keep mailto URLs usable (most clients cap around 2000 chars)
+  const MAX = 1800;
+  const bodyTruncated = report.length > MAX
+    ? report.slice(0, MAX) + `\n\n…[TRUNCATED — total report length: ${report.length} chars]\n(Full data was in the app; wipe proceeding.)`
+    : report;
+  const mailto = `mailto:${encodeURIComponent(archiveEmail)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyTruncated)}`;
+
+  showStatus($('clearAllStatus'), '📧 Opening mail client with report… You have 3 seconds to click Send. Then data will be wiped.', 'info');
+
+  // 3. Open mail
+  try { window.location.href = mailto; } catch(e) { console.warn(e); }
+
+  // 4. After 3 seconds, run the wipe
+  setTimeout(async () => {
+    btn.textContent = '⏳ Wiping...';
+    try {
+      await supabaseClient.from('progress_approvals').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+      await supabaseClient.from('profile_approvals').delete().neq('id', 0);
+      await supabaseClient.from('daily_times').delete().neq('id', 0);
+      await supabaseClient.from('progress_entries').delete().neq('id', 0);
+      await supabaseClient.from('workout_logs').delete().neq('id', 0);
+      await supabaseClient.from('client_exercises').delete().neq('id', 0);
+      await supabaseClient.from('sessions').delete().neq('id', 0);
+      await supabaseClient.from('client_profiles').delete().neq('client_id', '00000000-0000-0000-0000-000000000000');
+      await supabaseClient.from('client_settings').delete().neq('client_id', '00000000-0000-0000-0000-000000000000');
+      await supabaseClient.from('clients').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+      await supabaseClient.from('exercises').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+      await supabaseClient.from('admin_config').update({
+        admin_login_id: DEFAULT_ADMIN_ID, admin_password: DEFAULT_ADMIN_PW,
+        archive_email: adminConfig.archive_email || 'trainer@example.com', updated_at: new Date().toISOString()
+      }).eq('id', 1);
+
+      clients = []; clientSettings = {}; clientProfiles = {}; progressEntries = {};
+      progressApprovals = []; sessionCache = {}; exercises = []; clientExercisesCache = {}; workoutLogsCache = {};
+      dailyTimesCache = {}; profileApprovals = []; selectedClientId = null;
+      adminConfig = { admin_login_id: DEFAULT_ADMIN_ID, admin_password: DEFAULT_ADMIN_PW, archive_email: adminConfig.archive_email || 'trainer@example.com' };
+
+      renderClientList(); updateApprovalsBadge();
+      $('adminDisplayId').textContent = adminConfig.admin_login_id;
+      $('clientDetailPanel').classList.add('hidden');
+      $('noClientSelectedMsg').classList.remove('hidden');
+      $('settingsPanel').classList.add('hidden');
+      $('libraryPanel').classList.add('hidden');
+      $('approvalsPanel').classList.add('hidden');
+
+      showStatus($('clearAllStatus'), '✅ Report emailed. All data wiped.', 'success');
+      setTimeout(() => { $('clearAllModal').classList.add('hidden'); unifiedLogout(); }, 2000);
+    } catch (err) {
+      showStatus($('clearAllStatus'), `❌ Wipe failed: ${err.message}`, 'error');
+      btn.disabled = false; btn.textContent = '📧 Email & Wipe';
+    }
+  }, 3000);
 });
 
-// ============ EXERCISE LIBRARY ============
 $('exerciseLibraryBtn').addEventListener('click', () => {
   $('libraryPanel').classList.toggle('hidden');
-  $('settingsPanel').classList.add('hidden');
-  $('approvalsPanel').classList.add('hidden');
+  $('settingsPanel').classList.add('hidden'); $('approvalsPanel').classList.add('hidden');
   if (!$('libraryPanel').classList.contains('hidden')) renderLibrary();
 });
-
 function renderLibrary() {
-  if (exercises.length === 0) { $('libraryList').innerHTML = `<div class="empty-message">No exercises in the library yet.</div>`; return; }
+  if (exercises.length === 0) { $('libraryList').innerHTML = `<div class="empty-message">No exercises.</div>`; return; }
   let html = '';
   exercises.forEach(ex => {
-    html += `<div class="library-row">
-      <div style="flex:1;min-width:0;"><div class="library-row-name">${escapeHtml(ex.name)}</div>
-        <div class="library-row-meta">${ex.category?escapeHtml(ex.category)+' · ':''}${ex.default_sets||'-'} × ${ex.default_reps||'-'}</div>
-      </div>
-      <div class="library-row-actions">
-        <button class="btn-secondary btn-small edit-ex-btn" data-id="${ex.id}">✏️</button>
-        <button class="btn-danger-small btn-small del-ex-btn" data-id="${ex.id}">🗑️</button>
-      </div>
+    html += `<div class="library-row"><div style="flex:1;min-width:0;"><div class="library-row-name">${escapeHtml(ex.name)}</div>
+      <div class="library-row-meta">${ex.category?escapeHtml(ex.category)+' · ':''}${ex.default_sets||'-'} × ${ex.default_reps||'-'}</div></div>
+      <div class="library-row-actions"><button class="btn-secondary btn-small edit-ex-btn" data-id="${ex.id}">✏️</button><button class="btn-danger-small btn-small del-ex-btn" data-id="${ex.id}">🗑️</button></div>
     </div>`;
   });
   $('libraryList').innerHTML = html;
@@ -2364,7 +2308,6 @@ function renderLibrary() {
     renderLibrary();
   }));
 }
-
 $('addExerciseBtn').addEventListener('click', () => openExerciseModal(null));
 function openExerciseModal(id) {
   $('editExerciseId').value = id || '';
@@ -2375,25 +2318,20 @@ function openExerciseModal(id) {
     $('exMuscle').value = ex.muscle_group||''; $('exSets').value = ex.default_sets||'';
     $('exReps').value = ex.default_reps||''; $('exWeight').value = ex.default_weight||'';
     $('exRest').value = ex.default_rest||''; $('exNotes').value = ex.notes||'';
-    $('exVideo').value = ex.video_url||'';
   } else {
     $('exerciseModalTitle').textContent = '➕ Add';
-    ['exName','exCategory','exMuscle','exSets','exReps','exWeight','exRest','exNotes','exVideo'].forEach(i => $(i).value='');
+    ['exName','exCategory','exMuscle','exSets','exReps','exWeight','exRest','exNotes'].forEach(i => $(i).value='');
   }
   $('exerciseModal').classList.remove('hidden');
   clearStatus($('exerciseModalStatus'));
 }
-
 $('cancelExerciseBtn').addEventListener('click', () => $('exerciseModal').classList.add('hidden'));
 $('saveExerciseBtn').addEventListener('click', async () => {
   const name = $('exName').value.trim();
   if (!name) { showStatus($('exerciseModalStatus'), '⚠️ Name required.', 'error'); return; }
-  const payload = {
-    name, category: $('exCategory').value.trim()||null, muscle_group: $('exMuscle').value.trim()||null,
+  const payload = { name, category: $('exCategory').value.trim()||null, muscle_group: $('exMuscle').value.trim()||null,
     default_sets: parseInt($('exSets').value,10)||null, default_reps: $('exReps').value.trim()||null,
-    default_weight: $('exWeight').value.trim()||null, default_rest: $('exRest').value.trim()||null,
-    notes: $('exNotes').value.trim()||null, video_url: $('exVideo').value.trim()||null
-  };
+    default_weight: $('exWeight').value.trim()||null, default_rest: $('exRest').value.trim()||null, notes: $('exNotes').value.trim()||null };
   try {
     $('saveExerciseBtn').disabled = true;
     const id = $('editExerciseId').value;
@@ -2414,7 +2352,6 @@ $('saveExerciseBtn').addEventListener('click', async () => {
   finally { $('saveExerciseBtn').disabled = false; }
 });
 
-// ============ CREATE CLIENT ============
 $('createClientBtn').addEventListener('click', async () => {
   const name = $('newClientName').value.trim();
   const phone = $('newClientPhone').value.trim().replace(/\D/g, '');
@@ -2426,13 +2363,9 @@ $('createClientBtn').addEventListener('click', async () => {
   const password = generatePassword(name);
   try {
     $('createClientBtn').disabled = true;
-    const { data: newC, error: cErr } = await supabaseClient.from('clients').insert({
-      login_id: loginId, name, email, phone, password_hint: password, active: true
-    }).select().single();
+    const { data: newC, error: cErr } = await supabaseClient.from('clients').insert({ login_id: loginId, name, email, phone, password_hint: password, active: true }).select().single();
     if (cErr) throw cErr;
-    await supabaseClient.from('client_settings').insert({
-      client_id: newC.id, rate_aed: rate, note: ''
-    });
+    await supabaseClient.from('client_settings').insert({ client_id: newC.id, rate_aed: rate, note: '' });
     clients.push(newC);
     clientSettings[newC.id] = { client_id: newC.id, rate_aed: rate, note: '' };
     renderClientList();
@@ -2445,88 +2378,21 @@ $('createClientBtn').addEventListener('click', async () => {
   } catch (err) { showStatus($('createClientStatus'), `❌ ${err.message}`, 'error'); }
   finally { $('createClientBtn').disabled = false; }
 });
-
 $('pickContactBtn').addEventListener('click', pickFromContacts);
+$('adminAddProgressBtn').addEventListener('click', () => { if (selectedClientId) openProgressModal(null, selectedClientId, 'admin'); });
 
-// ============ ARCHIVE ============
-async function checkArchiveNeeded() {
-  const now = new Date();
-  const cutoff = new Date(now.getFullYear(), now.getMonth() - 2, 1);
-  const cutoffISO = formatDateISO(cutoff.getFullYear(), cutoff.getMonth(), 1);
-  const { data: oldSessions } = await supabaseClient.from('sessions').select('*, clients(name)').lt('session_date', cutoffISO);
-  if (oldSessions && oldSessions.length > 0) {
-    archiveDataPending = { cutoff: cutoffISO, sessions: oldSessions };
-    $('archiveCutoffLabel').textContent = `${getMonthName(cutoff.getMonth())} ${cutoff.getFullYear()}`;
-    const byClient = {};
-    oldSessions.forEach(s => { const n = s.clients?.name || 'Unknown'; byClient[n] = (byClient[n]||0)+1; });
-    let html = `<div class="modal-data-row"><span class="label">📅 Cutoff</span><span class="value">${cutoffISO}</span></div>
-      <div class="modal-data-row"><span class="label">🗂️ Sessions</span><span class="value">${oldSessions.length}</span></div>`;
-    Object.entries(byClient).forEach(([n,c]) => { html += `<div class="modal-data-row"><span class="label">• ${escapeHtml(n)}</span><span class="value">${c}</span></div>`; });
-    $('archiveDataList').innerHTML = html;
-    $('archiveModal').classList.remove('hidden');
-  }
-}
-
-$('draftEmailBtn').addEventListener('click', () => {
-  if (!archiveDataPending) return;
-  const { cutoff, sessions } = archiveDataPending;
-  const byClient = {};
-  sessions.forEach(s => { const n = s.clients?.name || 'Unknown'; if (!byClient[n]) byClient[n]=[]; byClient[n].push(s); });
-  let body = `PERSONAL TRAINING ARCHIVE\nCutoff: ${cutoff}\nGenerated: ${new Date().toLocaleString()}\n\n========\n\n`;
-  Object.entries(byClient).forEach(([n,l]) => {
-    body += `CLIENT: ${n}\nSessions: ${l.length}\n----\n`;
-    l.sort((a,b) => a.session_date.localeCompare(b.session_date));
-    l.forEach(s => { body += `  ${s.session_date}\n`; });
-    body += `\n`;
-  });
-  $('emailPreview').textContent = body;
-  $('emailPreviewContainer').classList.remove('hidden');
-  window.location.href = `mailto:${adminConfig.archive_email||'trainer@example.com'}?subject=${encodeURIComponent('Training Archive — Before '+cutoff)}&body=${encodeURIComponent(body)}`;
-  showStatus($('archiveStatus'), '✅ Email drafted!', 'success');
-  $('wipeDataBtn').disabled = false;
-});
-
-$('wipeDataBtn').addEventListener('click', async () => {
-  if (!archiveDataPending) return;
-  if (!confirm('⚠️ PERMANENTLY delete old data?')) return;
-  try {
-    $('wipeDataBtn').disabled = true;
-    const { error } = await supabaseClient.from('sessions').delete().lt('session_date', archiveDataPending.cutoff);
-    if (error) throw error;
-    await supabaseClient.from('archive_log').insert({ cutoff_date: archiveDataPending.cutoff, sessions_affected: archiveDataPending.sessions.length, email_sent_to: adminConfig.archive_email });
-    showStatus($('archiveStatus'), `✅ Wiped ${archiveDataPending.sessions.length} sessions.`, 'success');
-    setTimeout(() => { $('archiveModal').classList.add('hidden'); archiveDataPending = null; $('wipeDataBtn').disabled = true; $('emailPreviewContainer').classList.add('hidden'); }, 2000);
-  } catch (err) { showStatus($('archiveStatus'), `❌ ${err.message}`, 'error'); }
-});
-
-$('archiveLaterBtn').addEventListener('click', () => $('archiveModal').classList.add('hidden'));
-
-$('adminAddProgressBtn').addEventListener('click', () => {
-  if (!selectedClientId) return;
-  openProgressModal(null, selectedClientId, 'admin');
-});
-
-// ============ EVENTS ============
-$('clientLoginBtn').addEventListener('click', handleClientLogin);
-$('clientPassword').addEventListener('keypress', e => { if (e.key === 'Enter') handleClientLogin(); });
-$('clientLoginId').addEventListener('keypress', e => { if (e.key === 'Enter') handleClientLogin(); });
-$('adminLoginBtn').addEventListener('click', handleAdminLogin);
-$('adminMasterPassword').addEventListener('keypress', e => { if (e.key === 'Enter') handleAdminLogin(); });
-$('adminLoginId').addEventListener('keypress', e => { if (e.key === 'Enter') handleAdminLogin(); });
-$('adminLockBtn').addEventListener('click', lockAdmin);
-$('sendAllBtn').addEventListener('click', sendToAllClients);
+$('unifiedLoginBtn').addEventListener('click', handleUnifiedLogin);
+$('passwordInput').addEventListener('keypress', e => { if (e.key === 'Enter') handleUnifiedLogin(); });
+$('loginIdInput').addEventListener('keypress', e => { if (e.key === 'Enter') handleUnifiedLogin(); });
+$('clientLogoutBtn').addEventListener('click', unifiedLogout);
+$('adminLogoutBtn').addEventListener('click', unifiedLogout);
+$('sendAllTopBtn').addEventListener('click', sendToAllClients);
 $('closeClientBtn').addEventListener('click', closeSelectedClient);
 $('reopenClientBtn').addEventListener('click', reopenSelectedClient);
-$('monthSelect').addEventListener('change', e => {
-  selectedMonth = parseInt(e.target.value, 10);
-  selectedDay = null;
-  $('dailyWorkoutPanel').classList.add('hidden');
-  if (selectedClientId) renderSessions();
-});
+$('monthSelect').addEventListener('change', e => { selectedMonth = parseInt(e.target.value, 10); selectedDay = null; if (selectedClientId) renderSessions(); });
 $('ratePerSession').addEventListener('change', async e => {
   if (!selectedClientId) return;
-  let r = parseFloat(e.target.value);
-  if (isNaN(r) || r < 1) r = 200;
+  let r = parseFloat(e.target.value); if (isNaN(r) || r < 1) r = 200;
   e.target.value = Math.round(r);
   await supabaseClient.from('client_settings').update({ rate_aed: r }).eq('client_id', selectedClientId);
   if (clientSettings[selectedClientId]) clientSettings[selectedClientId].rate_aed = r;
@@ -2539,7 +2405,6 @@ $('sendEmailBtn').addEventListener('click', () => sendReminder('email'));
 $('monthSelect').value = new Date().getMonth();
 selectedMonth = new Date().getMonth();
 initSupabase();
-
 window.addEventListener('load', () => { if (window.DriveImages) window.DriveImages.init(); });
 </script>
 </body>
