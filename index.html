@@ -2080,7 +2080,10 @@ function sendReminder(method) {
   if (method === 'whatsapp') {
     const phone = (c.phone || '').replace(/\D/g, '');
     if (!phone) { showStatus($('reminderStatus'), '⚠️ No number.', 'error'); return; }
-    window.open(`https://wa.me/${phone}?text=${enc}`, '_blank');
+    // Use default WhatsApp app on mobile, fallback to web on desktop
+    const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+    const waUrl = isMobile ? `whatsapp://send?phone=${phone}&text=${enc}` : `https://wa.me/${phone}?text=${enc}`;
+    window.open(waUrl, '_blank');
     showStatus($('reminderStatus'), `✅ WhatsApp opened`, 'success');
   } else {
     if (!c.email) { showStatus($('reminderStatus'), '⚠️ No email.', 'error'); return; }
@@ -2098,10 +2101,14 @@ function sendToAllClients() {
   if (ready.length === 0) { showStatus($('sendAllTopStatus'), '⚠️ No active client has a WhatsApp number.', 'error'); return; }
   const confirmMsg = `Send announcement to ${ready.length} active client${ready.length > 1 ? 's' : ''}?` + (missing.length ? `\n\n(Skipping ${missing.length} without a phone: ${missing.map(x => x.name).join(', ')})` : '');
   if (!confirm(confirmMsg)) return;
+  const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
   ready.forEach((c, i) => {
     const msg = buildBroadcastMessage(c);
     const phone = c.phone.replace(/\D/g, '');
-    setTimeout(() => { window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank'); }, i * 400);
+    setTimeout(() => {
+      const waUrl = isMobile ? `whatsapp://send?phone=${phone}&text=${encodeURIComponent(msg)}` : `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+      window.open(waUrl, '_blank');
+    }, i * 400);
   });
   showStatus($('sendAllTopStatus'), `✅ Opening ${ready.length} WhatsApp tab${ready.length > 1 ? 's' : ''}` + (missing.length ? ` · skipped ${missing.length}` : ''), 'success');
   setTimeout(() => clearStatus($('sendAllTopStatus')), 8000);
